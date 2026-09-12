@@ -94,3 +94,48 @@ document.querySelectorAll('.project-card').forEach((card) => {
     card.style.removeProperty('--my');
   });
 });
+
+
+/* =========================================================
+   Signature shooting-star intro V3
+   ========================================================= */
+
+(() => {
+  const star = document.querySelector('.shooting-star');
+
+  if (!star) return;
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  if (reducedMotion) return;
+
+  const introParams = new URLSearchParams(window.location.search);
+
+  const force =
+    introParams.get('intro') === '1';
+
+  const storageKey =
+    'portfolio-signature-star-v3';
+
+  const hasPlayed =
+    sessionStorage.getItem(storageKey);
+
+  if (!hasPlayed || force) {
+    document.body.classList.remove('signature-intro');
+
+    /* Force browser to restart animation */
+    void document.body.offsetWidth;
+
+    document.body.classList.add('signature-intro');
+
+    if (!force) {
+      sessionStorage.setItem(storageKey, 'true');
+    }
+
+    window.setTimeout(() => {
+      document.body.classList.remove('signature-intro');
+    }, 2200);
+  }
+})();

@@ -2132,3 +2132,543 @@ body.intro-animate .current-status {
     padding-bottom: 6.5rem;
   }
 }
+
+
+/* =========================================================
+   JOB-FOCUSED HERO V3
+   Compact, proof-first, full-width
+   ========================================================= */
+
+.hero {
+  min-height: auto !important;
+  display: block !important;
+
+  padding-top: clamp(4.25rem, 7vh, 6rem) !important;
+  padding-bottom: 2.5rem !important;
+}
+
+.job-hero {
+  width: 100%;
+  max-width: 1180px;
+}
+
+.hero-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+
+  max-width: 1080px;
+  margin-bottom: 1.15rem;
+}
+
+.hero-name-label {
+  margin: 0;
+
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: .66rem;
+  font-weight: 700;
+
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.hero-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+
+  margin: 0;
+
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 700;
+
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.hero-open-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+  background: var(--success);
+
+  box-shadow: 0 0 10px rgba(99,197,139,.45);
+}
+
+/* ---------- Name ---------- */
+
+.hero-name-wrap {
+  position: relative;
+
+  display: inline-block;
+  width: fit-content;
+
+  overflow: visible;
+  isolation: isolate;
+}
+
+.hero-name {
+  position: relative;
+  z-index: 2;
+
+  margin: 0 0 2.8rem !important;
+
+  color: var(--ink);
+
+  font-size: clamp(2.4rem, 3.2vw, 3.35rem) !important;
+  font-weight: 800;
+
+  line-height: .95 !important;
+  letter-spacing: -.055em !important;
+}
+
+/* ---------- Primary statement ---------- */
+
+.hero-statement {
+  width: 100% !important;
+  max-width: 1100px !important;
+
+  margin: 0 !important;
+
+  color: #e9edf2 !important;
+
+  font-size: clamp(3rem, 5.1vw, 5.25rem) !important;
+  font-weight: 780 !important;
+
+  line-height: .94 !important;
+  letter-spacing: -.065em !important;
+}
+
+.hero-statement span {
+  display: block;
+}
+
+@media (min-width: 1050px) {
+  .hero-statement span:first-child {
+    white-space: nowrap !important;
+  }
+}
+
+.statement-accent {
+  width: fit-content;
+}
+
+.statement-accent::after {
+  height: 2px !important;
+}
+
+/* ---------- Supporting text ---------- */
+
+.lede {
+  max-width: 700px !important;
+
+  margin-top: 2rem !important;
+
+  color: var(--muted) !important;
+
+  font-size: clamp(1rem, 1.2vw, 1.12rem) !important;
+  line-height: 1.7 !important;
+}
+
+.hero-actions {
+  margin-top: 1.8rem !important;
+}
+
+/* =========================================================
+   STATUS STRIP
+   ========================================================= */
+
+.hero-status-strip {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr .65fr;
+
+  width: 100%;
+
+  margin-top: clamp(3rem, 5vw, 4.25rem);
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-status-item {
+  min-width: 0;
+
+  padding: 1rem 1.25rem;
+
+  border-right: 1px solid var(--line);
+}
+
+.hero-status-item:first-child {
+  padding-left: 0;
+}
+
+.hero-status-item:last-child {
+  border-right: 0;
+}
+
+.hero-status-item > span {
+  display: block;
+
+  margin-bottom: .42rem;
+
+  color: var(--accent);
+
+  font-family: var(--mono);
+  font-size: .57rem;
+  font-weight: 700;
+
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.hero-status-item strong {
+  display: block;
+
+  color: #b5c0cb;
+
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 650;
+
+  line-height: 1.45;
+}
+
+.hero-status-open {
+  display: inline-flex !important;
+  align-items: center;
+  gap: .45rem;
+
+  color: var(--success) !important;
+}
+
+.hero-status-open i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+  background: var(--success);
+
+  box-shadow: 0 0 9px rgba(99,197,139,.45);
+}
+
+/* =========================================================
+   VISIBLE SHOOTING STAR
+   ========================================================= */
+
+.shooting-star {
+  position: absolute;
+
+  width: 170px;
+  height: 34px;
+
+  right: -190px;
+  top: -22px;
+
+  z-index: 5;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.star-tail {
+  position: absolute;
+
+  right: 10px;
+  top: 16px;
+
+  width: 145px;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(110,168,254,.12) 18%,
+      rgba(110,168,254,.55) 68%,
+      rgba(248,251,255,.95) 100%
+    );
+
+  filter:
+    drop-shadow(0 0 4px rgba(110,168,254,.6));
+}
+
+.star-core {
+  position: absolute;
+
+  right: 0;
+  top: 10px;
+
+  width: 13px;
+  height: 13px;
+
+  background: #f8fbff;
+
+  clip-path:
+    polygon(
+      50% 0%,
+      61% 39%,
+      100% 50%,
+      61% 61%,
+      50% 100%,
+      39% 61%,
+      0% 50%,
+      39% 39%
+    );
+
+  filter:
+    drop-shadow(0 0 4px rgba(248,251,255,.95))
+    drop-shadow(0 0 10px rgba(110,168,254,.95))
+    drop-shadow(0 0 18px rgba(110,168,254,.6));
+}
+
+.star-spark {
+  position: absolute;
+
+  width: 3px;
+  height: 3px;
+
+  border-radius: 50%;
+  background: var(--accent);
+
+  box-shadow: 0 0 7px rgba(110,168,254,.9);
+}
+
+.star-spark-one {
+  right: 52px;
+  top: 6px;
+}
+
+.star-spark-two {
+  right: 83px;
+  top: 26px;
+}
+
+body.signature-intro .shooting-star {
+  animation:
+    signature-star-flight 1.45s
+    cubic-bezier(.18,.7,.25,1)
+    .2s both;
+}
+
+body.signature-intro .hero-name {
+  animation:
+    signature-name-light
+    1.35s ease
+    .25s both;
+}
+
+@keyframes signature-star-flight {
+  0% {
+    transform:
+      translate(0, -24px)
+      rotate(-13deg);
+
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  65% {
+    transform:
+      translate(-230px, 48px)
+      rotate(-13deg);
+
+    opacity: 1;
+  }
+
+  87% {
+    opacity: .85;
+  }
+
+  100% {
+    transform:
+      translate(-415px, 102px)
+      rotate(-13deg);
+
+    opacity: 0;
+  }
+}
+
+@keyframes signature-name-light {
+  0%,
+  18%,
+  100% {
+    color: var(--ink);
+    text-shadow: none;
+  }
+
+  47% {
+    color: #ffffff;
+
+    text-shadow:
+      0 0 8px rgba(255,255,255,.22),
+      0 0 20px rgba(110,168,254,.26);
+  }
+}
+
+/* Hero reveal after the star */
+
+body.signature-intro .hero-statement {
+  animation:
+    signature-reveal .48s ease
+    .95s both;
+}
+
+body.signature-intro .lede {
+  animation:
+    signature-reveal .48s ease
+    1.08s both;
+}
+
+body.signature-intro .hero-actions {
+  animation:
+    signature-reveal .48s ease
+    1.18s both;
+}
+
+body.signature-intro .hero-status-strip {
+  animation:
+    signature-reveal .5s ease
+    1.28s both;
+}
+
+@keyframes signature-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   REDUCE THE EXCESS PAGE SPACE
+   ========================================================= */
+
+#projects {
+  padding-top: 3rem !important;
+}
+
+.section {
+  padding-block: 3.5rem 4rem !important;
+}
+
+.project-feature {
+  margin-bottom: 16px !important;
+}
+
+.project-pair {
+  gap: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+#skills {
+  padding-top: 3.75rem !important;
+}
+
+.lower-grid .section {
+  padding-block: 3.5rem !important;
+}
+
+.contact-cta {
+  padding-top: 4.25rem !important;
+  padding-bottom: 3rem !important;
+}
+
+.contact-rule {
+  margin-bottom: 3rem !important;
+}
+
+.closing-line {
+  margin-top: 3.75rem !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+  .hero-topline {
+    display: block;
+  }
+
+  .hero-availability {
+    margin-top: 1rem;
+  }
+
+  .hero-statement {
+    font-size: clamp(2.65rem, 10.5vw, 4rem) !important;
+  }
+
+  .hero-statement span:first-child {
+    white-space: normal !important;
+  }
+
+  .hero-status-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-status-item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-status-item:nth-child(2) {
+    border-right: 0;
+  }
+
+  .hero-status-item:first-child {
+    padding-left: 1.25rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-status-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-status-item {
+    border-right: 0;
+  }
+
+  .hero-status-item:first-child {
+    padding-left: 1rem;
+  }
+
+  .hero-status-item {
+    padding: .9rem 1rem;
+  }
+
+  .shooting-star {
+    transform: scale(.85);
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  body.signature-intro .shooting-star,
+  body.signature-intro .hero-name,
+  body.signature-intro .hero-statement,
+  body.signature-intro .lede,
+  body.signature-intro .hero-actions,
+  body.signature-intro .hero-status-strip {
+    animation: none !important;
+  }
+}
