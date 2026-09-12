@@ -857,3 +857,449 @@ body::before {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   Final portfolio polish
+   ========================================================= */
+
+/* ---------- Overall rhythm ---------- */
+
+.section {
+  padding-block: 64px 72px;
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+}
+
+.section-heading h2 {
+  letter-spacing: -.05em;
+}
+
+/* ---------- Hero balance ---------- */
+
+.hero {
+  padding-block: clamp(4.5rem, 7vh, 6rem) 5.25rem;
+}
+
+.hero-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 310px);
+  gap: clamp(3.5rem, 6vw, 6rem);
+  align-items: start;
+}
+
+.hero-main {
+  min-width: 0;
+}
+
+.hero-name {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  overflow: visible;
+
+  font-size: clamp(2.35rem, 3.1vw, 3.15rem);
+  margin-bottom: clamp(2.7rem, 5vh, 3.7rem);
+}
+
+.hero-statement {
+  width: 100%;
+  max-width: 900px;
+
+  font-size: clamp(2.75rem, 4vw, 4.2rem);
+  line-height: .96;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+
+.hero-statement span:first-child {
+  white-space: normal;
+}
+
+.statement-accent::after {
+  height: 2px;
+}
+
+.lede {
+  max-width: 660px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.75;
+}
+
+.current-status {
+  width: 100%;
+  max-width: 310px;
+  margin-top: 1.8rem;
+  justify-self: end;
+}
+
+.status-heading {
+  margin-bottom: .7rem;
+}
+
+.status-row {
+  min-height: 44px;
+}
+
+/* ---------- Featured project ---------- */
+
+.project-card {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.project-feature {
+  background:
+    radial-gradient(
+      circle at 88% 15%,
+      rgba(110,168,254,.055),
+      transparent 23rem
+    ),
+    rgba(17,24,33,.75);
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(110,168,254,.6);
+}
+
+.project-card .text-link span {
+  display: inline-block;
+  transition: transform 180ms ease;
+}
+
+.project-card .text-link:hover span {
+  transform: translateX(3px);
+}
+
+/* Slightly calmer project copy */
+
+.project-card p {
+  line-height: 1.68;
+}
+
+.project-pair .project-card {
+  min-height: 330px;
+}
+
+.project-facts strong {
+  color: #c7d0da;
+}
+
+/* ---------- Technical stack ---------- */
+
+.skill-grid-refined {
+  background: rgba(11,15,20,.22);
+}
+
+.skill-grid-refined .skill-group {
+  transition: background 180ms ease;
+}
+
+.skill-grid-refined .skill-group:hover {
+  background: rgba(110,168,254,.035);
+}
+
+/* ---------- Credentials / About ---------- */
+
+.credential-card {
+  min-height: 96px;
+}
+
+.about-copy {
+  max-width: 690px;
+}
+
+.resume-note {
+  opacity: .8;
+}
+
+/* ---------- Navigation ---------- */
+
+.site-header {
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.site-header.is-scrolled {
+  background: rgba(8,11,15,.88);
+  border-color: rgba(52,67,85,.82);
+  box-shadow: 0 8px 30px rgba(0,0,0,.14);
+}
+
+/* ---------- First-load shooting star ---------- */
+
+/*
+   The star only plays when JavaScript adds .intro-animate.
+   It travels diagonally across Gabby B., glows briefly,
+   and then disappears.
+*/
+
+body.intro-animate .hero-name::after {
+  content: "";
+  position: absolute;
+
+  left: calc(100% + 110px);
+  top: -22px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  background: #f8fbff;
+
+  box-shadow:
+    0 0 6px rgba(248,251,255,.95),
+    0 0 14px rgba(110,168,254,.9),
+    0 0 30px rgba(110,168,254,.55);
+
+  z-index: 4;
+
+  animation:
+    star-flight 1.05s cubic-bezier(.22,.75,.25,1) .28s both;
+}
+
+body.intro-animate .hero-name::before {
+  content: "";
+  position: absolute;
+
+  left: calc(100% + 86px);
+  top: -16px;
+
+  width: 112px;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(110,168,254,.08) 20%,
+      rgba(110,168,254,.55) 72%,
+      rgba(248,251,255,.9)
+    );
+
+  transform: rotate(-15deg);
+  transform-origin: right center;
+
+  filter: blur(.2px);
+
+  z-index: 3;
+
+  animation:
+    star-trail 1.05s cubic-bezier(.22,.75,.25,1) .28s both;
+}
+
+body.intro-animate .hero-name {
+  animation: name-glow 1.25s ease .28s both;
+}
+
+@keyframes star-flight {
+  0% {
+    left: calc(100% + 110px);
+    top: -28px;
+    opacity: 0;
+    transform: scale(.55);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  55% {
+    left: 48%;
+    top: 42%;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  82% {
+    opacity: .95;
+  }
+
+  100% {
+    left: -52px;
+    top: 96%;
+    opacity: 0;
+    transform: scale(.35);
+  }
+}
+
+@keyframes star-trail {
+  0% {
+    left: calc(100% + 88px);
+    top: -20px;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: .9;
+  }
+
+  55% {
+    left: 43%;
+    top: 48%;
+    opacity: .75;
+  }
+
+  100% {
+    left: -82px;
+    top: 104%;
+    opacity: 0;
+  }
+}
+
+@keyframes name-glow {
+  0%,
+  18%,
+  100% {
+    text-shadow: none;
+  }
+
+  52% {
+    text-shadow:
+      0 0 10px rgba(248,251,255,.16),
+      0 0 24px rgba(110,168,254,.2);
+  }
+}
+
+/* ---------- Intro content reveal ---------- */
+
+body.intro-animate .hero-statement {
+  animation: hero-reveal .55s ease 1s both;
+}
+
+body.intro-animate .lede {
+  animation: hero-reveal .5s ease 1.15s both;
+}
+
+body.intro-animate .hero-actions {
+  animation: hero-reveal .5s ease 1.28s both;
+}
+
+body.intro-animate .current-status {
+  animation: status-reveal .55s ease 1.16s both;
+}
+
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes status-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ---------- Scroll reveal ---------- */
+
+.reveal-item {
+  opacity: 0;
+  transform: translateY(16px);
+
+  transition:
+    opacity 520ms ease,
+    transform 520ms ease;
+}
+
+.reveal-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Desktop refinement ---------- */
+
+@media (min-width: 1280px) {
+  .hero-statement {
+    max-width: 980px;
+  }
+}
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1000px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    gap: 3.4rem;
+  }
+
+  .current-status {
+    max-width: 620px;
+    justify-self: start;
+    margin-top: 0;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 760px) {
+  .section {
+    padding-block: 44px 50px;
+  }
+
+  .hero {
+    padding-block: 3.4rem 4rem;
+  }
+
+  .hero-name {
+    font-size: clamp(2.4rem, 12vw, 3.2rem);
+    margin-bottom: 2.65rem;
+  }
+
+  .hero-statement {
+    font-size: clamp(2.45rem, 10.5vw, 3.8rem);
+    line-height: .98;
+  }
+
+  .current-status {
+    max-width: 100%;
+  }
+
+  body.intro-animate .hero-name::before,
+  body.intro-animate .hero-name::after {
+    animation-duration: .9s;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item {
+    opacity: 1;
+    transform: none;
+  }
+
+  body.intro-animate .hero-name,
+  body.intro-animate .hero-name::before,
+  body.intro-animate .hero-name::after,
+  body.intro-animate .hero-statement,
+  body.intro-animate .lede,
+  body.intro-animate .hero-actions,
+  body.intro-animate .current-status {
+    animation: none !important;
+  }
+}
