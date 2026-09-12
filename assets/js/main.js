@@ -78,3 +78,19 @@ if (!reduceMotion && 'IntersectionObserver' in window) {
 
   revealTargets.forEach((element) => observer.observe(element));
 }
+
+
+/* Project pointer glow */
+document.querySelectorAll('.project-card').forEach((card) => {
+  card.addEventListener('pointermove', (event) => {
+    const rect = card.getBoundingClientRect();
+
+    card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+    card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+  });
+
+  card.addEventListener('pointerleave', () => {
+    card.style.removeProperty('--mx');
+    card.style.removeProperty('--my');
+  });
+});

@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0b0f14">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Gabby B. — Backend, Platform & Reliability">
-  <meta property="og:description" content="Reliable backend systems. Clear engineering work.">
+  <meta property="og:description" content="Backend and platform engineering focused on reliability, observability, and operational clarity.">
   <meta property="og:url" content="https://gabbyb-cloud.github.io/">
   <link rel="canonical" href="https://gabbyb-cloud.github.io/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -72,22 +72,22 @@
           </div>
 
           <aside class="current-status" aria-label="Current status">
-            <p class="status-heading">Current / Status</p>
+            <p class="status-heading">Current / Now</p>
 
             <div class="status-list">
               <div class="status-row">
-                <span>SRE Reliability Lab</span>
-                <strong>Complete</strong>
-              </div>
-
-              <div class="status-row">
-                <span>Linux Operations Lab</span>
-                <strong>Complete</strong>
-              </div>
-
-              <div class="status-row">
                 <span>AWS Solutions Architect</span>
                 <strong class="status-blue">In Progress</strong>
+              </div>
+
+              <div class="status-row status-row-stack">
+                <span>Target Roles</span>
+                <strong>Backend / Platform / SRE / Cloud</strong>
+              </div>
+
+              <div class="status-row">
+                <span>Based</span>
+                <strong>Arizona</strong>
               </div>
 
               <div class="status-row">
@@ -154,6 +154,26 @@
               </div>
             </div>
 
+            <figure class="system-diagram sre-diagram" aria-label="SRE Reliability Lab architecture">
+              <figcaption>System / Reliability Path</figcaption>
+
+              <div class="diagram-flow diagram-flow-sre">
+                <span class="diagram-node">FastAPI</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Kubernetes</span>
+                <span class="diagram-link signal-link"><i></i></span>
+                <span class="diagram-node">Prometheus</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node diagram-accent">SLO / Alert</span>
+              </div>
+
+              <div class="diagram-secondary">
+                <span>Helm</span>
+                <span>Terraform</span>
+                <span>Grafana</span>
+              </div>
+            </figure>
+
             <div class="project-facts">
               <div>
                 <span>Focus</span>
@@ -188,6 +208,24 @@
               Durable backend workflow orchestration with retries, compensation,
               persistence, recovery behavior, tests, and CI.
             </p>
+
+            <figure class="system-diagram compact-diagram temporal-diagram" aria-label="Order fulfillment workflow">
+              <figcaption>Workflow / Recovery</figcaption>
+              <div class="diagram-flow">
+                <span class="diagram-node">API</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Temporal</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Activity</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">PostgreSQL</span>
+              </div>
+              <div class="diagram-secondary">
+                <span>Retry</span>
+                <span>Compensation</span>
+                <span>Recovery</span>
+              </div>
+            </figure>
 
             <div class="tags" aria-label="Technologies">
               <span>Python</span>
@@ -226,6 +264,24 @@
               permissions, networking, troubleshooting, system health,
               and Bash automation.
             </p>
+
+            <figure class="system-diagram compact-diagram linux-diagram" aria-label="Linux troubleshooting workflow">
+              <figcaption>Operations / Troubleshooting</figcaption>
+              <div class="diagram-flow">
+                <span class="diagram-node">systemd</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Process</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Port</span>
+                <span class="diagram-link"><i></i></span>
+                <span class="diagram-node">Logs</span>
+              </div>
+              <div class="diagram-secondary">
+                <span>Permissions</span>
+                <span>DNS</span>
+                <span>Bash</span>
+              </div>
+            </figure>
 
             <div class="tags" aria-label="Technologies">
               <span>Linux</span>
@@ -268,6 +324,24 @@
                 throughput, concurrency, caching, connection pooling,
                 observability, and dependency-failure behavior.
               </p>
+
+              <figure class="system-diagram compact-diagram distributed-diagram" aria-label="Distributed systems dependency path">
+                <figcaption>Request / Dependency Path</figcaption>
+                <div class="diagram-flow">
+                  <span class="diagram-node">Client</span>
+                  <span class="diagram-link"><i></i></span>
+                  <span class="diagram-node">FastAPI</span>
+                  <span class="diagram-link"><i></i></span>
+                  <span class="diagram-node">Redis</span>
+                  <span class="diagram-branch">↘</span>
+                  <span class="diagram-node">PostgreSQL</span>
+                </div>
+                <div class="diagram-secondary">
+                  <span>Latency</span>
+                  <span>Fallback</span>
+                  <span>Concurrency</span>
+                </div>
+              </figure>
 
               <div class="tags" aria-label="Technologies">
                 <span>Python</span>
@@ -357,10 +431,40 @@
         <p class="about-copy">I’m Gabby B., a software engineer who likes turning complex systems into clear, reliable ones. My work focuses on backend systems, platform engineering, and reliability, with an emphasis on observability, practical automation, and thoughtful failure recovery.</p>
         <p class="about-copy muted"><strong>Based in Arizona · Open to relocation.</strong> I’m especially interested in SRE, Platform, Backend, and Cloud/Infrastructure opportunities where reliability and systems thinking matter.</p>
         <p class="about-contact"><a href="mailto:gabbybcloud@proton.me">gabbybcloud@proton.me <span aria-hidden="true">↗</span></a></p>
-        <p class="resume-note">Resume available upon request.</p>
       </section>
     </div>
   </main>
+
+  <section class="contact-cta shell" id="contact" aria-labelledby="contact-title">
+    <div class="contact-rule"></div>
+
+    <div class="contact-layout">
+      <div>
+        <p class="eyebrow compact">Let’s Connect</p>
+        <h2 id="contact-title">
+          Building reliable systems<br>
+          starts with a conversation.
+        </h2>
+      </div>
+
+      <div class="contact-actions">
+        <p>
+          Interested in backend, platform, reliability,
+          or infrastructure-focused engineering work?
+        </p>
+
+        <a class="contact-email" href="mailto:gabbybcloud@proton.me">
+          gabbybcloud@proton.me <span aria-hidden="true">↗</span>
+        </a>
+
+        <p class="contact-resume">Resume available upon request.</p>
+      </div>
+    </div>
+
+    <p class="closing-line">
+      Reliable systems. Clear operations. Measurable behavior.
+    </p>
+  </section>
 
   <footer class="site-footer">
     <div class="shell footer-inner">
