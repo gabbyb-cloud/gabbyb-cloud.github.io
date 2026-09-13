@@ -1,18 +1,18 @@
 /* Technical Editorial Redesign */
 
 :root {
-  --bg: #0b0f14;
-  --surface: #111821;
-  --surface-2: #151e29;
-  --ink: #f2f4f7;
-  --muted: #9aa6b2;
-  --muted-2: #74808d;
-  --accent: #6ea8fe;
-  --accent-bright: #8dbaff;
+  --bg: #0f1419;
+  --surface: #151b22;
+  --surface-2: #1b232c;
+  --ink: #e6edf3;
+  --muted: #9aa7b4;
+  --muted-2: #7f8c99;
+  --accent: #6ea8e5;
+  --accent-bright: #8bbcf0;
   --success: #63c58b;
-  --line: #253140;
-  --line-strong: #344355;
-  --dark: #080b0f;
+  --line: #2a3440;
+  --line-strong: #3a4654;
+  --dark: #0b1015;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
@@ -2671,4 +2671,53 @@ body.signature-intro .hero-status-strip {
   body.signature-intro .hero-status-strip {
     animation: none !important;
   }
+}
+
+/* ---------------------------------------------------------
+   Case study readability pass
+   --------------------------------------------------------- */
+
+.case-hero .lede {
+  color: #b5c0cb;
+}
+
+.case-body p,
+.case-body li,
+.case-section p,
+.case-section li {
+  color: #aeb8c3;
+}
+
+.case-section {
+  border-color: var(--line);
+}
+
+.case-aside {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.case-aside h2 {
+  color: var(--ink);
+}
+
+.case-aside dt {
+  color: var(--accent);
+}
+
+.case-aside dd {
+  color: #c4ccd5;
+}
+
+.case-meta.tags span {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: #c7d1dc;
+}
+
+.case-body code,
+.case-section code {
+  color: #c7d1dc;
 }
