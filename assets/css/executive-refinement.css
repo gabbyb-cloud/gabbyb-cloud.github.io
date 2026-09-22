@@ -1,0 +1,264 @@
+/* Executive refinement pass — readability, hierarchy, restraint */
+
+:root {
+  --exec-muted: #aab3bc;
+  --exec-faint: #87919c;
+  --exec-accent: #c8b27f;
+  --exec-line: #2c3540;
+  --exec-line-strong: #404b57;
+}
+
+/* Navigation: preserve restraint without sacrificing legibility */
+.brand {
+  font-size: .84rem;
+  letter-spacing: .075em;
+}
+
+.site-nav {
+  font-size: .76rem;
+  letter-spacing: .05em;
+}
+
+/* Hero: give the profile panel more authority and breathing room */
+.exec-hero {
+  grid-template-columns: minmax(0, 1.32fr) minmax(390px, .82fr);
+  gap: clamp(3.5rem, 6.5vw, 7rem);
+  min-height: 660px;
+  padding-block: clamp(4.8rem, 8vh, 6.8rem) 4.8rem;
+}
+
+.exec-panel {
+  width: 100%;
+}
+
+.panel-label {
+  font-size: .7rem;
+  color: #929ca6;
+}
+
+.exec-panel-row {
+  grid-template-columns: 125px 1fr;
+  gap: 1.65rem;
+  padding: 1.32rem 0;
+}
+
+.exec-panel-row span {
+  font-size: .7rem;
+  color: #929ca6;
+}
+
+.exec-panel-row strong {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #e0e4e8;
+}
+
+/* Small editorial labels should read as intentional, not microscopic */
+.exec-kicker,
+.section-index,
+.project-meta,
+.project-index,
+.private-label,
+.system-label {
+  font-size: .69rem;
+}
+
+.exec-button,
+.project-links a,
+.project-row > a,
+.quiet-links a {
+  font-size: .72rem;
+}
+
+/* Principles rail */
+.exec-principles div {
+  min-height: 88px;
+  padding: 1.3rem 1.4rem;
+}
+
+.exec-principles span {
+  font-size: .67rem;
+  color: #8f99a3;
+}
+
+.exec-principles strong {
+  font-size: .96rem;
+  color: #e0e4e8;
+}
+
+/* Reduce excess vertical separation so the page reads as one editorial system */
+.exec-section {
+  padding-block: 4.9rem;
+}
+
+.exec-section-head {
+  margin-bottom: 2.5rem;
+}
+
+.exec-section-head p,
+.feature-project p,
+.project-row p,
+.system-block p,
+.private-build p,
+.exec-subsection p,
+.exec-contact p {
+  color: #aab3bc;
+}
+
+/* Flagship project: evidence should carry visual weight */
+.feature-project {
+  grid-template-columns: minmax(0, 1.02fr) minmax(390px, .98fr);
+  gap: clamp(2.8rem, 5vw, 5.4rem);
+  padding: clamp(2.25rem, 3.6vw, 3.25rem);
+}
+
+.evidence-grid div {
+  min-height: 126px;
+  padding: 1.3rem;
+}
+
+.evidence-grid span {
+  margin-bottom: .65rem;
+  font-size: .65rem;
+  color: #919ba5;
+}
+
+.evidence-grid strong {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 650;
+  color: #eef0f2;
+}
+
+/* Secondary projects: make supporting information readable without becoming noisy */
+.project-row {
+  grid-template-columns: 72px minmax(0, 1.35fr) minmax(280px, .72fr) auto;
+  gap: 1.8rem;
+  padding: 1.55rem 0;
+}
+
+.project-row h3 {
+  font-size: 1.5rem;
+}
+
+.project-row p {
+  font-size: .96rem;
+  line-height: 1.6;
+}
+
+.project-tech {
+  font-size: .7rem;
+  line-height: 1.65;
+  color: #8f99a3;
+}
+
+/* Operating stack: tighter, more editorial */
+.system-block {
+  min-height: 198px;
+  padding: 1.65rem;
+}
+
+.system-block h3 {
+  margin: 1.65rem 0 .75rem;
+  font-size: 1.2rem;
+}
+
+.system-block p {
+  font-size: .93rem;
+}
+
+/* Private build and lower sections */
+.private-build {
+  padding: 2.55rem 0;
+}
+
+.private-build h3 {
+  font-size: 2.15rem;
+}
+
+.exec-lower {
+  gap: clamp(3rem, 5.5vw, 5.5rem);
+}
+
+.exec-subsection h2 {
+  font-size: 1.9rem;
+}
+
+.exec-contact {
+  padding-block: 3.8rem;
+}
+
+.exec-email {
+  font-size: .84rem;
+}
+
+/* Accent is reserved for hierarchy and interaction */
+.exec-kicker,
+.project-meta,
+.project-index,
+.private-label,
+.system-label,
+.project-links a:hover,
+.project-row > a:hover,
+.quiet-links a:hover,
+.exec-email {
+  color: var(--exec-accent);
+}
+
+@media (max-width: 1050px) {
+  .exec-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .exec-panel {
+    max-width: 760px;
+  }
+
+  .feature-project {
+    grid-template-columns: 1fr;
+  }
+
+  .project-row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .project-tech,
+  .project-row > a {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .exec-section {
+    padding-block: 3.8rem;
+  }
+
+  .exec-panel-row {
+    grid-template-columns: 1fr;
+    gap: .45rem;
+  }
+
+  .evidence-grid,
+  .systems-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exec-principles {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .exec-principles div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .project-row {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+  }
+
+  .project-tech,
+  .project-row > a {
+    grid-column: 1;
+  }
+}
