@@ -1,16 +1,165 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SRE Reliability Lab — Gabby B.</title><meta name="description" content="Case study for Gabby B.'s completed local SRE Reliability Lab using Kubernetes, Helm, Terraform, Prometheus, Grafana, SLOs, alerting, and incident response."><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/css/styles.css"><link rel="stylesheet" href="../assets/css/redesign.css"></head><body>
-<header class="site-header"><div class="shell nav-wrap"><a class="brand" href="../index.html">Gabby B.</a><nav class="site-nav" style="display:flex"><a href="../index.html#projects">Projects</a><a href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div></header>
-<main><section class="case-hero shell"><p class="eyebrow">Case Study · Completed</p><h1>SRE Reliability Lab</h1><p class="lede">A complete local reliability lab for practicing Kubernetes operations, infrastructure automation, observability, SLOs, alerting, controlled failure and recovery, and incident response without paid cloud infrastructure.</p><div class="case-meta tags"><span>Python</span><span>FastAPI</span><span>Docker</span><span>Kubernetes</span><span>Helm</span><span>Terraform</span><span>Prometheus</span><span>Grafana</span></div></section>
-<div class="shell case-layout"><article class="case-body">
-<section class="case-section"><h2>01 · Overview</h2><p>The lab centers on a FastAPI service with <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> endpoints. The service is containerized with Docker, deployed to a local kind Kubernetes cluster through Helm, observed with Prometheus and Grafana, and supported by Terraform-managed infrastructure state plus operational documentation.</p></section>
-<section class="case-section"><h2>02 · Problem</h2><p>The goal was to move beyond learning infrastructure tools individually and operate a small system end to end: deploy it, determine whether it is ready, observe it, define a reliability target, detect failure, recover it, and document the response.</p></section>
-<section class="case-section"><h2>03 · Architecture</h2><p>The environment is intentionally local-first: FastAPI → Docker → kind/Kubernetes, packaged with Helm. Prometheus scrapes application metrics, Grafana provides visibility, and Terraform manages the selected Kubernetes infrastructure resource. This keeps the lab reproducible and free while exposing the same operational concepts used in larger environments.</p></section>
-<section class="case-section"><h2>04 · Technical Decisions</h2><ul><li>FastAPI keeps application complexity small so the reliability work remains the focus.</li><li><code>python:3.12-slim</code> provides a straightforward application image.</li><li>kind provides a disposable local Kubernetes cluster without paid cloud infrastructure.</li><li>Helm packages and deploys the application consistently.</li><li>Terraform is deliberately minimal rather than pretending the entire environment is infrastructure-as-code.</li><li>Prometheus and Grafana provide metrics collection and operational visibility.</li></ul></section>
-<section class="case-section"><h2>05 · Reliability / Failure Handling</h2><p>Separate health and readiness endpoints distinguish process health from readiness to receive traffic. The lab includes a controlled failure and recovery exercise, verifies service recovery, and documents the operational response in a runbook and a short blameless postmortem.</p></section>
-<section class="case-section"><h2>06 · Observability</h2><p>The application exposes Prometheus-compatible request metrics. Prometheus scraping was verified, Grafana is available for visualization, and the lab includes one availability SLO plus a <code>HighErrorRate</code> alert whose Pending → Firing → resolved behavior was exercised during validation.</p></section>
-<section class="case-section"><h2>07 · Testing & Validation</h2><p>Validation covered application readiness and work endpoints, Prometheus target and metric visibility, Helm linting, Terraform plan state, alert-state behavior, Git state, and post-failure recovery. The completed lab also includes <code>RUNBOOK.md</code> and <code>POSTMORTEM.md</code> as operational artifacts.</p></section>
-<section class="case-section"><h2>08 · Results</h2><p>The finished lab demonstrates an end-to-end local SRE workflow: package and deploy a service to Kubernetes, observe it, define a reliability objective, trigger and detect an error condition, recover the service, and document what happened. It is intentionally a local reliability lab rather than a claim of operating a production Kubernetes platform.</p></section>
-<section class="case-section"><h2>09 · Lessons Learned</h2><p>Reliability becomes much more concrete when deployment, metrics, alert behavior, recovery, and documentation are treated as one operating loop instead of separate tools. Local Kubernetes also exposes image distribution, pod state, readiness, and deployment behavior without a managed service hiding those details.</p></section>
-<section class="case-section"><h2>10 · What I Would Change for Production</h2><p>A production implementation would add a real image registry, managed secrets, external alert routing, security hardening, high-availability design, environment-specific infrastructure, and production capacity planning. Those concerns are intentionally outside the scope of this local lab.</p></section>
-<section class="case-section"><h2>11 · Repository</h2><a class="button button-dark" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View on GitHub ↗</a></section>
-</article><aside class="case-aside"><h2>Project snapshot</h2><dl><dt>Status</dt><dd>Completed</dd><dt>Focus</dt><dd>SRE · Kubernetes · Observability</dd><dt>Environment</dt><dd>Local / $0 development</dd><dt>Operational proof</dt><dd>SLO, alert validation, controlled failure/recovery, runbook, postmortem</dd><dt>Platform tooling</dt><dd>Helm, Terraform, Prometheus, Grafana</dd></dl></aside></div></main><footer class="site-footer"><div class="shell footer-inner"><div><strong>Gabby B.</strong><span>Backend, Platform & Reliability</span></div><div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SRE Reliability Lab — Gabby B.</title>
+  <meta name="description" content="Engineering case study for a local reliability lab using Kubernetes, Helm, Terraform, Prometheus, Grafana, SLOs, alerting, controlled failure, and recovery.">
+  <meta name="theme-color" content="#0b0e12">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/redesign.css">
+  <link rel="stylesheet" href="../assets/css/executive.css">
+  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
+  <link rel="stylesheet" href="../assets/css/case-studies.css">
+</head>
+<body class="case-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="../index.html">Gabby B.</a>
+      <nav class="site-nav" style="display:flex" aria-label="Case study navigation">
+        <a class="case-nav-back" href="../index.html#projects">Selected Engineering</a>
+        <a href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero-exec shell" aria-labelledby="case-title">
+      <div>
+        <p class="case-kicker">Case Study 01 · Reliability Engineering</p>
+        <h1 id="case-title">SRE Reliability Lab</h1>
+        <p class="case-summary">
+          A local reliability engineering environment for operating a containerized service through
+          <strong>deployment, observability, SLOs, alerting, controlled failure, recovery, and incident documentation.</strong>
+        </p>
+        <div class="case-actions">
+          <a class="case-action primary" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View repository ↗</a>
+          <a class="case-action" href="../index.html#projects">Back to selected engineering</a>
+        </div>
+      </div>
+
+      <aside class="case-snapshot" aria-label="Project snapshot">
+        <p class="case-snapshot-title">Project snapshot</p>
+        <dl>
+          <div class="case-snapshot-row"><dt>Status</dt><dd>Completed reliability lab</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Kubernetes operations · observability · recovery</dd></div>
+          <div class="case-snapshot-row"><dt>Environment</dt><dd>Local-first · reproducible · $0 infrastructure</dd></div>
+          <div class="case-snapshot-row"><dt>Stack</dt><dd>FastAPI · Docker · Kubernetes · Helm · Terraform · Prometheus · Grafana</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="case-proof-rail shell" aria-label="Reliability evidence">
+      <div class="case-proof"><span class="case-proof-label">Availability objective</span><strong>99% SLO for the work endpoint</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Detection</span><strong>Prometheus metrics + HighErrorRate alerting</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Failure exercise</span><strong>Controlled HTTP 500 injection with verified recovery</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Operations</span><strong>Runbook · postmortem · CI validation</strong></div>
+    </section>
+
+    <div class="case-main shell">
+      <article class="case-story">
+        <section class="case-block">
+          <span class="case-number">01 / System goal</span>
+          <div>
+            <h2>Operate the service, not just deploy it.</h2>
+            <p>The application is intentionally small. The engineering work is the operating loop around it: package the service, deploy it, determine whether it is ready, observe behavior, define a reliability target, detect failure, recover the service, and document what happened.</p>
+            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> endpoints so infrastructure and reliability behavior remain visible and testable.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">02 / Architecture</span>
+          <div>
+            <h2>A deliberately small reliability stack.</h2>
+            <p>FastAPI is containerized with Docker and deployed into a local kind Kubernetes cluster through Helm. Prometheus scrapes application metrics, Grafana provides visualization, and Terraform manages a selected Kubernetes infrastructure resource rather than pretending the entire environment is infrastructure-as-code.</p>
+            <ul>
+              <li>Docker provides a repeatable application image.</li>
+              <li>kind keeps Kubernetes local and disposable.</li>
+              <li>Helm packages deployment configuration consistently.</li>
+              <li>Prometheus and Grafana expose system behavior.</li>
+              <li>Terraform is used narrowly where it adds explicit state management.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">03 / Reliability controls</span>
+          <div>
+            <h2>Failure is part of the test plan.</h2>
+            <p>Separate liveness and readiness endpoints distinguish process health from readiness to receive traffic. The lab defines a 99% availability SLO and includes a <code>HighErrorRate</code> Prometheus alert.</p>
+            <p>A controlled HTTP 500 exercise was used to observe the alert move through Pending and Firing states, recover the application, and verify alert resolution rather than stopping at alert configuration.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">04 / Validation</span>
+          <div>
+            <h2>Evidence is checked across the operating path.</h2>
+            <p>Validation covers application readiness, the work endpoint, Prometheus target and metric visibility, Helm linting, Terraform state and formatting, alert behavior, and post-failure recovery. GitHub Actions validates Python, Docker, Helm, and Terraform changes.</p>
+            <div class="case-results" aria-label="Validation evidence">
+              <div class="case-result"><span class="case-result-label">Service state</span><strong>Readiness and work endpoints verified</strong></div>
+              <div class="case-result"><span class="case-result-label">Metrics</span><strong>Prometheus scraping verified</strong></div>
+              <div class="case-result"><span class="case-result-label">Alert behavior</span><strong>Pending → Firing → resolved exercised</strong></div>
+              <div class="case-result"><span class="case-result-label">Operational artifacts</span><strong>RUNBOOK.md + POSTMORTEM.md</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">05 / Engineering takeaway</span>
+          <div>
+            <h2>Reliability becomes concrete when the loop is complete.</h2>
+            <p>The most useful part of the lab is not any one tool. It is treating deployment, metrics, alert behavior, failure recovery, and documentation as one connected operating system. Local Kubernetes also makes pod state, readiness, image distribution, and rollout behavior visible without a managed platform hiding those details.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">06 / Production boundary</span>
+          <div>
+            <h2>Local evidence is not production equivalence.</h2>
+            <p>This project demonstrates reliability concepts in a reproducible local environment. A production implementation would still require a real image registry, managed secrets, external alert routing, stronger security controls, high-availability design, environment-specific infrastructure, capacity planning, and production telemetry.</p>
+            <div class="case-note">The project is intentionally presented as a reliability engineering lab, not as a claim of operating a production Kubernetes platform.</div>
+          </div>
+        </section>
+      </article>
+
+      <aside class="case-side" aria-label="Engineering focus">
+        <div class="case-side-card">
+          <p class="case-label">Engineering focus</p>
+          <h2>What this project demonstrates</h2>
+          <ul class="case-side-list">
+            <li>Kubernetes deployment and service operation</li>
+            <li>Helm packaging and configuration</li>
+            <li>Prometheus metrics and alert rules</li>
+            <li>Grafana observability</li>
+            <li>SLO-driven reliability thinking</li>
+            <li>Controlled failure and recovery verification</li>
+            <li>Runbook and incident-postmortem discipline</li>
+            <li>CI validation across multiple infrastructure layers</li>
+          </ul>
+          <p class="case-stack-line">Python · FastAPI · Docker · kind · Kubernetes · Helm · Terraform · Prometheus · Grafana · GitHub Actions</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="case-next shell">
+      <div>
+        <p class="case-kicker">Next case study</p>
+        <h2>Order Fulfillment with Temporal</h2>
+        <p>Durable backend workflows, retries, compensation, persistence, and crash recovery.</p>
+      </div>
+      <a class="case-action" href="order-fulfillment.html">View case study →</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div>
+    </div>
+  </footer>
+</body>
+</html>
