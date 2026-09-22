@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gabby B. — Backend, Platform & Reliability</title>
   <meta name="description" content="Gabby B. is a software engineer focused on backend systems, platform engineering, observability, and reliability.">
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="theme-color" content="#0b0e12">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Gabby B. — Backend, Platform & Reliability">
-  <meta property="og:description" content="Backend and platform engineering focused on reliability, observability, and operational clarity.">
+  <meta property="og:description" content="Backend and platform engineering focused on reliability, observability, failure recovery, and operational clarity.">
   <meta property="og:url" content="https://gabbyb-cloud.github.io/">
   <link rel="canonical" href="https://gabbyb-cloud.github.io/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/redesign.css">
+  <link rel="stylesheet" href="assets/css/executive.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -27,7 +28,7 @@
       </button>
       <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
         <a href="#projects">Work</a>
-        <a href="#skills">Systems</a>
+        <a href="#systems">Systems</a>
         <a href="#credentials">Credentials</a>
         <a href="#about">About</a>
         <a href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub</a>
@@ -36,471 +37,204 @@
   </header>
 
   <main id="main">
-    <section class="hero shell" id="top" aria-labelledby="hero-title">
-
-      <div class="job-hero">
-
-        <div class="hero-topline">
-          <p class="hero-name-label">
-            Software Engineer / Backend / Platform / Reliability
-          </p>
-
-          <p class="hero-availability">
-            <span class="hero-open-dot" aria-hidden="true"></span>
-            Open to opportunities
-          </p>
-        </div>
-
-        <div class="hero-name-wrap">
-          <h1 class="hero-name" id="hero-title">Gabby B.</h1>
-
-          <div class="shooting-star" aria-hidden="true">
-            <span class="star-tail"></span>
-            <span class="star-core"></span>
-            <span class="star-spark star-spark-one"></span>
-            <span class="star-spark star-spark-two"></span>
-          </div>
-        </div>
-
-        <p class="hero-statement">
-          <span>Backend &amp; platform engineering.</span>
-          <span class="statement-accent">Reliability by design.</span>
+    <section class="exec-hero shell" id="top" aria-labelledby="hero-title">
+      <div>
+        <p class="exec-kicker">Software Engineer · Backend · Platform · Reliability</p>
+        <h1 class="exec-name" id="hero-title">Gabby B.</h1>
+        <p class="exec-title">Backend systems. Platform engineering. Reliability by design.</p>
+        <p class="exec-statement">
+          I build backend and infrastructure systems with an emphasis on
+          <strong>observable behavior, clear failure modes, durable workflows, and practical recovery.</strong>
         </p>
-
-        <p class="lede">
-          I build backend and infrastructure systems focused on observability,
-          automation, failure recovery, and operational clarity.
-        </p>
-
-        <div class="hero-actions">
-          <a class="button button-dark" href="#projects">
-            View selected work <span aria-hidden="true">→</span>
-          </a>
-
-          <a
-            class="button"
-            href="https://github.com/gabbyb-cloud"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub <span aria-hidden="true">↗</span>
-          </a>
+        <div class="exec-actions">
+          <a class="exec-button primary" href="#projects">Explore selected engineering</a>
+          <a class="exec-button" href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub ↗</a>
         </div>
-
       </div>
 
-      <div class="hero-status-strip" aria-label="Current professional status">
-
-        <div class="hero-status-item">
-          <span>Current</span>
-          <strong>AWS Solutions Architect — In Progress</strong>
+      <aside class="exec-panel" aria-label="Engineering profile">
+        <p class="panel-label">Engineering profile</p>
+        <div class="exec-panel-row">
+          <span>Backend</span>
+          <strong>APIs · durable workflows · PostgreSQL</strong>
         </div>
-
-        <div class="hero-status-item">
-          <span>Target</span>
-          <strong>Backend · Platform · SRE · Cloud</strong>
+        <div class="exec-panel-row">
+          <span>Platform</span>
+          <strong>Linux · Docker · Kubernetes · Terraform</strong>
         </div>
-
-        <div class="hero-status-item">
-          <span>Based</span>
-          <strong>Arizona · Open to Relocation</strong>
+        <div class="exec-panel-row">
+          <span>Reliability</span>
+          <strong>SLOs · alerting · incident response · recovery</strong>
         </div>
-
-        <div class="hero-status-item">
-          <span>Status</span>
-          <strong class="hero-status-open">
-            <i aria-hidden="true"></i>
-            Open
-          </strong>
+        <div class="exec-panel-row">
+          <span>Private build</span>
+          <strong>Multi-tenant B2B software in active development</strong>
         </div>
-
-      </div>
-
+      </aside>
     </section>
 
-    <section class="section shell" id="projects" aria-labelledby="projects-title">
-      <div class="section-heading">
+    <div class="shell exec-principles" aria-label="Engineering principles">
+      <div><span>01</span><strong>Design for failure</strong></div>
+      <div><span>02</span><strong>Measure behavior</strong></div>
+      <div><span>03</span><strong>Keep operations clear</strong></div>
+      <div><span>04</span><strong>Document recovery</strong></div>
+    </div>
+
+    <section class="exec-section shell" id="projects" aria-labelledby="projects-title">
+      <div class="exec-section-head">
+        <p class="section-index">01 / Selected engineering</p>
         <div>
-          <p class="eyebrow compact">Selected work</p>
-          <h2 id="projects-title">Featured Projects</h2>
+          <h2 id="projects-title">Systems, not demos.</h2>
+          <p>Public projects centered on reliability, workflow durability, Linux operations, and distributed-system behavior.</p>
         </div>
-        <a class="text-link" href="https://github.com/gabbyb-cloud?tab=repositories" target="_blank" rel="noreferrer">View all repositories <span aria-hidden="true">↗</span></a>
       </div>
 
-      <div class="project-grid project-layout">
-
-        <article class="project-card project-feature">
-          <div class="card-topline">
-            <span class="status">Completed</span>
-            <span class="project-number">01 / Featured System</span>
+      <article class="feature-project">
+        <div>
+          <p class="project-meta">Featured system · Reliability engineering</p>
+          <h3>SRE Reliability Lab</h3>
+          <p>
+            A local reliability engineering environment for deploying, observing,
+            deliberately breaking, and recovering a containerized service with Kubernetes,
+            Helm, Terraform, Prometheus, and Grafana.
+          </p>
+          <div class="project-links">
+            <a href="projects/sre-reliability-lab.html">View case study →</a>
+            <a href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">Repository ↗</a>
           </div>
+        </div>
 
-          <div class="feature-project-layout">
+        <div class="evidence-grid" aria-label="SRE Reliability Lab evidence">
+          <div><span>Availability objective</span><strong>99% SLO for the work endpoint</strong></div>
+          <div><span>Detection</span><strong>Prometheus metrics and HighErrorRate alerting</strong></div>
+          <div><span>Failure exercise</span><strong>Controlled HTTP 500 injection and verified recovery</strong></div>
+          <div><span>Operations</span><strong>Runbook, incident postmortem, and CI validation</strong></div>
+        </div>
+      </article>
 
-            <div class="feature-project-copy">
-              <p class="project-kicker">Reliability Engineering</p>
-
-              <h3>SRE Reliability Lab</h3>
-
-              <p>
-                A local reliability engineering environment for deploying,
-                observing, breaking, and recovering a containerized service.
-              </p>
-
-              <div class="tags" aria-label="Technologies">
-                <span>Kubernetes</span>
-                <span>Helm</span>
-                <span>Terraform</span>
-                <span>Prometheus</span>
-                <span>Grafana</span>
-              </div>
-
-              <div class="card-links">
-                <a class="text-link" href="projects/sre-reliability-lab.html">
-                  View case study <span aria-hidden="true">→</span>
-                </a>
-
-                <a
-                  class="text-link"
-                  href="https://github.com/gabbyb-cloud/sre-reliability-lab"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GitHub <span aria-hidden="true">↗</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="feature-project-side">
-
-              <figure
-                class="system-diagram sre-diagram"
-                aria-label="SRE Reliability Lab architecture"
-              >
-                <figcaption>System / Reliability Path</figcaption>
-
-                <div class="diagram-flow diagram-flow-sre">
-                  <span class="diagram-node">FastAPI</span>
-                  <span class="diagram-link"><i></i></span>
-                  <span class="diagram-node">Kubernetes</span>
-                  <span class="diagram-link signal-link"><i></i></span>
-                  <span class="diagram-node">Prometheus</span>
-                  <span class="diagram-link"><i></i></span>
-                  <span class="diagram-node diagram-accent">SLO / Alert</span>
-                </div>
-
-                <div class="diagram-secondary">
-                  <span>Helm</span>
-                  <span>Terraform</span>
-                  <span>Grafana</span>
-                </div>
-              </figure>
-
-              <div class="project-facts">
-                <div>
-                  <span>Focus</span>
-                  <strong>
-                    Kubernetes deployment · observability · failure recovery
-                  </strong>
-                </div>
-
-                <div>
-                  <span>Reliability</span>
-                  <strong>
-                    Availability SLO · HighErrorRate alerting
-                  </strong>
-                </div>
-
-                <div>
-                  <span>Operations</span>
-                  <strong>
-                    Runbook · controlled incident · postmortem
-                  </strong>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </article>
-
-        <div class="project-pair">
-
-          <article class="project-card">
-            <div class="card-topline">
-              <span class="status">Completed</span>
-              <span class="project-number">02</span>
-            </div>
-
-            <p class="project-kicker">Durable Workflows</p>
+      <div class="project-list">
+        <article class="project-row">
+          <span class="project-index">02</span>
+          <div>
             <h3>Order Fulfillment with Temporal</h3>
-
-            <p>
-              Durable backend workflow orchestration with retries, compensation,
-              persistence, recovery behavior, tests, and CI.
-            </p>
-
-            <figure class="system-diagram compact-diagram temporal-diagram" aria-label="Order fulfillment workflow">
-              <figcaption>Workflow / Recovery</figcaption>
-              <div class="diagram-flow">
-                <span class="diagram-node">API</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">Temporal</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">Activity</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">PostgreSQL</span>
-              </div>
-              <div class="diagram-secondary">
-                <span>Retry</span>
-                <span>Compensation</span>
-                <span>Recovery</span>
-              </div>
-            </figure>
-
-            <div class="tags" aria-label="Technologies">
-              <span>Python</span>
-              <span>FastAPI</span>
-              <span>Temporal</span>
-              <span>PostgreSQL</span>
-              <span>Docker</span>
-            </div>
-
-            <div class="card-links">
-              <a class="text-link" href="projects/order-fulfillment.html">
-                Case study <span aria-hidden="true">→</span>
-              </a>
-              <a
-                class="text-link"
-                href="https://github.com/gabbyb-cloud/order-fulfillment-temporal"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div class="card-topline">
-              <span class="status">Completed</span>
-              <span class="project-number">03</span>
-            </div>
-
-            <p class="project-kicker">Linux Operations</p>
-            <h3>Linux Operations Lab</h3>
-
-            <p>
-              Hands-on Linux administration covering systemd services,
-              permissions, networking, troubleshooting, system health,
-              and Bash automation.
-            </p>
-
-            <figure class="system-diagram compact-diagram linux-diagram" aria-label="Linux troubleshooting workflow">
-              <figcaption>Operations / Troubleshooting</figcaption>
-              <div class="diagram-flow">
-                <span class="diagram-node">systemd</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">Process</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">Port</span>
-                <span class="diagram-link"><i></i></span>
-                <span class="diagram-node">Logs</span>
-              </div>
-              <div class="diagram-secondary">
-                <span>Permissions</span>
-                <span>DNS</span>
-                <span>Bash</span>
-              </div>
-            </figure>
-
-            <div class="tags" aria-label="Technologies">
-              <span>Linux</span>
-              <span>Bash</span>
-              <span>systemd</span>
-              <span>journalctl</span>
-              <span>TCP/IP</span>
-              <span>DNS</span>
-            </div>
-
-            <div class="card-links">
-              <a
-                class="text-link"
-                href="https://github.com/gabbyb-cloud/linux-operations-lab"
-                target="_blank"
-                rel="noreferrer"
-              >
-                View repository <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </article>
-
-        </div>
-
-        <article class="project-card project-wide">
-          <div class="wide-project-layout">
-            <div>
-              <div class="card-topline">
-                <span class="status">Completed</span>
-                <span class="project-number">04</span>
-              </div>
-
-              <p class="project-kicker">Performance & Failure Analysis</p>
-              <h3>Distributed Systems Performance Lab</h3>
-            </div>
-
-            <div class="wide-project-copy">
-              <p>
-                Performance and reliability experiments covering latency,
-                throughput, concurrency, caching, connection pooling,
-                observability, and dependency-failure behavior.
-              </p>
-
-              <figure class="system-diagram compact-diagram distributed-diagram" aria-label="Distributed systems dependency path">
-                <figcaption>Request / Dependency Path</figcaption>
-                <div class="diagram-flow">
-                  <span class="diagram-node">Client</span>
-                  <span class="diagram-link"><i></i></span>
-                  <span class="diagram-node">FastAPI</span>
-                  <span class="diagram-link"><i></i></span>
-                  <span class="diagram-node">Redis</span>
-                  <span class="diagram-branch">↘</span>
-                  <span class="diagram-node">PostgreSQL</span>
-                </div>
-                <div class="diagram-secondary">
-                  <span>Latency</span>
-                  <span>Fallback</span>
-                  <span>Concurrency</span>
-                </div>
-              </figure>
-
-              <div class="tags" aria-label="Technologies">
-                <span>Python</span>
-                <span>PostgreSQL</span>
-                <span>Redis</span>
-                <span>Concurrency</span>
-                <span>Observability</span>
-              </div>
-
-              <div class="card-links">
-                <a class="text-link" href="projects/distributed-systems-performance.html">
-                  Case study <span aria-hidden="true">→</span>
-                </a>
-                <a
-                  class="text-link"
-                  href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GitHub <span aria-hidden="true">↗</span>
-                </a>
-              </div>
-            </div>
+            <p>Durable workflow orchestration with retries, compensation, persistence, cancellation behavior, worker recovery, automated tests, and CI.</p>
           </div>
+          <span class="project-tech">Python · FastAPI · Temporal · PostgreSQL · Docker</span>
+          <a href="projects/order-fulfillment.html">Case study →</a>
         </article>
 
+        <article class="project-row">
+          <span class="project-index">03</span>
+          <div>
+            <h3>Distributed Systems Performance Lab</h3>
+            <p>Performance and reliability experiments covering latency, throughput, concurrency, caching, connection pooling, observability, and dependency-failure behavior.</p>
+          </div>
+          <span class="project-tech">Python · PostgreSQL · Redis · Concurrency</span>
+          <a href="projects/distributed-systems-performance.html">Case study →</a>
+        </article>
+
+        <article class="project-row">
+          <span class="project-index">04</span>
+          <div>
+            <h3>Linux Operations Lab</h3>
+            <p>Hands-on Linux operations covering services, permissions, networking, logs, system health, troubleshooting, and Bash automation.</p>
+          </div>
+          <span class="project-tech">Linux · Bash · systemd · journalctl · TCP/IP</span>
+          <a href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">Repository ↗</a>
+        </article>
       </div>
     </section>
 
-    <section class="section shell" id="skills" aria-labelledby="skills-title">
-      <div class="section-heading minimal-heading">
+    <section class="exec-section shell" id="systems" aria-labelledby="systems-title">
+      <div class="exec-section-head">
+        <p class="section-index">02 / Engineering systems</p>
         <div>
-          <p class="eyebrow compact">Technical skills</p>
-          <h2 id="skills-title">Tools for reliable systems</h2>
+          <h2 id="systems-title">A focused operating stack.</h2>
+          <p>Tools are presented by the system problems they help solve, not as a wall of badges.</p>
         </div>
-        <p class="side-note">Focused stack. Applied in projects.</p>
       </div>
 
-      <div class="skill-grid skill-grid-refined">
-        <div class="skill-group">
-          <p class="skill-number">01 / Languages & Backend</p>
-          <h3>Application Engineering</h3>
+      <div class="systems-grid">
+        <div class="system-block">
+          <span class="system-label">Backend</span>
+          <h3>Application systems</h3>
           <p>Python · TypeScript · FastAPI · Temporal · REST APIs</p>
         </div>
-
-        <div class="skill-group">
-          <p class="skill-number">02 / Infrastructure</p>
-          <h3>Platform Systems</h3>
+        <div class="system-block">
+          <span class="system-label">Platform</span>
+          <h3>Runtime & infrastructure</h3>
           <p>Linux · Docker · Kubernetes · Helm · Terraform</p>
         </div>
-
-        <div class="skill-group">
-          <p class="skill-number">03 / Data & Systems</p>
-          <h3>System Foundations</h3>
-          <p>PostgreSQL · Redis · Networking · Git · CI/CD</p>
+        <div class="system-block">
+          <span class="system-label">Data</span>
+          <h3>System foundations</h3>
+          <p>PostgreSQL · Redis · networking · Git · CI/CD</p>
         </div>
-
-        <div class="skill-group">
-          <p class="skill-number">04 / Reliability</p>
-          <h3>Operations & Observability</h3>
-          <p>Prometheus · Grafana · SLOs · Alerting · Incident Response · Runbooks</p>
+        <div class="system-block">
+          <span class="system-label">Reliability</span>
+          <h3>Operations & observability</h3>
+          <p>Prometheus · Grafana · SLOs · alerting · incident response · runbooks</p>
         </div>
       </div>
     </section>
 
-    <div class="shell lower-grid">
-      <section class="section split-section" id="credentials" aria-labelledby="credentials-title">
-        <div class="section-heading minimal-heading">
-          <div><p class="eyebrow compact">Credentials</p><h2 id="credentials-title">Continuous learning</h2></div>
+    <section class="exec-section shell" aria-labelledby="private-title">
+      <div class="private-build">
+        <p class="private-label">03 / Building privately</p>
+        <div>
+          <h3 id="private-title">Private B2B software in active development.</h3>
+          <p>
+            Independently developing a multi-tenant software product spanning backend architecture,
+            PostgreSQL, authentication and authorization, workflow design, testing, security controls,
+            reliability, and product engineering. Product and implementation details remain private.
+          </p>
         </div>
-        <div class="credential-grid">
-          <a class="credential-card" href="https://www.credly.com/users/gabriell-bedoy/badges" target="_blank" rel="noreferrer">
-            <span class="credential-mark" aria-hidden="true">C</span>
-            <span><strong>Credly</strong><small>View verified credentials</small></span><span aria-hidden="true">↗</span>
-          </a>
-          <a class="credential-card" href="https://tryhackme.com/p/gabbybcloud" target="_blank" rel="noreferrer">
-            <span class="credential-mark" aria-hidden="true">T</span>
-            <span><strong>TryHackMe</strong><small>Hands-on security and infrastructure learning</small></span><span aria-hidden="true">↗</span>
-          </a>
+      </div>
+    </section>
+
+    <section class="exec-section shell" id="credentials">
+      <div class="exec-lower">
+        <div class="exec-subsection" aria-labelledby="credentials-title">
+          <p class="section-index">04 / Credentials</p>
+          <h2 id="credentials-title">Continuous technical development.</h2>
+          <p>Verified credentials and hands-on learning stay secondary to the engineering work, but remain available for deeper review.</p>
+          <div class="quiet-links">
+            <a href="https://www.credly.com/users/gabriell-bedoy/badges" target="_blank" rel="noreferrer">Credly ↗</a>
+            <a href="https://tryhackme.com/p/gabbybcloud" target="_blank" rel="noreferrer">TryHackMe ↗</a>
+          </div>
         </div>
-      </section>
 
-      <section class="section split-section" id="about" aria-labelledby="about-title">
-        <div class="section-heading minimal-heading">
-          <div><p class="eyebrow compact">About</p><h2 id="about-title">Systems-minded engineering</h2></div>
+        <div class="exec-subsection" id="about" aria-labelledby="about-title">
+          <p class="section-index">05 / About</p>
+          <h2 id="about-title">Systems-minded engineering.</h2>
+          <p>
+            I’m Gabby B., a software engineer focused on backend systems, platform engineering,
+            and reliability. I prefer clear architecture, observable behavior, deliberate failure handling,
+            and operational documentation that makes systems easier to understand and recover.
+          </p>
         </div>
-        <p class="about-copy">I’m Gabby B., a software engineer who likes turning complex systems into clear, reliable ones. My work focuses on backend systems, platform engineering, and reliability, with an emphasis on observability, practical automation, and thoughtful failure recovery.</p>
-        <p class="about-copy muted"><strong>Based in Arizona · Open to remote-first roles and select relocation opportunities.</strong> I’m especially interested in SRE, Platform, Backend, and Cloud/Infrastructure opportunities where reliability and systems thinking matter.</p>
-        <p class="about-contact"><a href="mailto:gabbybcloud@proton.me">gabbybcloud@proton.me <span aria-hidden="true">↗</span></a></p>
-      </section>
-    </div>
-  </main>
+      </div>
+    </section>
 
-  <section class="contact-cta shell" id="contact" aria-labelledby="contact-title">
-    <div class="contact-rule"></div>
-
-    <div class="contact-layout">
+    <section class="exec-contact shell" id="contact" aria-labelledby="contact-title">
       <div>
-        <p class="eyebrow compact">Let’s Connect</p>
-        <h2 id="contact-title">
-          Building reliable systems<br>
-          starts with a conversation.
-        </h2>
+        <p class="exec-kicker">Contact</p>
+        <h2 id="contact-title">Clear systems begin with clear conversations.</h2>
+        <p>For professional inquiries, technical collaboration, or systems-focused conversations.</p>
       </div>
-
-      <div class="contact-actions">
-        <p>
-          Interested in backend, platform, reliability,
-          or infrastructure-focused engineering work?
-        </p>
-
-        <a class="contact-email" href="mailto:gabbybcloud@proton.me">
-          gabbybcloud@proton.me <span aria-hidden="true">↗</span>
-        </a>
-
-        <p class="contact-resume">Resume available upon request.</p>
-      </div>
-    </div>
-
-    <p class="closing-line">
-      Reliable systems. Clear operations. Measurable behavior.
-    </p>
-  </section>
+      <a class="exec-email" href="mailto:gabbybcloud@proton.me">gabbybcloud@proton.me ↗</a>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <div><strong>Gabby B.</strong><span>Software Engineer — Backend, Platform & Reliability</span></div>
-      <div class="footer-links"><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub</a><a href="#projects">Projects</a><a href="#top">Back to top ↑</a></div>
+      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div class="footer-links">
+        <a href="mailto:gabbybcloud@proton.me">Email</a>
+        <a href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="#projects">Work</a>
+        <a href="#top">Top ↑</a>
+      </div>
     </div>
   </footer>
 
