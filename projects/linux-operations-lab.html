@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linux Operations Lab — Gabby B.</title>
+  <meta name="description" content="Engineering case study for a hands-on Linux operations lab covering permissions, services, logs, networking, troubleshooting, system health, and Bash automation.">
+  <meta name="theme-color" content="#0b0e12">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/redesign.css">
+  <link rel="stylesheet" href="../assets/css/executive.css">
+  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
+  <link rel="stylesheet" href="../assets/css/case-studies.css">
+</head>
+<body class="case-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="../index.html">Gabby B.</a>
+      <nav class="site-nav" style="display:flex" aria-label="Case study navigation">
+        <a class="case-nav-back" href="../index.html#projects">Selected Engineering</a>
+        <a href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero-exec shell" aria-labelledby="case-title">
+      <div>
+        <p class="case-kicker">Case Study 04 · Linux Operations</p>
+        <h1 id="case-title">Linux Operations Lab</h1>
+        <p class="case-summary">
+          A hands-on operations lab for practicing the Linux workflows behind reliable backend and platform systems:
+          <strong>permissions, services, logs, networking, troubleshooting, system health, and Bash automation.</strong>
+        </p>
+        <div class="case-actions">
+          <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
+          <a class="case-action" href="../index.html#projects">Back to selected engineering</a>
+        </div>
+      </div>
+
+      <aside class="case-snapshot" aria-label="Project snapshot">
+        <p class="case-snapshot-title">Project snapshot</p>
+        <dl>
+          <div class="case-snapshot-row"><dt>Status</dt><dd>Completed operations lab</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Linux administration · troubleshooting · service recovery</dd></div>
+          <div class="case-snapshot-row"><dt>Environment</dt><dd>Ubuntu on WSL2 · local practice environment</dd></div>
+          <div class="case-snapshot-row"><dt>Stack</dt><dd>Linux · Bash · systemd · journalctl · ss · curl</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="case-proof-rail shell" aria-label="Operations evidence">
+      <div class="case-proof"><span class="case-proof-label">Permissions</span><strong>Users · groups · ownership · controlled access failures</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Service operations</span><strong>systemd lifecycle · outage simulation · recovery · logs</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Networking</span><strong>Interfaces · routes · TCP ports · DNS · connectivity checks</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Automation</span><strong>Bash system-health reporting for CPU, memory, disk, and services</strong></div>
+    </section>
+
+    <div class="case-main shell">
+      <article class="case-story">
+        <section class="case-block">
+          <span class="case-number">01 / System goal</span>
+          <div>
+            <h2>Practice the operating system underneath the application.</h2>
+            <p>The project keeps application complexity intentionally small so the work stays focused on Linux itself: identities and permissions, processes, services, logs, network state, resource health, and recovery steps.</p>
+            <p>The goal is practical familiarity with the workflows that support backend, platform, DevOps, and reliability work rather than memorizing isolated commands.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">02 / Permissions</span>
+          <div>
+            <h2>Access problems become easier to debug when ownership is explicit.</h2>
+            <p>The permissions lab exercises Linux users, groups, ownership, and mode bits with <code>chmod</code> and <code>chown</code>. Controlled permission failures make the relationship between identity, ownership, and access visible instead of treating permissions as a one-line setup task.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">03 / Services & logs</span>
+          <div>
+            <h2>Run a service, break it, inspect it, and recover it.</h2>
+            <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab covers service start and stop behavior, process inspection, TCP port verification, an intentional outage, recovery, and log review.</p>
+            <ul>
+              <li><code>systemctl status linux-lab</code> checks service state.</li>
+              <li><code>journalctl -u linux-lab</code> exposes service logs.</li>
+              <li><code>ss -lntp</code> verifies listening TCP sockets.</li>
+              <li><code>curl http://127.0.0.1:8000</code> verifies the HTTP path.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">04 / Networking</span>
+          <div>
+            <h2>Trace connectivity from interface state to application response.</h2>
+            <p>The networking lab covers interfaces, routes, localhost behavior, listening ports, DNS resolution, and connectivity testing. The emphasis is on separating different failure domains instead of jumping directly to the application.</p>
+            <p>That creates a more disciplined troubleshooting path: confirm local interface and routing state, inspect the port, verify name resolution when relevant, and then test the application endpoint.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">05 / System health</span>
+          <div>
+            <h2>Turn repeated inspection into a small operational tool.</h2>
+            <p>The project includes a Bash health script that reports hostname, CPU count, uptime and load, memory usage, root filesystem usage, top memory-consuming processes, and the <code>linux-lab</code> service state.</p>
+            <div class="case-results" aria-label="System health checks">
+              <div class="case-result"><span class="case-result-label">Compute</span><strong>CPU count · uptime · load</strong></div>
+              <div class="case-result"><span class="case-result-label">Memory</span><strong>Memory usage + top consumers</strong></div>
+              <div class="case-result"><span class="case-result-label">Storage</span><strong>Root filesystem usage</strong></div>
+              <div class="case-result"><span class="case-result-label">Service state</span><strong>linux-lab systemd status</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">06 / Engineering takeaway</span>
+          <div>
+            <h2>Operational clarity starts with knowing what the host is doing.</h2>
+            <p>Working directly with processes, ports, permissions, logs, routes, and resource state makes higher-level platform behavior easier to reason about. Containers and orchestrators still depend on these operating-system fundamentals; the abstractions change, but the underlying failure signals remain useful.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">07 / Scope boundary</span>
+          <div>
+            <h2>This is a fundamentals lab, not a production fleet.</h2>
+            <p>The checked-in <code>systemd</code> unit reflects a local lab path and user and must be adapted before installation elsewhere. The project intentionally does not claim fleet management, production hardening, centralized logging, configuration management, or large-scale automation.</p>
+            <div class="case-note">The value of the project is direct Linux operating practice and repeatable troubleshooting—not production-scale infrastructure.</div>
+          </div>
+        </section>
+      </article>
+
+      <aside class="case-side" aria-label="Engineering focus">
+        <div class="case-side-card">
+          <p class="case-label">Engineering focus</p>
+          <h2>What this project demonstrates</h2>
+          <ul class="case-side-list">
+            <li>Linux users, groups, ownership, and permissions</li>
+            <li>Process and service inspection</li>
+            <li>systemd service management</li>
+            <li>journalctl log review</li>
+            <li>TCP port and HTTP verification</li>
+            <li>Interfaces, routing, and DNS troubleshooting</li>
+            <li>CPU, memory, disk, and process inspection</li>
+            <li>Basic Bash operations automation</li>
+          </ul>
+          <p class="case-stack-line">Ubuntu · WSL2 · Linux · Bash · systemd · journalctl · ss · curl</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="case-next shell">
+      <div>
+        <p class="case-kicker">Continue exploring</p>
+        <h2>SRE Reliability Lab</h2>
+        <p>Kubernetes operations, SLOs, observability, controlled failure, recovery, and incident documentation.</p>
+      </div>
+      <a class="case-action" href="sre-reliability-lab.html">View case study →</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div>
+    </div>
+  </footer>
+</body>
+</html>
