@@ -1,16 +1,173 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Order Fulfillment with Temporal — Gabby B.</title><meta name="description" content="Case study for a durable order fulfillment backend using Temporal."><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/css/styles.css"><link rel="stylesheet" href="../assets/css/redesign.css"></head><body>
-<header class="site-header"><div class="shell nav-wrap"><a class="brand" href="../index.html">Gabby B.</a><nav class="site-nav" style="display:flex"><a href="../index.html#projects">Projects</a><a href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div></header>
-<main><section class="case-hero shell"><p class="eyebrow">Case Study · Completed</p><h1>Order Fulfillment with Temporal</h1><p class="lede">A backend project focused on durable execution: workflows that can retry, compensate, persist state, and recover from process failure without losing the business operation.</p><div class="case-meta tags"><span>Python</span><span>FastAPI</span><span>Temporal</span><span>PostgreSQL</span><span>Docker</span></div></section>
-<div class="shell case-layout"><article class="case-body">
-<section class="case-section"><h2>01 · Overview</h2><p>The project models an order-fulfillment workflow using Temporal with a FastAPI-facing backend and PostgreSQL persistence. It emphasizes workflow durability rather than a conventional request/response-only architecture.</p></section>
-<section class="case-section"><h2>02 · Problem</h2><p>Multi-step order workflows fail in messy ways: a process can crash, an external step can time out, or a later step can fail after earlier work already succeeded. The project explores how durable workflows make those failures explicit and recoverable.</p></section>
-<section class="case-section"><h2>03 · Architecture</h2><p>FastAPI accepts work at the application boundary, Temporal coordinates long-running workflow execution, activities perform individual steps, and PostgreSQL supports the surrounding persisted application state.</p></section>
-<section class="case-section"><h2>04 · Technical Decisions</h2><ul><li>Temporal provides durable workflow state and controlled retries.</li><li>Saga-style compensation provides a structured path for undoing completed work when a later step fails.</li><li>Docker makes the local multi-service environment reproducible.</li><li>Integration testing and CI exercise failure and recovery behavior continuously.</li></ul></section>
-<section class="case-section"><h2>05 · Reliability / Failure Handling</h2><p>The design focuses on retries, compensation, and crash recovery so a worker or process interruption does not automatically mean losing workflow progress.</p></section>
-<section class="case-section"><h2>06 · Observability</h2><p>Temporal makes workflow state and failures inspectable rather than burying them inside ad-hoc background jobs, and the application adds structured logging around the API and workflow path.</p></section>
-<section class="case-section"><h2>07 · Testing</h2><p>The repository includes 8 passing tests covering important workflow behavior and recovery paths, with CI used to validate the project automatically. The API also includes API-key authentication for the implemented local application boundary.</p></section>
-<section class="case-section"><h2>08 · Results</h2><p>The project demonstrates a working durable-execution approach for multi-step backend work, including retries with backoff, Saga-style compensation, cancellation, persistence, and worker-crash recovery. A local benchmark completed 25 of 25 requests successfully at about 30 ms average latency and about 49 ms p95.</p><div class="todo">Benchmark figures are local, workload-specific measurements and are not production throughput or latency guarantees.</div></section>
-<section class="case-section"><h2>09 · Lessons Learned</h2><p>Durable workflow tooling changes how backend failures are modeled: rather than treating background work as disposable, the workflow itself becomes explicit state that can survive process interruptions.</p></section>
-<section class="case-section"><h2>10 · What I Would Change for Production</h2><p>A production version would move beyond the current API-key boundary to managed identity and authorization, add managed secrets, environment-specific deployment, capacity planning, deeper telemetry, and externally managed infrastructure.</p></section>
-<section class="case-section"><h2>11 · Repository</h2><a class="button button-dark" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View on GitHub ↗</a></section>
-</article><aside class="case-aside"><h2>Project snapshot</h2><dl><dt>Status</dt><dd>Completed</dd><dt>Focus</dt><dd>Distributed workflows · backend reliability</dd><dt>Core pattern</dt><dd>Durable execution + Saga compensation</dd><dt>Stack</dt><dd>Python, FastAPI, Temporal, PostgreSQL, Docker</dd></dl></aside></div></main><footer class="site-footer"><div class="shell footer-inner"><div><strong>Gabby B.</strong><span>Backend, Platform & Reliability</span></div><div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Fulfillment with Temporal — Gabby B.</title>
+  <meta name="description" content="Engineering case study for a durable order fulfillment backend using Temporal, FastAPI, PostgreSQL, Docker, compensation, and crash recovery.">
+  <meta name="theme-color" content="#0b0e12">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/redesign.css">
+  <link rel="stylesheet" href="../assets/css/executive.css">
+  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
+  <link rel="stylesheet" href="../assets/css/case-studies.css">
+</head>
+<body class="case-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="../index.html">Gabby B.</a>
+      <nav class="site-nav" style="display:flex" aria-label="Case study navigation">
+        <a class="case-nav-back" href="../index.html#projects">Selected Engineering</a>
+        <a href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero-exec shell" aria-labelledby="case-title">
+      <div>
+        <p class="case-kicker">Case Study 02 · Durable Backend Workflows</p>
+        <h1 id="case-title">Order Fulfillment with Temporal</h1>
+        <p class="case-summary">
+          A backend system for multi-step order processing where workflow state survives process interruption and failures are handled through
+          <strong>bounded retries, compensation, persistence, and explicit recovery behavior.</strong>
+        </p>
+        <div class="case-actions">
+          <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
+          <a class="case-action" href="../index.html#projects">Back to selected engineering</a>
+        </div>
+      </div>
+
+      <aside class="case-snapshot" aria-label="Project snapshot">
+        <p class="case-snapshot-title">Project snapshot</p>
+        <dl>
+          <div class="case-snapshot-row"><dt>Status</dt><dd>Completed backend reliability project</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Durable workflows · compensation · recovery</dd></div>
+          <div class="case-snapshot-row"><dt>Core pattern</dt><dd>Temporal execution + Saga-style compensation</dd></div>
+          <div class="case-snapshot-row"><dt>Stack</dt><dd>Python · FastAPI · Temporal · PostgreSQL · Docker</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="case-proof-rail shell" aria-label="Workflow evidence">
+      <div class="case-proof"><span class="case-proof-label">Automated tests</span><strong>11 passing</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Submission run</span><strong>25 / 25 authenticated requests successful</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Average latency</span><strong>38.74 ms local submission latency</strong></div>
+      <div class="case-proof"><span class="case-proof-label">p95 latency</span><strong>75.51 ms local submission latency</strong></div>
+    </section>
+
+    <div class="case-main shell">
+      <article class="case-story">
+        <section class="case-block">
+          <span class="case-number">01 / System goal</span>
+          <div>
+            <h2>Keep business work durable when processes fail.</h2>
+            <p>Order fulfillment is modeled as a long-running workflow rather than a chain of fragile request/response calls. FastAPI accepts the request, Temporal owns workflow state and execution history, and workers perform payment, inventory, shipping, and notification activities.</p>
+            <p>The core question is not whether every step succeeds immediately. It is whether the system can represent retries, business failures, partial completion, cancellation, and worker interruption without losing the operation.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">02 / Architecture</span>
+          <div>
+            <h2>Separate API submission from durable execution.</h2>
+            <p>The API starts a workflow and returns while Temporal coordinates the longer-running state machine. PostgreSQL supports persisted application state and Docker Compose makes the multi-service environment reproducible.</p>
+            <ul>
+              <li>FastAPI defines the external application boundary.</li>
+              <li>Temporal persists workflow history across worker restarts.</li>
+              <li>Activities isolate payment, inventory, shipping, and notification work.</li>
+              <li>PostgreSQL provides persisted application data.</li>
+              <li>Docker Compose packages the local development environment.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">03 / Failure model</span>
+          <div>
+            <h2>Not every failure should be retried.</h2>
+            <p>Transient infrastructure failures use bounded retries with exponential backoff, while invalid cards, unavailable inventory, and invalid addresses are treated as non-retryable business failures.</p>
+            <p>When a later step fails after earlier work completed, compensation runs in reverse order. Payment can be refunded, inventory can be released, and cancellation is handled at defined checkpoints so later work does not continue unnecessarily.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">04 / Recovery & verification</span>
+          <div>
+            <h2>Crash recovery is part of the project, not an assumption.</h2>
+            <p>A controlled worker restart demonstrates that workflow execution can resume from durable history rather than restarting the business operation from scratch. Automated tests cover workflow and API behavior, including compensation and cancellation paths, and GitHub Actions validates the project continuously.</p>
+            <div class="case-results" aria-label="Temporal verification evidence">
+              <div class="case-result"><span class="case-result-label">Test suite</span><strong>11 automated tests passing</strong></div>
+              <div class="case-result"><span class="case-result-label">Crash behavior</span><strong>Worker restart resumes durable execution</strong></div>
+              <div class="case-result"><span class="case-result-label">Compensation</span><strong>Refund + inventory release paths verified</strong></div>
+              <div class="case-result"><span class="case-result-label">Boundary</span><strong>Environment-configured API-key authentication</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">05 / Measured result</span>
+          <div>
+            <h2>Measure the submission path without overstating it.</h2>
+            <p>A local benchmark run completed 25 of 25 authenticated order submissions successfully. The measured average submission latency was 38.74 ms and p95 was 75.51 ms.</p>
+            <div class="case-note">These figures measure local order submission inside the Docker Compose environment. They do not represent complete workflow duration, production-scale load, or a performance guarantee.</div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">06 / Engineering takeaway</span>
+          <div>
+            <h2>Durable execution changes the shape of backend failure handling.</h2>
+            <p>Background work becomes explicit workflow state instead of disposable process state. That makes retry policy, compensation order, cancellation points, and recovery behavior inspectable and testable rather than hidden in ad-hoc jobs.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">07 / Production boundary</span>
+          <div>
+            <h2>The local architecture proves behavior, not production readiness.</h2>
+            <p>A production version would replace the current API-key boundary with managed identity and authorization, move secrets into managed storage, add environment-specific deployment, deeper telemetry, capacity planning, and externally managed infrastructure.</p>
+          </div>
+        </section>
+      </article>
+
+      <aside class="case-side" aria-label="Engineering focus">
+        <div class="case-side-card">
+          <p class="case-label">Engineering focus</p>
+          <h2>What this project demonstrates</h2>
+          <ul class="case-side-list">
+            <li>Durable workflow orchestration</li>
+            <li>Retryable vs non-retryable failure classification</li>
+            <li>Saga-style compensation</li>
+            <li>Cancellation checkpoints</li>
+            <li>Worker crash recovery</li>
+            <li>Persisted backend state</li>
+            <li>Authenticated API boundary</li>
+            <li>Automated workflow and API verification</li>
+          </ul>
+          <p class="case-stack-line">Python · FastAPI · Temporal Python SDK · PostgreSQL · Docker Compose · pytest · GitHub Actions</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="case-next shell">
+      <div>
+        <p class="case-kicker">Next case study</p>
+        <h2>Distributed Systems Performance Lab</h2>
+        <p>Latency, connection pooling, Redis caching, concurrency, and dependency-failure behavior.</p>
+      </div>
+      <a class="case-action" href="distributed-systems-performance.html">View case study →</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div>
+    </div>
+  </footer>
+</body>
+</html>
