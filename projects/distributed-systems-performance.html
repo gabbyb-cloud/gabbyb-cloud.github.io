@@ -1,16 +1,174 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Distributed Systems Performance Lab — Gabby B.</title><meta name="description" content="Case study for Gabby B.'s distributed systems performance and reliability lab."><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/css/styles.css"><link rel="stylesheet" href="../assets/css/redesign.css"></head><body>
-<header class="site-header"><div class="shell nav-wrap"><a class="brand" href="../index.html">Gabby B.</a><nav class="site-nav" style="display:flex"><a href="../index.html#projects">Projects</a><a href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div></header>
-<main><section class="case-hero shell"><p class="eyebrow">Case Study · Completed</p><h1>Distributed Systems Performance Lab</h1><p class="lede">A focused backend lab for understanding how caching, database connections, concurrency, and fallback behavior affect latency and reliability.</p><div class="case-meta tags"><span>Python</span><span>FastAPI</span><span>Redis</span><span>PostgreSQL</span><span>Docker</span></div></section>
-<div class="shell case-layout"><article class="case-body">
-<section class="case-section"><h2>01 · Overview</h2><p>This project explores performance and reliability behavior in a small distributed backend environment. The emphasis is on understanding what changes when caching, pooling, concurrency, and component failures are introduced.</p></section>
-<section class="case-section"><h2>02 · Problem</h2><p>Backend systems can look healthy in a simple local request path while hiding expensive database work, connection pressure, cache dependency, or poor failure behavior. The lab makes those tradeoffs visible.</p></section>
-<section class="case-section"><h2>03 · Architecture</h2><p>A FastAPI application works with PostgreSQL and Redis in a Docker-based environment. The lab exercises the system under different data-access and failure paths.</p></section>
-<section class="case-section"><h2>04 · Technical Decisions</h2><ul><li>Redis is used to explore the impact of caching.</li><li>PostgreSQL provides a realistic persistent data path.</li><li>Connection pooling and concurrency are treated as system behavior, not only code-level implementation details.</li><li>Docker keeps dependencies and experiments reproducible.</li></ul></section>
-<section class="case-section"><h2>05 · Reliability / Failure Handling</h2><p>The lab includes fallback behavior so the application can be evaluated when a dependency such as the cache is unavailable instead of only in the happy path.</p></section>
-<section class="case-section"><h2>06 · Observability</h2><p>Instrumentation is used to make latency and system behavior easier to compare while running the experiments.</p></section>
-<section class="case-section"><h2>07 · Testing</h2><p>The repository includes 8 tests covering the lab's application behavior. The benchmark work also exercises database access, pooling, Redis cache hits, concurrency, and Redis-unavailable fallback paths rather than relying on a single happy-path request.</p></section>
-<section class="case-section"><h2>08 · Results</h2><p>Recorded local benchmark runs measured 223.45 req/s for the PostgreSQL baseline, 640.24 req/s with connection pooling, 652.08 req/s on Redis cache hits, and 395.10 req/s while Redis was unavailable and the application used its fallback path.</p><div class="todo">These are historical, local, workload-specific measurements from the lab—not production performance guarantees. The current main branch uses the pooling and Redis-first path and does not recreate every earlier baseline configuration by itself.</div></section>
-<section class="case-section"><h2>09 · Lessons Learned</h2><p>Performance work is most useful when it is connected to reliability: a faster happy path is not enough if the system becomes brittle when a cache or database path changes.</p></section>
-<section class="case-section"><h2>10 · What I Would Change for Production</h2><p>A production environment would add representative load profiles, longer-running tests, resource limits, production telemetry, and infrastructure that more closely mirrors real deployment constraints.</p></section>
-<section class="case-section"><h2>11 · Repository</h2><a class="button button-dark" href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">View on GitHub ↗</a></section>
-</article><aside class="case-aside"><h2>Project snapshot</h2><dl><dt>Status</dt><dd>Completed</dd><dt>Focus</dt><dd>Performance · caching · reliability</dd><dt>Stack</dt><dd>Python, FastAPI, Redis, PostgreSQL, Docker</dd><dt>Topics</dt><dd>Latency, connection pooling, concurrency, fallback behavior</dd></dl></aside></div></main><footer class="site-footer"><div class="shell footer-inner"><div><strong>Gabby B.</strong><span>Backend, Platform & Reliability</span></div><div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Distributed Systems Performance Lab — Gabby B.</title>
+  <meta name="description" content="Engineering case study for backend performance and reliability experiments across PostgreSQL pooling, Redis caching, concurrency, and dependency failure.">
+  <meta name="theme-color" content="#0b0e12">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/redesign.css">
+  <link rel="stylesheet" href="../assets/css/executive.css">
+  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
+  <link rel="stylesheet" href="../assets/css/case-studies.css">
+</head>
+<body class="case-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="../index.html">Gabby B.</a>
+      <nav class="site-nav" style="display:flex" aria-label="Case study navigation">
+        <a class="case-nav-back" href="../index.html#projects">Selected Engineering</a>
+        <a href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="case-hero-exec shell" aria-labelledby="case-title">
+      <div>
+        <p class="case-kicker">Case Study 03 · Performance & Reliability</p>
+        <h1 id="case-title">Distributed Systems Performance Lab</h1>
+        <p class="case-summary">
+          A backend lab for measuring how
+          <strong>connection pooling, caching, concurrency, and dependency failure</strong>
+          change throughput, tail latency, and fallback behavior.
+        </p>
+        <div class="case-actions">
+          <a class="case-action primary" href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">View repository ↗</a>
+          <a class="case-action" href="../index.html#projects">Back to selected engineering</a>
+        </div>
+      </div>
+
+      <aside class="case-snapshot" aria-label="Project snapshot">
+        <p class="case-snapshot-title">Project snapshot</p>
+        <dl>
+          <div class="case-snapshot-row"><dt>Status</dt><dd>Completed performance lab</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Latency · throughput · caching · fallback</dd></div>
+          <div class="case-snapshot-row"><dt>Method</dt><dd>Repeatable local benchmark experiments</dd></div>
+          <div class="case-snapshot-row"><dt>Stack</dt><dd>Python · FastAPI · PostgreSQL · Redis · Docker</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="case-proof-rail shell" aria-label="Performance evidence">
+      <div class="case-proof"><span class="case-proof-label">PostgreSQL baseline</span><strong>223.45 req/s · 77.22 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Connection pooling</span><strong>640.24 req/s · 28.59 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Redis cache hits</span><strong>652.08 req/s · 33.27 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Redis unavailable</span><strong>395.10 req/s · PostgreSQL fallback</strong></div>
+    </section>
+
+    <div class="case-main shell">
+      <article class="case-story">
+        <section class="case-block">
+          <span class="case-number">01 / System goal</span>
+          <div>
+            <h2>Measure system behavior instead of guessing at optimization.</h2>
+            <p>The lab starts with a small FastAPI backend using PostgreSQL and Redis, then changes one system behavior at a time to observe how database connections, caching, concurrency, and dependency failure affect the request path.</p>
+            <p>The goal is not to produce a universal benchmark. It is to connect implementation choices to measured behavior and understand the tradeoffs behind them.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">02 / Request path</span>
+          <div>
+            <h2>A small path with meaningful dependencies.</h2>
+            <p>The current application checks Redis first. Cache hits return immediately; cache misses or Redis errors fall through to PostgreSQL. Successful database results are then eligible to be cached for subsequent requests.</p>
+            <ol>
+              <li>Check Redis for the requested item.</li>
+              <li>Return a cache hit when available.</li>
+              <li>On miss or Redis error, query PostgreSQL.</li>
+              <li>Return the database result and attempt to cache it.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">03 / Experiment design</span>
+          <div>
+            <h2>Compare baseline, pooling, caching, and failure paths.</h2>
+            <p>Recorded experiments used 200 measured requests per run at concurrency 10. Baseline, pooling, and cache-hit tests used five runs each; Redis-unavailable testing used six. All recorded runs reported zero measured request errors.</p>
+            <p>A separate concurrency experiment compared levels of 1, 10, 25, and 50 to observe throughput and tail-latency behavior as parallelism increased.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">04 / Recorded results</span>
+          <div>
+            <h2>Pooling produced the largest improvement in this workload.</h2>
+            <div class="case-results" aria-label="Benchmark results">
+              <div class="case-result"><span class="case-result-label">PostgreSQL baseline</span><strong>223.45 req/s · 44.67 ms average</strong></div>
+              <div class="case-result"><span class="case-result-label">PostgreSQL + pooling</span><strong>640.24 req/s · 15.36 ms average</strong></div>
+              <div class="case-result"><span class="case-result-label">Redis cache hits</span><strong>652.08 req/s · 15.38 ms average</strong></div>
+              <div class="case-result"><span class="case-result-label">Redis unavailable</span><strong>395.10 req/s · 24.87 ms average</strong></div>
+            </div>
+            <p>Connection pooling delivered the largest improvement in the recorded experiments. Redis added relatively little for the small local primary-key lookup workload, while the Redis-outage path continued serving requests through PostgreSQL fallback.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">05 / Reliability behavior</span>
+          <div>
+            <h2>Performance matters most when failure behavior remains acceptable.</h2>
+            <p>Redis is configured with short connection and socket timeouts and retries disabled so cache failure does not stall the request path indefinitely. Fallback depends on PostgreSQL remaining available, making the dependency boundary explicit rather than pretending the cache is optional under every condition.</p>
+            <p>In the concurrency experiment, throughput peaked at concurrency 10 among the tested levels. Higher concurrency increased tail latency while throughput declined, showing that more parallelism was not automatically better for this local workload.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">06 / Engineering takeaway</span>
+          <div>
+            <h2>Optimization should be tied to evidence and failure cost.</h2>
+            <p>The lab reinforced that the fastest happy path is not the only useful result. Connection management, cache dependency, fallback timing, and tail latency all affect whether an optimization improves the system as a whole.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">07 / Measurement boundary</span>
+          <div>
+            <h2>Local benchmark data needs context.</h2>
+            <p>The figures are historical, workload-specific local measurements. Hardware, system load, and experiment configuration affect the numbers, and the current main branch always uses connection pooling and the Redis-first path.</p>
+            <div class="case-note">The repository preserves recorded experiment configurations and results, but running the current application unchanged does not recreate every earlier baseline condition.</div>
+          </div>
+        </section>
+      </article>
+
+      <aside class="case-side" aria-label="Engineering focus">
+        <div class="case-side-card">
+          <p class="case-label">Engineering focus</p>
+          <h2>What this project demonstrates</h2>
+          <ul class="case-side-list">
+            <li>PostgreSQL connection pooling</li>
+            <li>Redis caching and expiration</li>
+            <li>Database fallback when Redis fails</li>
+            <li>Timeout and retry configuration</li>
+            <li>Throughput and tail-latency measurement</li>
+            <li>Concurrency tradeoff analysis</li>
+            <li>Application metrics</li>
+            <li>Automated testing and CI</li>
+          </ul>
+          <p class="case-stack-line">Python · FastAPI · PostgreSQL · Redis · Docker Compose · Prometheus client · pytest · GitHub Actions</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="case-next shell">
+      <div>
+        <p class="case-kicker">Continue exploring</p>
+        <h2>SRE Reliability Lab</h2>
+        <p>Kubernetes operations, SLOs, observability, controlled failure, recovery, and incident documentation.</p>
+      </div>
+      <a class="case-action" href="sre-reliability-lab.html">View case study →</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div>
+    </div>
+  </footer>
+</body>
+</html>
