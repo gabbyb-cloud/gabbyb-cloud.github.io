@@ -1,34 +1,76 @@
-# gabbyb-cloud.github.io
+# Gabby B. — Engineering Portfolio
 
-Static portfolio for **Gabby B. — Software Engineer, Backend, Platform & Reliability**.
+Public software engineering portfolio focused on **Site Reliability Engineering, Platform Engineering, backend systems, and operational reliability**.
 
-## Design goals
+**Live site:** https://gabbyb-cloud.github.io/
 
-- warm off-white / black visual system with a restrained burgundy accent
-- simple and fast to scan
-- projects carry the most visual weight
-- no frameworks or build step
-- responsive and keyboard accessible
-- GitHub Pages compatible
+## Portfolio Focus
 
-## Local preview
+The site highlights engineering work around:
 
-From this folder:
+- Linux operations and troubleshooting
+- Kubernetes, Helm, and Terraform
+- Prometheus/Grafana observability
+- SLOs, alerting, incident response, and recovery
+- Distributed systems and backend reliability
+- PostgreSQL, Redis, performance analysis, and failure fallback
+- Durable workflows with Temporal
+- CI/CD and reproducible local environments
+
+## Featured Case Studies
+
+- **SRE Reliability Lab** — Kubernetes operations, observability, SLOs, alerting, controlled failure injection, recovery verification, runbooks, and incident documentation
+- **Linux Operations Lab** — Linux services, permissions, networking, logs, system health, troubleshooting, and Bash automation
+- **Order Fulfillment with Temporal** — durable workflows, retries, failure classification, Saga compensation, cancellation behavior, and crash recovery
+- **Distributed Systems Performance Lab** — connection pooling, Redis caching and fallback, concurrency, throughput, and tail-latency analysis
+
+## Design
+
+The portfolio is intentionally lightweight and fast to review:
+
+- Static HTML, CSS, and JavaScript
+- No framework or build step
+- Responsive layout
+- Keyboard-accessible navigation
+- GitHub Pages deployment
+- Project-focused presentation with dedicated case-study pages
+
+## Project Structure
+
+```text
+gabbyb-cloud.github.io/
+├── assets/
+│   ├── css/
+│   └── js/
+├── projects/
+│   ├── distributed-systems-performance.html
+│   ├── linux-operations-lab.html
+│   ├── order-fulfillment.html
+│   └── sre-reliability-lab.html
+├── 404.html
+├── favicon.svg
+├── index.html
+├── robots.txt
+├── sitemap.xml
+└── README.md
+```
+
+## Local Preview
+
+From the repository root:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Then open:
 
-## Deploy with GitHub Pages
+```text
+http://localhost:8000
+```
 
-Create the public repository `gabbyb-cloud.github.io`, copy these files into it, commit, and push to `main`. GitHub Pages user sites are served from that repository name.
+## Deployment
 
-## Before publishing
+The site is deployed from the `main` branch with GitHub Pages.
 
-1. Review every project claim against the repositories.
-3. Confirm the Credly and TryHackMe URLs.
-4. Confirm the SRE Reliability Lab repository remains aligned with the completed case study wording.
-5. Keep benchmark numbers labeled as local, workload-specific measurements.
-6. Test the site on mobile and run Lighthouse once deployed.
+Because the portfolio is static, deployment requires no application server, paid hosting service, or build pipeline.
