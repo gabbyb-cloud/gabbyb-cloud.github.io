@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Distributed Systems Performance Lab — Gabby B.</title>
-  <meta name="description" content="Engineering case study for backend performance and reliability experiments across PostgreSQL pooling, Redis caching, concurrency, and dependency failure.">
+  <meta name="description" content="Backend performance and reliability case study covering PostgreSQL pooling, Redis caching and fallback, concurrency, throughput, p95/p99 latency, observability, and dependency failure.">
   <meta name="theme-color" content="#0b0e12">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/css/styles.css">
@@ -20,7 +20,7 @@
     <div class="shell nav-wrap">
       <a class="brand" href="../index.html">Gabby B.</a>
       <nav class="site-nav" style="display:flex" aria-label="Case study navigation">
-        <a class="case-nav-back" href="../index.html#projects">Selected Engineering</a>
+        <a class="case-nav-back" href="../index.html#projects">Engineering Work</a>
         <a href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
     </div>
@@ -29,108 +29,127 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 03 · Performance & Reliability</p>
+        <p class="case-kicker">Case Study 04 · Performance & Resilience</p>
         <h1 id="case-title">Distributed Systems Performance Lab</h1>
         <p class="case-summary">
-          A backend lab for measuring how
-          <strong>connection pooling, caching, concurrency, and dependency failure</strong>
-          change throughput, tail latency, and fallback behavior.
+          A backend lab built around one practical question:
+          <strong>what happens to throughput, tail latency, and request reliability when connection handling, caching, concurrency, or a dependency changes?</strong>
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">View repository ↗</a>
-          <a class="case-action" href="../index.html#projects">Back to selected engineering</a>
+          <a class="case-action" href="../index.html#projects">Back to engineering work</a>
         </div>
       </div>
 
       <aside class="case-snapshot" aria-label="Project snapshot">
         <p class="case-snapshot-title">Project snapshot</p>
         <dl>
-          <div class="case-snapshot-row"><dt>Status</dt><dd>Completed performance lab</dd></div>
-          <div class="case-snapshot-row"><dt>Focus</dt><dd>Latency · throughput · caching · fallback</dd></div>
-          <div class="case-snapshot-row"><dt>Method</dt><dd>Repeatable local benchmark experiments</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Performance · dependency behavior · resilience</dd></div>
+          <div class="case-snapshot-row"><dt>Request path</dt><dd>Redis-first lookup with PostgreSQL fallback</dd></div>
+          <div class="case-snapshot-row"><dt>Measurements</dt><dd>Throughput · average · p95 · p99 · errors</dd></div>
           <div class="case-snapshot-row"><dt>Stack</dt><dd>Python · FastAPI · PostgreSQL · Redis · Docker</dd></div>
         </dl>
       </aside>
     </section>
 
     <section class="case-proof-rail shell" aria-label="Performance evidence">
-      <div class="case-proof"><span class="case-proof-label">PostgreSQL baseline</span><strong>223.45 req/s · 77.22 ms p95</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Connection pooling</span><strong>640.24 req/s · 28.59 ms p95</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Redis cache hits</span><strong>652.08 req/s · 33.27 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Baseline</span><strong>223.45 req/s · 77.22 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Pooling</span><strong>640.24 req/s · 28.59 ms p95</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Cache hits</span><strong>652.08 req/s · 33.27 ms p95</strong></div>
       <div class="case-proof"><span class="case-proof-label">Redis unavailable</span><strong>395.10 req/s · PostgreSQL fallback</strong></div>
     </section>
 
     <div class="case-main shell">
       <article class="case-story">
         <section class="case-block">
-          <span class="case-number">01 / System goal</span>
+          <span class="case-number">01 / Problem</span>
           <div>
-            <h2>Measure system behavior instead of guessing at optimization.</h2>
-            <p>The lab starts with a small FastAPI backend using PostgreSQL and Redis, then changes one system behavior at a time to observe how database connections, caching, concurrency, and dependency failure affect the request path.</p>
-            <p>The goal is not to produce a universal benchmark. It is to connect implementation choices to measured behavior and understand the tradeoffs behind them.</p>
+            <h2>Optimization choices should be measured, not assumed.</h2>
+            <p>The lab uses a small FastAPI item-lookup service to compare how PostgreSQL connection reuse, Redis caching, dependency failure, and concurrency change observable request behavior.</p>
+            <p>The goal is not to chase the highest local benchmark number. It is to understand which change actually moves the system, what happens to slower requests, and whether the service still behaves predictably when an optional dependency fails.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">02 / Request path</span>
           <div>
-            <h2>A small path with meaningful dependencies.</h2>
-            <p>The current application checks Redis first. Cache hits return immediately; cache misses or Redis errors fall through to PostgreSQL. Successful database results are then eligible to be cached for subsequent requests.</p>
-            <ol>
-              <li>Check Redis for the requested item.</li>
-              <li>Return a cache hit when available.</li>
-              <li>On miss or Redis error, query PostgreSQL.</li>
-              <li>Return the database result and attempt to cache it.</li>
-            </ol>
+            <h2>The cache is an optimization, not the source of truth.</h2>
+            <p>The current application checks Redis first. A cache hit returns immediately; a cache miss or Redis read error falls through to PostgreSQL. When the database returns an item, the application attempts to cache the result for later requests.</p>
+            <ul>
+              <li><strong>Redis hit:</strong> return the cached item.</li>
+              <li><strong>Redis miss or error:</strong> query PostgreSQL.</li>
+              <li><strong>Database success:</strong> return the item and attempt a cache write.</li>
+              <li><strong>Missing item:</strong> return HTTP 404.</li>
+            </ul>
+            <p>This makes the dependency hierarchy explicit: Redis can improve the request path, but PostgreSQL remains the authoritative data source.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">03 / Experiment design</span>
           <div>
-            <h2>Compare baseline, pooling, caching, and failure paths.</h2>
-            <p>Recorded experiments used 200 measured requests per run at concurrency 10. Baseline, pooling, and cache-hit tests used five runs each; Redis-unavailable testing used six. All recorded runs reported zero measured request errors.</p>
-            <p>A separate concurrency experiment compared levels of 1, 10, 25, and 50 to observe throughput and tail-latency behavior as parallelism increased.</p>
+            <h2>Change one major system behavior at a time.</h2>
+            <p>The recorded baseline, pooling, and cache-hit experiments each used five runs of 200 measured requests at concurrency 10. Redis-unavailable testing used six runs under the same measured request count and concurrency. All recorded runs reported zero measured request errors.</p>
+            <p>A separate concurrency experiment tested levels of 1, 10, 25, and 50 to compare how parallelism affected useful throughput and tail latency.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Recorded results</span>
+          <span class="case-number">04 / Key finding</span>
           <div>
-            <h2>Pooling produced the largest improvement in this workload.</h2>
+            <h2>Connection pooling produced the largest improvement for this workload.</h2>
             <div class="case-results" aria-label="Benchmark results">
-              <div class="case-result"><span class="case-result-label">PostgreSQL baseline</span><strong>223.45 req/s · 44.67 ms average</strong></div>
-              <div class="case-result"><span class="case-result-label">PostgreSQL + pooling</span><strong>640.24 req/s · 15.36 ms average</strong></div>
-              <div class="case-result"><span class="case-result-label">Redis cache hits</span><strong>652.08 req/s · 15.38 ms average</strong></div>
-              <div class="case-result"><span class="case-result-label">Redis unavailable</span><strong>395.10 req/s · 24.87 ms average</strong></div>
+              <div class="case-result"><span class="case-result-label">PostgreSQL baseline</span><strong>223.45 req/s · 44.67 ms avg · 77.22 ms p95</strong></div>
+              <div class="case-result"><span class="case-result-label">PostgreSQL pooling</span><strong>640.24 req/s · 15.36 ms avg · 28.59 ms p95</strong></div>
+              <div class="case-result"><span class="case-result-label">Redis cache hits</span><strong>652.08 req/s · 15.38 ms avg · 33.27 ms p95</strong></div>
+              <div class="case-result"><span class="case-result-label">Redis unavailable</span><strong>395.10 req/s · 24.87 ms avg · 40.82 ms p95</strong></div>
             </div>
-            <p>Connection pooling delivered the largest improvement in the recorded experiments. Redis added relatively little for the small local primary-key lookup workload, while the Redis-outage path continued serving requests through PostgreSQL fallback.</p>
+            <p>For this small local primary-key lookup workload, connection pooling moved throughput from roughly 223 to 640 requests per second. Redis cache hits produced only a small additional throughput increase over the pooled PostgreSQL path.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Reliability behavior</span>
+          <span class="case-number">05 / Dependency failure</span>
           <div>
-            <h2>Performance matters most when failure behavior remains acceptable.</h2>
-            <p>Redis is configured with short connection and socket timeouts and retries disabled so cache failure does not stall the request path indefinitely. Fallback depends on PostgreSQL remaining available, making the dependency boundary explicit rather than pretending the cache is optional under every condition.</p>
-            <p>In the concurrency experiment, throughput peaked at concurrency 10 among the tested levels. Higher concurrency increased tail latency while throughput declined, showing that more parallelism was not automatically better for this local workload.</p>
+            <h2>A Redis outage degraded performance without automatically becoming an application outage.</h2>
+            <p>Redis connection and socket timeouts are each configured at 0.1 seconds with retries disabled. That keeps a failed cache operation from holding the request path indefinitely before PostgreSQL fallback is attempted.</p>
+            <p>During the recorded Redis-unavailable experiment, requests continued through PostgreSQL fallback with zero measured request errors. The fallback still depends on PostgreSQL being healthy, so this is graceful degradation around one dependency rather than full fault tolerance.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Engineering takeaway</span>
+          <span class="case-number">06 / Concurrency</span>
           <div>
-            <h2>Optimization should be tied to evidence and failure cost.</h2>
-            <p>The lab reinforced that the fastest happy path is not the only useful result. Connection management, cache dependency, fallback timing, and tail latency all affect whether an optimization improves the system as a whole.</p>
+            <h2>More parallelism was not automatically better.</h2>
+            <p>Among the tested concurrency levels of 1, 10, 25, and 50, throughput peaked at concurrency 10. Beyond that point, throughput declined while tail latency increased.</p>
+            <p>The experiment reinforces an operational point: concurrency should be tuned against actual workload behavior, because additional parallel work can introduce contention instead of producing additional useful throughput.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Measurement boundary</span>
+          <span class="case-number">07 / Observability & verification</span>
           <div>
-            <h2>Local benchmark data needs context.</h2>
-            <p>The figures are historical, workload-specific local measurements. Hardware, system load, and experiment configuration affect the numbers, and the current main branch always uses connection pooling and the Redis-first path.</p>
-            <div class="case-note">The repository preserves recorded experiment configurations and results, but running the current application unchanged does not recreate every earlier baseline condition.</div>
+            <h2>Client-side benchmark output is only part of the picture.</h2>
+            <p>The application exposes Prometheus-format metrics at <code>/metrics</code> so dependency and request behavior can be observed from the service itself. The automated suite contains eight tests covering cached responses, PostgreSQL fallback routing, missing items, Redis misses, and Redis read/write errors.</p>
+            <p>GitHub Actions runs the test suite on pushes and pull requests, keeping failure-path behavior under continuous validation.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">08 / Takeaway</span>
+          <div>
+            <h2>Performance engineering is also reliability engineering.</h2>
+            <p>The most useful result was not simply that one configuration was faster. The lab connected connection management, caching, fallback behavior, concurrency, and p95/p99 latency so optimization could be evaluated as system behavior rather than as one average number.</p>
+            <p>The repeated lesson is: <strong>measure first, change deliberately, test failure behavior, and keep the limits of the measurement visible.</strong></p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">09 / Boundary</span>
+          <div>
+            <h2>Local benchmark results are evidence, not capacity claims.</h2>
+            <p>The figures are historical, workload-specific local measurements. Hardware, system load, dataset shape, request mix, and experiment configuration affect the result. The current code always uses connection pooling and checks Redis first, so running the current branch unchanged does not recreate every earlier baseline configuration.</p>
+            <div class="case-note">The repository records the methodology and limitations so these results are not presented as production throughput or universal performance claims.</div>
           </div>
         </section>
       </article>
@@ -142,12 +161,12 @@
           <ul class="case-side-list">
             <li>PostgreSQL connection pooling</li>
             <li>Redis caching and expiration</li>
-            <li>Database fallback when Redis fails</li>
-            <li>Timeout and retry configuration</li>
-            <li>Throughput and tail-latency measurement</li>
-            <li>Concurrency tradeoff analysis</li>
-            <li>Application metrics</li>
-            <li>Automated testing and CI</li>
+            <li>Graceful fallback when Redis fails</li>
+            <li>Dependency timeout and retry configuration</li>
+            <li>Throughput, average, p95, and p99 analysis</li>
+            <li>Concurrency tradeoff testing</li>
+            <li>Prometheus-format application metrics</li>
+            <li>Automated failure-path tests and CI</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · PostgreSQL · Redis · Docker Compose · Prometheus client · pytest · GitHub Actions</p>
         </div>
@@ -156,17 +175,17 @@
 
     <section class="case-next shell">
       <div>
-        <p class="case-kicker">Continue exploring</p>
-        <h2>SRE Reliability Lab</h2>
-        <p>Kubernetes operations, SLOs, observability, controlled failure, recovery, and incident documentation.</p>
+        <p class="case-kicker">Return to portfolio</p>
+        <h2>Reliability across the stack</h2>
+        <p>Linux operations, Kubernetes reliability, durable workflows, and measured distributed-system behavior.</p>
       </div>
-      <a class="case-action" href="sre-reliability-lab.html">View case study →</a>
+      <a class="case-action" href="../index.html#projects">View engineering work →</a>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <div><strong>Gabby B.</strong><span>Backend · Platform · Reliability</span></div>
+      <div><strong>Gabby B.</strong><span>Site Reliability · Platform · Backend</span></div>
       <div class="footer-links"><a href="../index.html">Home</a><a href="mailto:gabbybcloud@proton.me">Email</a><a href="https://github.com/gabbyb-cloud">GitHub</a></div>
     </div>
   </footer>
