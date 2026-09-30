@@ -32,8 +32,8 @@
         <p class="case-kicker">Case Study 01 · Site Reliability Engineering</p>
         <h1 id="case-title">SRE Reliability Lab</h1>
         <p class="case-summary">
-          A local reliability lab built to practice the complete operating loop:
-          <strong>deploy, observe, define a reliability target, detect failure, recover, verify, and document.</strong>
+          A local reliability environment built to exercise the full operating loop:
+          <strong>deploy, observe, define an SLO, detect degradation, recover safely, verify recovery, and document the incident.</strong>
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -44,7 +44,7 @@
       <aside class="case-snapshot" aria-label="Project snapshot">
         <p class="case-snapshot-title">Project snapshot</p>
         <dl>
-          <div class="case-snapshot-row"><dt>Focus</dt><dd>Reliability · observability · recovery</dd></div>
+          <div class="case-snapshot-row"><dt>Focus</dt><dd>Reliability · observability · incident recovery</dd></div>
           <div class="case-snapshot-row"><dt>Runtime</dt><dd>FastAPI on local Kubernetes with kind</dd></div>
           <div class="case-snapshot-row"><dt>Operations</dt><dd>Helm · Terraform · Prometheus · Grafana</dd></div>
           <div class="case-snapshot-row"><dt>Cost</dt><dd>Local-first · reproducible · $0 infrastructure</dd></div>
@@ -54,9 +54,9 @@
 
     <section class="case-proof-rail shell" aria-label="Reliability evidence">
       <div class="case-proof"><span class="case-proof-label">SLO</span><strong>99% successful /work requests</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Detection</span><strong>Prometheus metrics + HighErrorRate alert</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Detection</span><strong>&gt;20% 5xx over 2m, sustained for 1m</strong></div>
       <div class="case-proof"><span class="case-proof-label">Failure drill</span><strong>Controlled HTTP 500 injection</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Recovery evidence</span><strong>Rollout, endpoint, and alert resolution verified</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Outcome</span><strong>Inactive → Pending → Firing → Resolved</strong></div>
     </section>
 
     <div class="case-main shell">
@@ -65,71 +65,87 @@
           <span class="case-number">01 / Problem</span>
           <div>
             <h2>Deployment was only the starting point.</h2>
-            <p>The application is intentionally small because the project is about operating the service around it. The lab focuses on questions an SRE needs to answer: Is the service ready? What is normal behavior? What signal shows failure? What should alert? How do I recover it, and how do I prove recovery worked?</p>
-            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> endpoints so each part of that operating loop can be tested directly.</p>
+            <p>The application is intentionally small because the project is about operating the service around it. The lab focuses on the questions that matter after deployment: Is the service ready? What does normal behavior look like? Which signal proves user-facing failure? When should an alert fire? How should recovery happen, and how do I prove the system actually returned to normal?</p>
+            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> endpoints so health, workload behavior, telemetry, and recovery can be tested independently.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">02 / Operating model</span>
+          <span class="case-number">02 / Architecture</span>
+          <div>
+            <h2>The architecture is deliberately small and operationally observable.</h2>
+            <p>Traffic reaches a FastAPI workload through a Kubernetes Service. Helm manages the application resources, Kubernetes probes report liveness and readiness, and Prometheus discovers application metrics through a ServiceMonitor. Grafana visualizes behavior, while a Prometheus alert rule detects sustained error-rate degradation.</p>
+            <div class="case-results" aria-label="Architecture flow">
+              <div class="case-result"><span class="case-result-label">Traffic</span><strong>Client → Kubernetes Service → FastAPI Pod</strong></div>
+              <div class="case-result"><span class="case-result-label">Telemetry</span><strong>Pod /metrics → ServiceMonitor → Prometheus</strong></div>
+              <div class="case-result"><span class="case-result-label">Visibility</span><strong>Prometheus → Grafana dashboards</strong></div>
+              <div class="case-result"><span class="case-result-label">Response</span><strong>Prometheus alert → investigate → recover → verify</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">03 / Design decisions</span>
           <div>
             <h2>Each tool has a specific operating job.</h2>
-            <p>FastAPI is containerized with Docker, loaded into a kind cluster, and deployed through Helm. Kubernetes probes track liveness and readiness. Prometheus discovers the application through a ServiceMonitor, Grafana visualizes service behavior, and Terraform manages the existing lab namespace as explicit infrastructure state.</p>
             <ul>
-              <li><strong>Docker:</strong> repeatable application image.</li>
-              <li><strong>Kubernetes + Helm:</strong> service deployment, probes, configuration, and rollout behavior.</li>
-              <li><strong>Prometheus + Grafana:</strong> metrics, queries, alerting, and visualization.</li>
-              <li><strong>Terraform:</strong> adoption and management of an existing Kubernetes namespace.</li>
-              <li><strong>GitHub Actions:</strong> validation of Python, Docker, Helm, and Terraform changes.</li>
+              <li><strong>Docker:</strong> creates a repeatable application image.</li>
+              <li><strong>Kubernetes + Helm:</strong> manage workload deployment, probes, configuration, and rollout behavior.</li>
+              <li><strong>Prometheus + Grafana:</strong> provide metrics, PromQL queries, alerting, and visualization.</li>
+              <li><strong>Terraform:</strong> adopts and manages the existing <code>sre-lab</code> namespace as infrastructure state.</li>
+              <li><strong>GitHub Actions:</strong> validates Python, Docker, Helm, and Terraform changes before they reach the protected branch.</li>
             </ul>
+            <p>A key design choice is keeping readiness healthy during injected application failure. That separates user-facing 5xx errors from pod availability and allows the monitoring system to observe a reachable but degraded service.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">03 / Reliability target</span>
+          <span class="case-number">04 / Reliability target</span>
           <div>
-            <h2>A measurable target gives the monitoring context.</h2>
-            <p>The lab defines a 99% availability SLO for successful <code>/work</code> requests. The corresponding SLI compares successful 2xx requests with total requests over the local test window.</p>
-            <p>The <code>HighErrorRate</code> alert is configured for sustained elevated 5xx responses, turning application behavior into an actionable reliability signal instead of relying only on pod health.</p>
+            <h2>The monitoring starts with a measurable objective.</h2>
+            <p>The lab defines a 99% availability SLO for successful <code>/work</code> requests. The SLI compares successful 2xx responses with total <code>/work</code> requests over the measurement window.</p>
+            <p>The <code>HighErrorRate</code> alert fires when more than 20% of <code>/work</code> requests are 5xx over a 2-minute window for at least 1 minute. The short window is intentional for a low-traffic local lab; it makes the full alert lifecycle practical to exercise while keeping the alert tied to application behavior rather than pod health alone.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Failure drill</span>
+          <span class="case-number">05 / Failure drill</span>
           <div>
-            <h2>I deliberately broke the workload while keeping the service reachable.</h2>
-            <p>With controlled failure mode enabled, <code>/work</code> returns HTTP 500 while <code>/ready</code> remains healthy. That keeps the pod available long enough for Prometheus to observe application-level failure instead of Kubernetes simply removing the workload from traffic.</p>
-            <p>The alert was exercised through its lifecycle from inactive to pending to firing. Failure mode was then disabled, the rollout was verified, service behavior was rechecked, and the alert was observed returning to a resolved state.</p>
+            <h2>I deliberately degraded the workload without making the pod unavailable.</h2>
+            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> continues returning HTTP 200. This creates an application-level incident that Kubernetes does not hide by immediately removing the pod from traffic.</p>
+            <p>Sustained failing requests drive the alert through <strong>Inactive → Pending → Firing</strong>. Recovery begins by disabling failure mode, then verifying the deployment rollout and application behavior rather than assuming the configuration change succeeded.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Verification</span>
+          <span class="case-number">06 / Verification</span>
           <div>
-            <h2>Recovery is not complete until it is verified.</h2>
+            <h2>Recovery is not complete until multiple signals agree.</h2>
             <div class="case-results" aria-label="Validation evidence">
-              <div class="case-result"><span class="case-result-label">Kubernetes</span><strong>Deployment rollout and pod readiness checked</strong></div>
+              <div class="case-result"><span class="case-result-label">Kubernetes</span><strong>Deployment rollout and pod readiness verified</strong></div>
               <div class="case-result"><span class="case-result-label">Application</span><strong>/ready and /work behavior rechecked</strong></div>
-              <div class="case-result"><span class="case-result-label">Monitoring</span><strong>Prometheus target and metrics verified</strong></div>
-              <div class="case-result"><span class="case-result-label">Alerting</span><strong>Alert firing and resolution exercised</strong></div>
+              <div class="case-result"><span class="case-result-label">Monitoring</span><strong>Prometheus target and error metrics verified</strong></div>
+              <div class="case-result"><span class="case-result-label">Alerting</span><strong>HighErrorRate returned to resolved/inactive</strong></div>
             </div>
-            <p>The repository also includes a runbook and blameless postmortem so the operational response is documented alongside the infrastructure and code.</p>
+            <p>The Terraform-managed namespace was also reconciled successfully with <code>No changes. Your infrastructure matches the configuration.</code> The repository includes a runbook and a blameless postmortem so operational response is documented alongside the code and infrastructure.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Takeaway</span>
+          <span class="case-number">07 / What this proved</span>
           <div>
-            <h2>The useful skill is the loop, not the tool list.</h2>
-            <p>This project reinforced a repeatable reliability workflow: <strong>Observe → Diagnose → Recover → Verify → Document.</strong> Kubernetes, Prometheus, Grafana, Helm, and Terraform matter because they support that workflow—not because simply installing them demonstrates reliability engineering.</p>
+            <h2>The useful evidence is the operating loop, not the tool list.</h2>
+            <p>The completed exercise demonstrates that I can connect deployment state, application behavior, telemetry, alerting, incident response, and verification into one repeatable reliability workflow: <strong>Observe → Diagnose → Recover → Verify → Document.</strong></p>
+            <p>The project intentionally makes no throughput or latency claims. Its evidence is functional: the service can be degraded in a controlled way, the failure can be detected through application-level telemetry, recovery can be executed, and the system can be verified afterward.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Boundary</span>
+          <span class="case-number">08 / Production boundary</span>
           <div>
             <h2>Local reliability evidence is not production equivalence.</h2>
-            <p>The lab demonstrates SRE concepts in a reproducible local environment. A production platform would still require managed secrets, external alert routing, high-availability design, production telemetry, stronger security controls, image registry workflows, capacity planning, and environment-specific infrastructure.</p>
+            <p>The lab demonstrates SRE concepts in a reproducible local environment. A production platform would still require managed secrets, external alert routing, high-availability design, production telemetry, stronger security controls, image registry workflows, capacity planning, cloud IAM, and environment-specific networking and infrastructure.</p>
+            <p>The next useful extensions would be automated failure scenarios, distributed tracing across a dependency boundary, and a small cloud deployment that adds IAM and managed networking while preserving the same reliability workflow.</p>
           </div>
         </section>
       </article>
@@ -147,6 +163,7 @@
             <li>SLO-driven reliability thinking</li>
             <li>Controlled failure and recovery verification</li>
             <li>Runbook and incident-postmortem discipline</li>
+            <li>Terraform state adoption and validation</li>
             <li>Infrastructure and application CI validation</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · Docker · kind · Kubernetes · Helm · Terraform · Prometheus · Grafana · GitHub Actions</p>
