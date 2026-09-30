@@ -32,8 +32,8 @@
         <p class="case-kicker">Case Study 02 · Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
         <p class="case-summary">
-          A hands-on Linux environment built to practice a repeatable operations loop:
-          <strong>observe the symptom, inspect the host, isolate the failure, recover the service, verify the fix, and automate repeated checks.</strong>
+          A hands-on Linux environment built to practice a disciplined operations loop:
+          <strong>observe the symptom, inspect the host, isolate the failing layer, apply the smallest fix, verify recovery, and automate repeatable checks.</strong>
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -53,9 +53,9 @@
     </section>
 
     <section class="case-proof-rail shell" aria-label="Operations evidence">
-      <div class="case-proof"><span class="case-proof-label">Service recovery</span><strong>Stopped service → investigation → restore → verify</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Logs & process state</span><strong>systemctl · journalctl · ps · ss</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Host troubleshooting</span><strong>Permissions · routes · DNS · CPU · memory · disk</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Incident drill</span><strong>Stopped service → inspect → restore → verify</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Evidence sources</span><strong>systemctl · journalctl · ps · ss · curl</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Failure domains</span><strong>Permissions · routing · DNS · CPU · memory · disk</strong></div>
       <div class="case-proof"><span class="case-proof-label">Automation</span><strong>Repeatable Bash system-health snapshot</strong></div>
     </section>
 
@@ -64,8 +64,9 @@
         <section class="case-block">
           <span class="case-number">01 / Problem</span>
           <div>
-            <h2>A failed request can come from more than the application.</h2>
-            <p>The lab keeps the application simple so troubleshooting stays focused on the operating system. When a service is unavailable, the useful question is not only “is the code broken?” but also whether the process is running, systemd is managing it, the expected port is listening, permissions are correct, networking is healthy, and the host has the resources it needs.</p>
+            <h2>A failed request can originate below the application layer.</h2>
+            <p>The service is intentionally small so troubleshooting stays focused on Linux behavior. When an endpoint becomes unavailable, the useful questions are broader than “is the code broken?”: Is the process running? Is systemd managing it? Is the expected socket listening? Are file permissions correct? Is routing or DNS involved? Is the host under resource pressure?</p>
+            <p>The lab was built to practice answering those questions with evidence instead of jumping directly to restarts or code changes.</p>
           </div>
         </section>
 
@@ -73,13 +74,13 @@
           <span class="case-number">02 / Troubleshooting model</span>
           <div>
             <h2>Inspect before changing the system.</h2>
-            <p>The exercises follow a consistent workflow: start with the visible symptom, collect evidence, isolate the affected layer, apply the smallest corrective action, and verify the result.</p>
+            <p>The exercises follow the same workflow across service, permission, network, and resource problems: begin with the visible symptom, collect evidence by layer, isolate the failure domain, make the smallest corrective change, then verify from multiple angles.</p>
             <ul>
-              <li><strong>Observe:</strong> failed HTTP request, stopped service, denied access, missing listener, or connectivity problem.</li>
-              <li><strong>Inspect:</strong> service state, logs, processes, sockets, routes, permissions, and host resources.</li>
-              <li><strong>Isolate:</strong> application, service manager, process, permissions, networking, or host resources.</li>
+              <li><strong>Observe:</strong> failed HTTP request, stopped service, access denial, missing listener, or connectivity symptom.</li>
+              <li><strong>Inspect:</strong> service state, logs, processes, sockets, permissions, routes, DNS, and host resources.</li>
+              <li><strong>Isolate:</strong> distinguish application, service manager, process, filesystem, network, or resource failure.</li>
               <li><strong>Recover:</strong> make the smallest targeted correction.</li>
-              <li><strong>Verify:</strong> confirm service state, listener state, and application response.</li>
+              <li><strong>Verify:</strong> confirm service state, listener state, and HTTP behavior.</li>
             </ul>
           </div>
         </section>
@@ -87,59 +88,82 @@
         <section class="case-block">
           <span class="case-number">03 / Service incident</span>
           <div>
-            <h2>Break the service, investigate it, then prove recovery.</h2>
-            <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab intentionally stops the service to create an availability failure and then walks through the recovery path.</p>
+            <h2>A controlled outage turns the troubleshooting workflow into evidence.</h2>
+            <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab deliberately stops the service, then works outward from the symptom rather than assuming the root cause.</p>
             <div class="case-results" aria-label="Service recovery workflow">
-              <div class="case-result"><span class="case-result-label">State</span><strong><code>systemctl status</code> checks service health</strong></div>
-              <div class="case-result"><span class="case-result-label">Logs</span><strong><code>journalctl</code> provides service history and errors</strong></div>
-              <div class="case-result"><span class="case-result-label">Listener</span><strong><code>ss</code> confirms the expected TCP port</strong></div>
-              <div class="case-result"><span class="case-result-label">Application</span><strong><code>curl</code> verifies the HTTP response</strong></div>
+              <div class="case-result"><span class="case-result-label">Service manager</span><strong><code>systemctl status</code> confirms ownership and current state</strong></div>
+              <div class="case-result"><span class="case-result-label">Logs</span><strong><code>journalctl</code> provides service history and failure evidence</strong></div>
+              <div class="case-result"><span class="case-result-label">Socket</span><strong><code>ss</code> confirms whether TCP :8000 is listening</strong></div>
+              <div class="case-result"><span class="case-result-label">Application</span><strong><code>curl</code> verifies the service can answer an HTTP request</strong></div>
             </div>
-            <p>The important distinction is that restarting the service is an action; confirming process state, port state, and HTTP behavior is the verification that recovery succeeded.</p>
+            <p>Restarting the service is only the corrective action. Recovery is considered complete only after systemd state, socket state, and application behavior agree that the service is healthy again.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Permissions & networking</span>
+          <span class="case-number">04 / Permissions</span>
           <div>
-            <h2>Failure domains are easier to diagnose when they are separated.</h2>
-            <p>Controlled permission failures make users, groups, ownership, and mode bits visible during troubleshooting. The networking exercises similarly separate interface state, routing, listening sockets, DNS resolution, and application connectivity instead of treating “the network” as one problem.</p>
-            <p>This creates a more disciplined path from host state to application behavior and reduces guesswork during troubleshooting.</p>
+            <h2>Access failures are diagnosed as filesystem and identity problems first.</h2>
+            <p>Controlled permission exercises use users, groups, ownership, and mode bits to reproduce access failures intentionally. Ownership and permissions are inspected before changes are made so an access problem is not misdiagnosed as an application defect.</p>
+            <p>This reinforces a simple operating principle: identify the layer that denies access before modifying the software that happens to be affected by it.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Host health</span>
+          <span class="case-number">05 / Networking</span>
           <div>
-            <h2>System state matters when services degrade.</h2>
-            <p>The lab inspects CPU, memory, disk usage, load, and running processes so service troubleshooting includes the health of the host underneath the application.</p>
-            <p>Those checks help answer whether the service problem is isolated to the application or related to broader resource pressure on the system.</p>
+            <h2>“The network is down” is broken into testable questions.</h2>
+            <p>The networking exercises separate interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity. Each check answers a different question, which makes it easier to distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
+            <p>This layered approach reduces guesswork and creates a clearer path from host state to application reachability.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Automation</span>
+          <span class="case-number">06 / Host health</span>
           <div>
-            <h2>Repeated diagnostics became a small operational tool.</h2>
-            <p>A Bash health-check script collects a consistent first-pass system snapshot: hostname, CPU count, uptime and load, memory usage, filesystem usage, highest-memory processes, and the <code>linux-lab</code> systemd service state.</p>
-            <p>The script does not replace investigation. It makes the initial evidence collection faster and more repeatable.</p>
+            <h2>Service degradation can be a host problem.</h2>
+            <p>The lab inspects CPU count, load, memory usage, disk usage, and running processes so troubleshooting includes the operating environment beneath the application.</p>
+            <p>Those checks help distinguish an isolated service failure from broader resource pressure that could affect multiple processes on the host.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Takeaway</span>
+          <span class="case-number">07 / Automation</span>
           <div>
-            <h2>Linux fundamentals make higher-level systems easier to reason about.</h2>
-            <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still sit underneath those platforms. Practicing these fundamentals directly makes platform and SRE troubleshooting more concrete.</p>
-            <p><strong>Observe → Diagnose → Recover → Verify → Automate</strong> is the operating pattern carried from this lab into the rest of the portfolio.</p>
+            <h2>Repeated evidence collection became a lightweight operational tool.</h2>
+            <p>A Bash health script collects a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
+            <p>The script is intentionally small. It does not replace investigation or monitoring; it makes the initial evidence-gathering step faster and more repeatable.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Boundary</span>
+          <span class="case-number">08 / Verified outcomes</span>
           <div>
-            <h2>This is an operations lab, not a production fleet.</h2>
-            <p>The checked-in systemd unit reflects the local lab environment and must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, or large-scale automation.</p>
+            <h2>The project demonstrates operational behavior rather than benchmark claims.</h2>
+            <div class="case-results" aria-label="Verified outcomes">
+              <div class="case-result"><span class="case-result-label">Service recovery</span><strong>A controlled outage can be detected, investigated, restored, and verified</strong></div>
+              <div class="case-result"><span class="case-result-label">Permissions</span><strong>Access failures can be reproduced and resolved intentionally</strong></div>
+              <div class="case-result"><span class="case-result-label">Multi-layer checks</span><strong>Process, port, and HTTP state can confirm recovery independently</strong></div>
+              <div class="case-result"><span class="case-result-label">Repeatability</span><strong>Host-health evidence can be collected consistently with Bash</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">09 / Takeaway</span>
+          <div>
+            <h2>Linux fundamentals make platform failures easier to reason about.</h2>
+            <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still exist underneath those platforms. Practicing these layers directly makes higher-level SRE and platform troubleshooting more concrete.</p>
+            <p><strong>Observe → Diagnose → Recover → Verify → Automate</strong> is the operating pattern this lab contributes to the rest of the portfolio.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">10 / Production boundary</span>
+          <div>
+            <h2>This is an operations lab, not a production Linux fleet.</h2>
+            <p>The original environment runs locally on Ubuntu under WSL2, and the checked-in systemd unit must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, alerting, or multi-host automation.</p>
+            <p>The next useful step would be repeating the same exercises on a small Linux VM or cloud instance and adding smoke tests for the example service and health script.</p>
           </div>
         </section>
       </article>
