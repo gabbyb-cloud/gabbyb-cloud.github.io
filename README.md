@@ -1,41 +1,91 @@
 # Gabby B. — Engineering Portfolio
 
-Public software engineering portfolio focused on **Site Reliability Engineering, Platform Engineering, backend systems, and operational reliability**.
+A lightweight portfolio showcasing hands-on work across software engineering, cloud infrastructure, backend systems, automation, and reliability.
 
 **Live site:** https://gabbyb-cloud.github.io/
 
-## Portfolio Focus
+## Why this portfolio exists
 
-The site highlights engineering work around:
+I wanted one place to show the kind of technical work that is hard to capture in a resume alone: troubleshooting systems, testing failure behavior, measuring performance, working with infrastructure, and documenting how recovery actually works.
+
+The portfolio focuses on a small set of public projects with enough technical detail to make the engineering decisions, tradeoffs, and results easy to review.
+
+## What it highlights
 
 - Linux operations and troubleshooting
-- Kubernetes, Helm, and Terraform
+- Kubernetes, Helm, Docker, and Terraform
+- Cloud and infrastructure concepts
 - Prometheus/Grafana observability
 - SLOs, alerting, incident response, and recovery
-- Distributed systems and backend reliability
-- PostgreSQL, Redis, performance analysis, and failure fallback
-- Durable workflows with Temporal
-- CI/CD and reproducible local environments
+- Backend APIs and distributed workflows
+- PostgreSQL, Redis, connection pooling, and performance testing
+- CI/CD and repeatable local environments
+- Security and reliability-focused engineering practices
 
-## Featured Case Studies
+## Featured case studies
 
-- **SRE Reliability Lab** — Kubernetes operations, observability, SLOs, alerting, controlled failure injection, recovery verification, runbooks, and incident documentation
-- **Linux Operations Lab** — Linux services, permissions, networking, logs, system health, troubleshooting, and Bash automation
-- **Order Fulfillment with Temporal** — durable workflows, retries, failure classification, Saga compensation, cancellation behavior, and crash recovery
-- **Distributed Systems Performance Lab** — connection pooling, Redis caching and fallback, concurrency, throughput, and tail-latency analysis
+### SRE Reliability Lab
 
-## Design
+A local Kubernetes reliability lab covering Helm deployment, Terraform-managed infrastructure, Prometheus/Grafana observability, a 99% availability SLO, controlled failure injection, alerting, recovery verification, runbooks, and incident documentation.
 
-The portfolio is intentionally lightweight and fast to review:
+[View repository](https://github.com/gabbyb-cloud/sre-reliability-lab)
 
-- Static HTML, CSS, and JavaScript
-- No framework or build step
-- Responsive layout
-- Keyboard-accessible navigation
-- GitHub Pages deployment
-- Project-focused presentation with dedicated case-study pages
+### Linux Operations Lab
 
-## Project Structure
+A hands-on Linux operations lab covering `systemd`, `journalctl`, processes, permissions, networking, service recovery, host-health inspection, and Bash automation.
+
+[View repository](https://github.com/gabbyb-cloud/linux-operations-lab)
+
+### Order Fulfillment Service
+
+A Temporal-based backend that explores durable workflows, retries, business-vs-infrastructure failure handling, Saga-style compensation, cancellation, authenticated APIs, and crash recovery.
+
+[View repository](https://github.com/gabbyb-cloud/order-fulfillment-temporal)
+
+### Distributed Systems Performance Lab
+
+A FastAPI performance and resilience lab measuring PostgreSQL connection pooling, Redis caching and fallback, concurrency, throughput, average latency, p95/p99 behavior, and dependency failure.
+
+[View repository](https://github.com/gabbyb-cloud/distributed-systems-performance-lab)
+
+## Portfolio architecture
+
+```mermaid
+flowchart LR
+    Visitor[Visitor] --> Pages[GitHub Pages]
+    Pages --> Home[index.html]
+    Home --> CaseStudies[Project case studies]
+    CaseStudies --> Repos[GitHub repositories]
+    Home --> Assets[Static CSS + JavaScript]
+```
+
+The site is intentionally simple: static HTML, CSS, and JavaScript hosted directly on GitHub Pages. There is no framework, application server, database, or build step required for deployment.
+
+## Design decisions
+
+- **Keep the site fast to review.** The portfolio avoids unnecessary application complexity so the projects stay at the center of the experience.
+- **Use dedicated case-study pages.** Each featured project gets space for architecture, reliability decisions, results, and tradeoffs instead of relying on screenshots alone.
+- **Link back to source.** Public case studies point directly to their repositories so claims can be checked against the code and documentation.
+- **Avoid exposing private work.** Only projects intended for public review are included.
+- **Keep deployment simple.** GitHub Pages provides static hosting without a paid service or separate runtime.
+
+## Local preview
+
+From the repository root:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open:
+
+```text
+http://localhost:8000
+```
+
+No package installation or build step is required.
+
+## Project structure
 
 ```text
 gabbyb-cloud.github.io/
@@ -55,22 +105,14 @@ gabbyb-cloud.github.io/
 └── README.md
 ```
 
-## Local Preview
-
-From the repository root:
-
-```bash
-python3 -m http.server 8000
-```
-
-Then open:
-
-```text
-http://localhost:8000
-```
-
 ## Deployment
 
-The site is deployed from the `main` branch with GitHub Pages.
+The portfolio is deployed from the `main` branch using GitHub Pages.
 
-Because the portfolio is static, deployment requires no application server, paid hosting service, or build pipeline.
+Because it is fully static, deployment does not require an application server, paid hosting service, or build pipeline.
+
+## What I'd improve next
+
+- Keep the case studies synchronized with the strongest results and design decisions in each repository README.
+- Add lightweight accessibility and performance checks to CI so changes to the portfolio are automatically validated.
+- Continue refining the site around clarity and quick review rather than adding features that do not help someone understand the work.
