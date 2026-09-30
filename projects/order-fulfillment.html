@@ -32,8 +32,8 @@
         <p class="case-kicker">Case Study 03 · Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
         <p class="case-summary">
-          A multi-step order workflow designed so execution remains predictable when work is interrupted or a later step fails:
-          <strong>persist state, classify failure, retry safely, compensate when necessary, resume execution, and verify behavior.</strong>
+          A durable order-processing workflow built to make failure behavior explicit:
+          <strong>persist workflow state, distinguish retryable from non-retryable failures, compensate partial success, handle cancellation safely, survive worker restarts, and verify recovery paths with tests.</strong>
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -53,10 +53,10 @@
     </section>
 
     <section class="case-proof-rail shell" aria-label="Workflow evidence">
-      <div class="case-proof"><span class="case-proof-label">Durability</span><strong>Workflow history survives worker restart</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Failure handling</span><strong>Retryable vs non-retryable failures separated</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Partial completion</span><strong>Saga compensation reverses completed work</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Verification</span><strong>11 automated tests + CI</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Durability</span><strong>Workflow progress survives worker restart</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Retry policy</span><strong>Transient failures retry; business failures do not</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Partial completion</span><strong>Reverse-order Saga compensation</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Verification</span><strong>11 passing automated tests + CI</strong></div>
     </section>
 
     <div class="case-main shell">
@@ -64,91 +64,115 @@
         <section class="case-block">
           <span class="case-number">01 / Problem</span>
           <div>
-            <h2>A long-running business process cannot depend on one worker staying alive.</h2>
-            <p>Order fulfillment spans several steps that can succeed or fail independently. If workflow progress exists only in process memory, a worker crash can turn an infrastructure interruption into lost business state.</p>
-            <p>This project models the order as durable workflow state so payment validation, inventory reservation, shipping, and notification can be coordinated independently of the lifetime of one API or worker process.</p>
+            <h2>A multi-step business process cannot depend on one worker process staying alive.</h2>
+            <p>Order fulfillment spans several operations that can succeed or fail independently. Payment can succeed before inventory fails. Inventory can be reserved before shipping fails. A worker can stop midway through the process.</p>
+            <p>If workflow progress exists only in memory, infrastructure failure can become lost business state. This project moves execution state into Temporal so workflow progress can outlive the API and worker processes that happen to be running at any moment.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">02 / Architecture</span>
           <div>
-            <h2>API submission is separated from durable execution.</h2>
-            <p>FastAPI accepts the request and starts the workflow. Temporal owns workflow history and coordinates execution, while workers perform the individual activities. PostgreSQL supports persisted application data, and Docker Compose provides a reproducible local environment.</p>
-            <ul>
-              <li><strong>FastAPI:</strong> authenticated API boundary for starting and querying orders.</li>
-              <li><strong>Temporal:</strong> durable workflow history, retries, cancellation, and execution recovery.</li>
-              <li><strong>Activities:</strong> payment, inventory, shipping, and notification work.</li>
-              <li><strong>PostgreSQL:</strong> persisted application state.</li>
-              <li><strong>GitHub Actions:</strong> automated verification on repository changes.</li>
-            </ul>
+            <h2>Request handling is separated from durable execution.</h2>
+            <p>FastAPI receives authenticated order requests and starts Temporal workflows. Temporal persists execution history independently of the worker process, and the worker executes payment, inventory, shipping, and notification activities. PostgreSQL supports persisted application data, while Docker Compose keeps the local environment reproducible.</p>
+            <div class="case-results" aria-label="Architecture flow">
+              <div class="case-result"><span class="case-result-label">Entry point</span><strong>Client → FastAPI → Temporal workflow</strong></div>
+              <div class="case-result"><span class="case-result-label">Durable state</span><strong>Temporal stores workflow history outside worker memory</strong></div>
+              <div class="case-result"><span class="case-result-label">Execution</span><strong>Worker runs payment, inventory, shipping, notification activities</strong></div>
+              <div class="case-result"><span class="case-result-label">Persistence</span><strong>PostgreSQL supports application state in the local stack</strong></div>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">03 / Failure classification</span>
           <div>
-            <h2>Not every failure should receive the same response.</h2>
-            <p>Transient infrastructure failures use bounded retries with exponential backoff because another attempt may succeed. Business conditions such as invalid payment details, unavailable inventory, or an invalid shipping address are treated as non-retryable because repeating the same work would not fix the underlying condition.</p>
-            <p>Making that distinction explicit prevents retry policy from becoming a blanket response to every error.</p>
+            <h2>Retry policy starts by deciding which failures can actually improve with another attempt.</h2>
+            <p>Transient infrastructure failures use bounded retries with exponential backoff because another attempt may succeed. Business failures such as invalid payment details, unavailable inventory, or an invalid shipping address are marked non-retryable because repeating the same activity does not change the underlying condition.</p>
+            <p>This keeps retry behavior intentional instead of treating every exception as a reason to try again.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">04 / Partial completion</span>
           <div>
-            <h2>Successful earlier steps need an explicit recovery path.</h2>
-            <p>If shipping fails after payment and inventory reservation have already succeeded, the workflow compensates in reverse order: release the inventory, then refund the payment.</p>
-            <p>Cancellation is also handled at defined checkpoints so completed work can be compensated and later work can be prevented from starting unnecessarily.</p>
+            <h2>Every successful side effect needs a recovery plan if later work fails.</h2>
+            <p>The workflow uses Saga-style compensating actions rather than pretending several external operations can be rolled back atomically. If shipping fails after payment and inventory reservation succeed, compensation runs in reverse order: release the inventory, then refund the payment.</p>
             <div class="case-results" aria-label="Compensation behavior">
               <div class="case-result"><span class="case-result-label">Shipping failure</span><strong>Release inventory → refund payment</strong></div>
-              <div class="case-result"><span class="case-result-label">Cancel after payment</span><strong>Compensate payment and stop later work</strong></div>
-              <div class="case-result"><span class="case-result-label">Cancel after inventory</span><strong>Release inventory + compensate payment</strong></div>
-              <div class="case-result"><span class="case-result-label">Policy</span><strong>Compensation order verified by tests</strong></div>
+              <div class="case-result"><span class="case-result-label">Cancel after payment</span><strong>Compensate payment and prevent later work</strong></div>
+              <div class="case-result"><span class="case-result-label">Cancel after inventory</span><strong>Release inventory → compensate payment</strong></div>
+              <div class="case-result"><span class="case-result-label">Guarantee</span><strong>Compensation order is asserted by automated tests</strong></div>
+            </div>
+            <p>Compensation is explicit business logic, not the equivalent of an atomic database rollback. That distinction is important because external side effects can have their own failure modes.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">05 / Cancellation</span>
+          <div>
+            <h2>Cancellation is accepted at controlled checkpoints.</h2>
+            <p>The workflow checks for cancellation at defined points so completed work can be compensated when necessary and later activities can be prevented from starting. This favors predictable recovery semantics over attempting to interrupt arbitrary work at any instant.</p>
+            <p>The test suite verifies cancellation after payment and after inventory reservation, including the expected compensation path for each state.</p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">06 / Crash recovery</span>
+          <div>
+            <h2>Worker failure does not erase workflow progress.</h2>
+            <p>A controlled worker restart exercises the core durability property directly. While the worker is unavailable, Temporal retains workflow history. When the worker returns, execution can continue from persisted workflow state instead of reconstructing the order from process memory or starting the entire business process over.</p>
+            <p>The reliability property being tested is simple: <strong>workflow state outlives the worker that executes it.</strong></p>
+          </div>
+        </section>
+
+        <section class="case-block">
+          <span class="case-number">07 / Verification</span>
+          <div>
+            <h2>Failure paths are treated as testable system behavior.</h2>
+            <p>The automated suite contains 11 passing tests covering successful execution, transient retries, non-retryable business failures, compensation after shipping failure, cancellation checkpoints, authenticated API behavior, and workflow status queries.</p>
+            <div class="case-results" aria-label="Test evidence">
+              <div class="case-result"><span class="case-result-label">Retries</span><strong>Transient failure behavior is asserted</strong></div>
+              <div class="case-result"><span class="case-result-label">Business failures</span><strong>Non-retryable conditions fail without pointless retries</strong></div>
+              <div class="case-result"><span class="case-result-label">Compensation</span><strong>Completed actions reverse in the expected order</strong></div>
+              <div class="case-result"><span class="case-result-label">Cancellation</span><strong>Later work stops after safe cancellation points</strong></div>
             </div>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Crash recovery</span>
+          <span class="case-number">08 / Measured result</span>
           <div>
-            <h2>Worker interruption is exercised directly.</h2>
-            <p>A controlled worker restart demonstrates that workflow history remains durable while the worker is unavailable. When the worker returns, execution can continue from persisted workflow state instead of reconstructing the order from memory or restarting the entire business process.</p>
-            <p>The reliability property being tested is simple but important: <strong>workflow progress outlives the worker process.</strong></p>
+            <h2>The local benchmark measures API submission only.</h2>
+            <p>One local Docker Compose run completed 25 of 25 authenticated order submissions successfully, with an average submission latency of 38.74 ms and p95 submission latency of 75.51 ms.</p>
+            <div class="case-note">These measurements cover sequential order submission in the local environment. They are not production-capacity claims, do not measure complete workflow duration, and will vary by hardware and system load.</div>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Verification</span>
+          <span class="case-number">09 / Reliability tradeoffs</span>
           <div>
-            <h2>Failure behavior is part of the test suite.</h2>
-            <p>The automated suite contains 11 passing tests covering workflow and API behavior, including transient failures, non-retryable business failures, shipping compensation, cancellation checkpoints, authenticated API access, and status queries.</p>
-            <p>This keeps recovery behavior testable instead of treating it as an architectural assumption.</p>
+            <h2>Durable orchestration solves some failure problems, not all of them.</h2>
+            <p>Temporal gives the workflow durable history and repeatable orchestration, but real external side effects would still require stronger idempotency guarantees. A retry against a payment or shipping provider must not accidentally duplicate the side effect simply because the workflow itself is durable.</p>
+            <p>The project also emits structured operational events, but it does not yet include distributed tracing, production alerting, or dependency-specific SLOs.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Measured result</span>
+          <span class="case-number">10 / What this proved</span>
           <div>
-            <h2>The benchmark measures submission, not end-to-end fulfillment.</h2>
-            <p>An example local run completed 25 of 25 authenticated order submissions successfully, with an average submission latency of 38.74 ms and p95 of 75.51 ms.</p>
-            <div class="case-note">These figures are local, workload-specific measurements of order submission inside the Docker Compose environment. They are not production-capacity claims and do not measure complete workflow duration.</div>
+            <h2>Reliable background work needs explicit state, explicit failure semantics, and explicit recovery.</h2>
+            <p>The project demonstrates a backend design where retry policy, business failures, compensation order, cancellation checkpoints, and worker crash recovery are visible parts of system behavior rather than hidden assumptions.</p>
+            <p>The central lesson is not simply how to use Temporal. It is how to design multi-step work so failure paths remain understandable, recoverable, and testable.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Takeaway</span>
+          <span class="case-number">11 / Production boundary</span>
           <div>
-            <h2>Reliable background work needs explicit state and explicit recovery.</h2>
-            <p>Durable execution makes retry policy, business failures, compensation order, cancellation points, and crash recovery visible parts of system behavior. The main lesson is not simply how to use a workflow engine; it is how to design work so failure paths are predictable and testable.</p>
-          </div>
-        </section>
-
-        <section class="case-block">
-          <span class="case-number">09 / Boundary</span>
-          <div>
-            <h2>The project proves workflow behavior, not a production commerce platform.</h2>
-            <p>Payment, inventory, shipping, and notification integrations are intentionally simulated. A production implementation would still need real external integrations, stronger end-to-end idempotency guarantees, managed identity and secrets, distributed tracing, production alerting, higher-volume load testing, and dependency-specific SLOs.</p>
+            <h2>This proves workflow behavior, not a production commerce platform.</h2>
+            <p>Payment, inventory, shipping, and notification integrations are simulated intentionally so the project can isolate workflow durability and failure handling without third-party credentials or sandboxes.</p>
+            <p>A production implementation would still need real external integrations, end-to-end idempotency controls, managed identity and secrets, distributed tracing, production alerting, larger concurrent load and recovery tests, and SLOs derived from measured dependency behavior.</p>
           </div>
         </section>
       </article>
@@ -161,11 +185,12 @@
             <li>Durable workflow orchestration</li>
             <li>Retry policy design and exponential backoff</li>
             <li>Infrastructure vs business failure classification</li>
-            <li>Saga-style compensation</li>
+            <li>Saga-style compensation and reverse-order recovery</li>
             <li>Cancellation checkpoints</li>
             <li>Worker crash recovery</li>
-            <li>Authenticated backend API boundaries</li>
-            <li>Automated recovery-path verification</li>
+            <li>Authenticated backend API behavior</li>
+            <li>Recovery-path testing and CI</li>
+            <li>Operational tradeoff reasoning</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · Temporal Python SDK · PostgreSQL · Docker Compose · pytest · GitHub Actions</p>
         </div>
