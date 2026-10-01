@@ -25,9 +25,9 @@
 .case-hero-exec {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(360px, .7fr);
-  gap: clamp(3.5rem, 7vw, 7rem);
+  gap: clamp(2.5rem, 5vw, 5rem);
   align-items: end;
-  padding-block: clamp(5rem, 9vh, 7rem) 4.5rem;
+  padding-block: 3.4rem 3rem;
 }
 
 .case-kicker,
@@ -42,28 +42,28 @@
 }
 
 .case-kicker {
-  margin: 0 0 1.35rem;
+  margin: 0 0 1.15rem;
   color: var(--case-accent);
-  font-size: .69rem;
+  font-size: .66rem;
   font-weight: 700;
 }
 
 .case-hero-exec h1 {
-  max-width: 920px;
+  max-width: 760px;
   margin: 0;
   color: var(--case-text);
-  font-size: clamp(3.5rem, 6.5vw, 6.6rem);
-  line-height: .92;
-  letter-spacing: -.065em;
-  font-weight: 740;
+  font-size: clamp(2.15rem, 3.4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -.025em;
+  font-weight: 650;
 }
 
 .case-summary {
-  max-width: 790px;
-  margin: 1.8rem 0 0;
+  max-width: 700px;
+  margin: 1.2rem 0 0;
   color: var(--case-muted);
-  font-size: clamp(1.05rem, 1.35vw, 1.22rem);
-  line-height: 1.72;
+  font-size: .98rem;
+  line-height: 1.65;
 }
 
 .case-summary strong {
@@ -74,21 +74,21 @@
 .case-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: .8rem;
-  margin-top: 2rem;
+  gap: .7rem;
+  margin-top: 1.6rem;
 }
 
 .case-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 46px;
-  padding: 0 1.1rem;
+  min-height: 42px;
+  padding: 0 1rem;
   border: 1px solid var(--case-line-strong);
   border-radius: 3px;
   color: var(--case-text);
   font-family: var(--case-mono);
-  font-size: .7rem;
+  font-size: .67rem;
   font-weight: 700;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -117,10 +117,10 @@
 
 .case-snapshot-title {
   margin: 0;
-  padding: 0 0 1rem;
+  padding: 0 0 .85rem;
   color: var(--case-faint);
   font-family: var(--case-mono);
-  font-size: .68rem;
+  font-size: .64rem;
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -132,22 +132,22 @@
 
 .case-snapshot-row {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 1.3rem;
-  padding: 1.15rem 0;
+  grid-template-columns: 110px 1fr;
+  gap: 1.1rem;
+  padding: .95rem 0;
   border-top: 1px solid var(--case-line);
 }
 
 .case-snapshot dt {
   color: var(--case-faint);
-  font-size: .64rem;
+  font-size: .61rem;
 }
 
 .case-snapshot dd {
   margin: 0;
   color: #dce1e5;
-  font-size: .94rem;
-  line-height: 1.5;
+  font-size: .9rem;
+  line-height: 1.45;
   font-weight: 580;
 }
 
@@ -159,8 +159,8 @@
 }
 
 .case-proof {
-  min-height: 116px;
-  padding: 1.45rem;
+  min-height: 96px;
+  padding: 1.1rem;
   border-right: 1px solid var(--case-line);
 }
 
@@ -170,25 +170,25 @@
 
 .case-proof-label {
   display: block;
-  margin-bottom: .7rem;
+  margin-bottom: .6rem;
   color: var(--case-accent);
-  font-size: .61rem;
+  font-size: .58rem;
   font-weight: 700;
 }
 
 .case-proof strong {
   display: block;
   color: #e4e8eb;
-  font-size: .98rem;
-  line-height: 1.5;
+  font-size: .9rem;
+  line-height: 1.45;
   font-weight: 620;
 }
 
 .case-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: clamp(3.5rem, 7vw, 7rem);
-  padding-block: 5.5rem 6.5rem;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: clamp(3rem, 5vw, 5rem);
+  padding-block: 4.2rem 5.2rem;
 }
 
 .case-story {
@@ -197,9 +197,9 @@
 
 .case-block {
   display: grid;
-  grid-template-columns: 110px minmax(0, 1fr);
-  gap: 2rem;
-  padding: 2.6rem 0;
+  grid-template-columns: 95px minmax(0, 1fr);
+  gap: 1.6rem;
+  padding: 1.8rem 0;
   border-top: 1px solid var(--case-line);
 }
 
@@ -209,45 +209,48 @@
 }
 
 .case-number {
-  padding-top: .35rem;
+  padding-top: .3rem;
   color: var(--case-accent);
-  font-size: .64rem;
+  font-size: .6rem;
   font-weight: 700;
 }
 
 .case-block h2 {
-  margin: 0 0 1rem;
+  max-width: 680px;
+  margin: 0 0 .85rem;
   color: var(--case-text);
-  font-size: clamp(1.8rem, 2.7vw, 2.8rem);
-  line-height: 1.02;
-  letter-spacing: -.04em;
+  font-size: clamp(1.25rem, 1.6vw, 1.65rem);
+  line-height: 1.18;
+  letter-spacing: -.018em;
+  font-weight: 620;
 }
 
 .case-block h3 {
-  margin: 1.7rem 0 .65rem;
+  margin: 1.5rem 0 .6rem;
   color: #e7eaed;
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .case-block p,
 .case-block li {
+  max-width: 700px;
   color: var(--case-muted);
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: .94rem;
+  line-height: 1.68;
 }
 
 .case-block p {
-  margin: 0 0 1rem;
+  margin: 0 0 .9rem;
 }
 
 .case-block ul,
 .case-block ol {
-  margin: 1rem 0 0;
-  padding-left: 1.2rem;
+  margin: .9rem 0 0;
+  padding-left: 1.15rem;
 }
 
 .case-block li + li {
-  margin-top: .55rem;
+  margin-top: .5rem;
 }
 
 .case-block code {
@@ -263,96 +266,97 @@
 .case-results {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 1.5rem;
+  margin-top: 1.35rem;
   border-top: 1px solid var(--case-line);
   border-left: 1px solid var(--case-line);
 }
 
 .case-result {
-  min-height: 128px;
-  padding: 1.3rem;
+  min-height: 112px;
+  padding: 1.15rem;
   border-right: 1px solid var(--case-line);
   border-bottom: 1px solid var(--case-line);
 }
 
 .case-result-label {
   display: block;
-  margin-bottom: .65rem;
+  margin-bottom: .55rem;
   color: var(--case-faint);
-  font-size: .6rem;
+  font-size: .57rem;
   font-weight: 700;
 }
 
 .case-result strong {
   display: block;
   color: var(--case-text);
-  font-size: 1.18rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  line-height: 1.38;
 }
 
 .case-note {
-  margin-top: 1.25rem;
-  padding: 1rem 1.1rem;
+  margin-top: 1.15rem;
+  padding: .9rem 1rem;
   border-left: 2px solid var(--case-accent);
   background: rgba(200,178,127,.055);
   color: var(--case-muted);
-  font-size: .92rem;
-  line-height: 1.65;
+  font-size: .88rem;
+  line-height: 1.6;
 }
 
 .case-side {
   align-self: start;
   position: sticky;
-  top: 110px;
+  top: 96px;
 }
 
 .case-side-card {
-  padding: 1.5rem 0;
+  padding: 1.35rem 0;
   border-top: 1px solid var(--case-line-strong);
   border-bottom: 1px solid var(--case-line-strong);
 }
 
 .case-label {
-  margin: 0 0 1rem;
+  margin: 0 0 .85rem;
   color: var(--case-accent);
-  font-size: .62rem;
+  font-size: .59rem;
   font-weight: 700;
 }
 
 .case-side h2 {
-  margin: 0 0 1rem;
+  margin: 0 0 .9rem;
   color: var(--case-text);
-  font-size: 1.35rem;
-  letter-spacing: -.025em;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: -.015em;
 }
 
 .case-side p {
   margin: 0;
   color: var(--case-muted);
-  font-size: .91rem;
-  line-height: 1.7;
+  font-size: .86rem;
+  line-height: 1.65;
 }
 
 .case-side-list {
-  margin: 1.25rem 0 0;
+  margin: 1.1rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 .case-side-list li {
-  padding: .8rem 0;
+  padding: .62rem 0;
   border-top: 1px solid var(--case-line);
   color: #cbd1d7;
-  font-size: .86rem;
-  line-height: 1.55;
+  font-size: .8rem;
+  line-height: 1.5;
 }
 
 .case-stack-line {
-  margin-top: 1.2rem;
+  margin-top: 1.05rem;
   color: var(--case-faint);
   font-family: var(--case-mono);
-  font-size: .68rem;
-  line-height: 1.7;
+  font-size: .64rem;
+  line-height: 1.65;
 }
 
 .case-next {
@@ -360,20 +364,21 @@
   grid-template-columns: 1fr auto;
   gap: 2rem;
   align-items: center;
-  padding-block: 3.5rem;
+  padding-block: 3rem;
   border-top: 1px solid var(--case-line);
 }
 
 .case-next h2 {
   margin: 0;
   color: var(--case-text);
-  font-size: clamp(1.9rem, 3vw, 3.2rem);
-  letter-spacing: -.045em;
+  font-size: clamp(1.35rem, 1.8vw, 1.8rem);
+  letter-spacing: -.025em;
 }
 
 .case-next p {
-  margin: .7rem 0 0;
+  margin: .65rem 0 0;
   color: var(--case-muted);
+  font-size: .92rem;
 }
 
 @media (max-width: 1050px) {
@@ -405,17 +410,17 @@
   }
 
   .case-hero-exec {
-    gap: 2.7rem;
-    padding-block: 3.8rem 3.2rem;
+    gap: 2.3rem;
+    padding-block: 3rem 2.6rem;
   }
 
   .case-hero-exec h1 {
-    font-size: clamp(3rem, 15vw, 4.8rem);
+    font-size: clamp(2.1rem, 10vw, 3.2rem);
   }
 
   .case-snapshot-row {
     grid-template-columns: 1fr;
-    gap: .4rem;
+    gap: .35rem;
   }
 
   .case-proof-rail {
@@ -431,14 +436,14 @@
   }
 
   .case-main {
-    gap: 2.8rem;
-    padding-block: 3.8rem 4.6rem;
+    gap: 2.4rem;
+    padding-block: 3rem 3.8rem;
   }
 
   .case-block {
     grid-template-columns: 1fr;
-    gap: .75rem;
-    padding: 2.2rem 0;
+    gap: .6rem;
+    padding: 1.65rem 0;
   }
 
   .case-results {
