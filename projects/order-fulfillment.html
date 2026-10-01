@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/executive.css">
   <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
+  <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
 <body class="case-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,11 +30,11 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 03 · Backend Reliability</p>
+        <p class="case-kicker">Case Study 04 · Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
         <p class="case-summary">
           A durable order-processing workflow built to make failure behavior explicit:
-          <strong>persist workflow state, distinguish retryable from non-retryable failures, compensate partial success, handle cancellation safely, survive worker restarts, and verify recovery paths with tests.</strong>
+          <strong>persist execution state, classify failures, retry only when useful, compensate partial success, survive worker restarts, and verify recovery paths.</strong>
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -46,7 +47,7 @@
         <dl>
           <div class="case-snapshot-row"><dt>Focus</dt><dd>Durable execution · failure handling · recovery</dd></div>
           <div class="case-snapshot-row"><dt>Workflow</dt><dd>Payment · inventory · shipping · notification</dd></div>
-          <div class="case-snapshot-row"><dt>Recovery model</dt><dd>Temporal history + Saga-style compensation</dd></div>
+          <div class="case-snapshot-row"><dt>Recovery</dt><dd>Temporal history + Saga-style compensation</dd></div>
           <div class="case-snapshot-row"><dt>Stack</dt><dd>Python · FastAPI · Temporal · PostgreSQL · Docker</dd></div>
         </dl>
       </aside>
@@ -55,7 +56,7 @@
     <section class="case-proof-rail shell" aria-label="Workflow evidence">
       <div class="case-proof"><span class="case-proof-label">Durability</span><strong>Workflow progress survives worker restart</strong></div>
       <div class="case-proof"><span class="case-proof-label">Retry policy</span><strong>Transient failures retry; business failures do not</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Partial completion</span><strong>Reverse-order Saga compensation</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Compensation</span><strong>Reverse-order recovery after partial success</strong></div>
       <div class="case-proof"><span class="case-proof-label">Verification</span><strong>11 passing automated tests + CI</strong></div>
     </section>
 
@@ -64,9 +65,9 @@
         <section class="case-block">
           <span class="case-number">01 / Problem</span>
           <div>
-            <h2>A multi-step business process cannot depend on one worker process staying alive.</h2>
-            <p>Order fulfillment spans several operations that can succeed or fail independently. Payment can succeed before inventory fails. Inventory can be reserved before shipping fails. A worker can stop midway through the process.</p>
-            <p>If workflow progress exists only in memory, infrastructure failure can become lost business state. This project moves execution state into Temporal so workflow progress can outlive the API and worker processes that happen to be running at any moment.</p>
+            <h2>Multi-step work should not depend on one worker process staying alive.</h2>
+            <p>Order fulfillment spans operations that can succeed and fail independently. Payment may complete before inventory fails. Inventory may be reserved before shipping fails. A worker can restart midway through the process.</p>
+            <p>If workflow progress exists only in process memory, infrastructure failure can become lost business state. This project moves execution history into Temporal so the business process outlives the worker that happens to be executing it.</p>
           </div>
         </section>
 
@@ -74,12 +75,21 @@
           <span class="case-number">02 / Architecture</span>
           <div>
             <h2>Request handling is separated from durable execution.</h2>
-            <p>FastAPI receives authenticated order requests and starts Temporal workflows. Temporal persists execution history independently of the worker process, and the worker executes payment, inventory, shipping, and notification activities. PostgreSQL supports persisted application data, while Docker Compose keeps the local environment reproducible.</p>
-            <div class="case-results" aria-label="Architecture flow">
-              <div class="case-result"><span class="case-result-label">Entry point</span><strong>Client → FastAPI → Temporal workflow</strong></div>
-              <div class="case-result"><span class="case-result-label">Durable state</span><strong>Temporal stores workflow history outside worker memory</strong></div>
-              <div class="case-result"><span class="case-result-label">Execution</span><strong>Worker runs payment, inventory, shipping, notification activities</strong></div>
-              <div class="case-result"><span class="case-result-label">Persistence</span><strong>PostgreSQL supports application state in the local stack</strong></div>
+            <p>FastAPI accepts authenticated order submissions and starts a Temporal workflow. Temporal persists workflow history independently of the worker process, while activities execute the individual business steps.</p>
+
+            <div class="case-architecture" aria-label="Order fulfillment architecture">
+              <div class="case-flow">
+                <div class="case-flow-node"><span class="case-flow-label">Entry</span><strong>Client → FastAPI</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Durable control</span><strong>Temporal workflow</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Execution</span><strong>Worker activities</strong></div>
+              </div>
+              <div class="case-flow-secondary">
+                <div><span class="case-flow-label">Activities</span><strong>Payment → inventory → shipping → notification</strong></div>
+                <div><span class="case-flow-label">History</span><strong>Temporal persists execution state outside worker memory</strong></div>
+                <div><span class="case-flow-label">Application data</span><strong>PostgreSQL supports persisted backend state</strong></div>
+              </div>
             </div>
           </div>
         </section>
@@ -87,32 +97,51 @@
         <section class="case-block">
           <span class="case-number">03 / Failure classification</span>
           <div>
-            <h2>Retry policy starts by deciding which failures can actually improve with another attempt.</h2>
-            <p>Transient infrastructure failures use bounded retries with exponential backoff because another attempt may succeed. Business failures such as invalid payment details, unavailable inventory, or an invalid shipping address are marked non-retryable because repeating the same activity does not change the underlying condition.</p>
-            <p>This keeps retry behavior intentional instead of treating every exception as a reason to try again.</p>
+            <h2>Not every failure should be retried.</h2>
+            <p>Retry policy begins by separating failures that may improve with time from failures that require a business decision or new input.</p>
+
+            <div class="case-evidence-matrix" aria-label="Retryable and non-retryable failures">
+              <div class="case-evidence-item"><span class="case-evidence-label">Retryable</span><strong>Transient infrastructure failure</strong><small>Bounded retries with exponential backoff can succeed after a temporary dependency problem clears.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Retryable</span><strong>Temporary service unavailability</strong><small>Another attempt can be useful because the underlying condition may change.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Non-retryable</span><strong>Invalid payment details</strong><small>Repeating the same operation does not correct invalid business input.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Non-retryable</span><strong>Unavailable inventory or invalid address</strong><small>These conditions require a business response rather than more infrastructure retries.</small></div>
+            </div>
+
+            <div class="case-decision">
+              <span class="case-decision-label">Retry rule</span>
+              <strong>Retry only when another attempt can plausibly change the outcome.</strong>
+              <p>This prevents infrastructure retry machinery from turning permanent business failures into noisy, slow, repeated work.</p>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Partial completion</span>
+          <span class="case-number">04 / Compensation</span>
           <div>
-            <h2>Every successful side effect needs a recovery plan if later work fails.</h2>
-            <p>The workflow uses Saga-style compensating actions rather than pretending several external operations can be rolled back atomically. If shipping fails after payment and inventory reservation succeed, compensation runs in reverse order: release the inventory, then refund the payment.</p>
-            <div class="case-results" aria-label="Compensation behavior">
-              <div class="case-result"><span class="case-result-label">Shipping failure</span><strong>Release inventory → refund payment</strong></div>
-              <div class="case-result"><span class="case-result-label">Cancel after payment</span><strong>Compensate payment and prevent later work</strong></div>
-              <div class="case-result"><span class="case-result-label">Cancel after inventory</span><strong>Release inventory → compensate payment</strong></div>
-              <div class="case-result"><span class="case-result-label">Guarantee</span><strong>Compensation order is asserted by automated tests</strong></div>
+            <h2>Partial success needs an explicit recovery path.</h2>
+            <p>The workflow uses Saga-style compensating actions rather than treating external side effects like an atomic database transaction. If a later step fails, completed actions are reversed in the opposite order where possible.</p>
+
+            <div class="case-timeline" aria-label="Compensation sequence after shipping failure">
+              <div class="case-timeline-step"><span>01</span><strong>Payment succeeds</strong><p>The order now has an external side effect that may need compensation later.</p></div>
+              <div class="case-timeline-step"><span>02</span><strong>Inventory reserved</strong><p>A second completed side effect is added to the workflow state.</p></div>
+              <div class="case-timeline-step"><span>03</span><strong>Shipping fails</strong><p>The workflow stops forward progress because a later business step cannot complete.</p></div>
+              <div class="case-timeline-step"><span>04</span><strong>Inventory released</strong><p>The most recent completed side effect is compensated first.</p></div>
+              <div class="case-timeline-step"><span>05</span><strong>Payment refunded</strong><p>Compensation continues in reverse order until prior completed work is addressed.</p></div>
             </div>
-            <p>Compensation is explicit business logic, not the equivalent of an atomic database rollback. That distinction is important because external side effects can have their own failure modes.</p>
+
+            <div class="case-decision">
+              <span class="case-decision-label">Recovery model</span>
+              <strong>Compensation is business logic, not rollback magic.</strong>
+              <p>External actions can fail independently, so the workflow makes compensation order explicit and testable instead of pretending the entire process is one atomic transaction.</p>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">05 / Cancellation</span>
           <div>
-            <h2>Cancellation is accepted at controlled checkpoints.</h2>
-            <p>The workflow checks for cancellation at defined points so completed work can be compensated when necessary and later activities can be prevented from starting. This favors predictable recovery semantics over attempting to interrupt arbitrary work at any instant.</p>
+            <h2>Cancellation is handled at controlled checkpoints.</h2>
+            <p>The workflow checks for cancellation at defined points so completed work can be compensated when necessary and later activities can be prevented from starting.</p>
             <p>The test suite verifies cancellation after payment and after inventory reservation, including the expected compensation path for each state.</p>
           </div>
         </section>
@@ -121,8 +150,22 @@
           <span class="case-number">06 / Crash recovery</span>
           <div>
             <h2>Worker failure does not erase workflow progress.</h2>
-            <p>A controlled worker restart exercises the core durability property directly. While the worker is unavailable, Temporal retains workflow history. When the worker returns, execution can continue from persisted workflow state instead of reconstructing the order from process memory or starting the entire business process over.</p>
-            <p>The reliability property being tested is simple: <strong>workflow state outlives the worker that executes it.</strong></p>
+            <p>A controlled worker restart exercises the durability property directly. Temporal retains workflow history while the worker is unavailable. When the worker returns, execution continues from persisted workflow state instead of reconstructing the business process from memory.</p>
+
+            <div class="case-architecture" aria-label="Worker crash recovery flow">
+              <div class="case-flow">
+                <div class="case-flow-node"><span class="case-flow-label">Before failure</span><strong>Workflow in progress</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Failure</span><strong>Worker stops</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Recovery</span><strong>Worker resumes execution</strong></div>
+              </div>
+              <div class="case-flow-secondary">
+                <div><span class="case-flow-label">State</span><strong>Workflow history remains persisted in Temporal</strong></div>
+                <div><span class="case-flow-label">Behavior</span><strong>The business process does not restart from the beginning</strong></div>
+                <div><span class="case-flow-label">Property</span><strong>Workflow state outlives the worker process</strong></div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -130,12 +173,13 @@
           <span class="case-number">07 / Verification</span>
           <div>
             <h2>Failure paths are treated as testable system behavior.</h2>
-            <p>The automated suite contains 11 passing tests covering successful execution, transient retries, non-retryable business failures, compensation after shipping failure, cancellation checkpoints, authenticated API behavior, and workflow status queries.</p>
-            <div class="case-results" aria-label="Test evidence">
-              <div class="case-result"><span class="case-result-label">Retries</span><strong>Transient failure behavior is asserted</strong></div>
-              <div class="case-result"><span class="case-result-label">Business failures</span><strong>Non-retryable conditions fail without pointless retries</strong></div>
-              <div class="case-result"><span class="case-result-label">Compensation</span><strong>Completed actions reverse in the expected order</strong></div>
-              <div class="case-result"><span class="case-result-label">Cancellation</span><strong>Later work stops after safe cancellation points</strong></div>
+            <div class="case-evidence-matrix" aria-label="Temporal workflow verification">
+              <div class="case-evidence-item"><span class="case-evidence-label">Success path</span><strong>Normal workflow execution covered</strong><small>The full order flow completes when all activities succeed.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Retries</span><strong>Transient failure behavior asserted</strong><small>Retryable conditions use the configured bounded retry policy.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Business failures</span><strong>Non-retryable failures stop pointless retries</strong><small>Permanent business conditions fail deliberately.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Compensation</span><strong>Reverse-order recovery verified</strong><small>Completed side effects are compensated in the intended order after later failure.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Cancellation</span><strong>Cancellation checkpoints tested</strong><small>Later work is prevented and prior work is compensated where required.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">CI</span><strong>11 automated tests passing</strong><small>Workflow, API, compensation, and recovery behavior are validated continuously.</small></div>
             </div>
           </div>
         </section>
@@ -143,9 +187,9 @@
         <section class="case-block">
           <span class="case-number">08 / Measured result</span>
           <div>
-            <h2>The local benchmark measures API submission only.</h2>
+            <h2>The benchmark measures API submission, not complete workflow duration.</h2>
             <p>One local Docker Compose run completed 25 of 25 authenticated order submissions successfully, with an average submission latency of 38.74 ms and p95 submission latency of 75.51 ms.</p>
-            <div class="case-note">These measurements cover sequential order submission in the local environment. They are not production-capacity claims, do not measure complete workflow duration, and will vary by hardware and system load.</div>
+            <div class="case-note">These measurements cover sequential order submission in the local environment. They are not production-capacity claims and do not measure the full duration of payment, inventory, shipping, and notification work.</div>
           </div>
         </section>
 
@@ -153,15 +197,15 @@
           <span class="case-number">09 / Reliability tradeoffs</span>
           <div>
             <h2>Durable orchestration solves some failure problems, not all of them.</h2>
-            <p>Temporal gives the workflow durable history and repeatable orchestration, but real external side effects would still require stronger idempotency guarantees. A retry against a payment or shipping provider must not accidentally duplicate the side effect simply because the workflow itself is durable.</p>
-            <p>The project also emits structured operational events, but it does not yet include distributed tracing, production alerting, or dependency-specific SLOs.</p>
+            <p>Temporal provides durable workflow history and repeatable orchestration, but real external side effects would still require strong idempotency guarantees. A retry against a payment or shipping provider must not duplicate the side effect simply because the workflow itself is durable.</p>
+            <p>The project emits structured operational events, but it does not yet include distributed tracing, production alerting, or dependency-specific SLOs.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">10 / What this proved</span>
           <div>
-            <h2>Reliable background work needs explicit state, explicit failure semantics, and explicit recovery.</h2>
+            <h2>Reliable background work needs explicit state, failure semantics, and recovery.</h2>
             <p>The project demonstrates a backend design where retry policy, business failures, compensation order, cancellation checkpoints, and worker crash recovery are visible parts of system behavior rather than hidden assumptions.</p>
             <p>The central lesson is not simply how to use Temporal. It is how to design multi-step work so failure paths remain understandable, recoverable, and testable.</p>
           </div>
@@ -183,14 +227,11 @@
           <h2>What this project demonstrates</h2>
           <ul class="case-side-list">
             <li>Durable workflow orchestration</li>
-            <li>Retry policy design and exponential backoff</li>
-            <li>Infrastructure vs business failure classification</li>
-            <li>Saga-style compensation and reverse-order recovery</li>
+            <li>Retryable vs non-retryable failures</li>
+            <li>Saga-style compensation</li>
             <li>Cancellation checkpoints</li>
             <li>Worker crash recovery</li>
-            <li>Authenticated backend API behavior</li>
             <li>Recovery-path testing and CI</li>
-            <li>Operational tradeoff reasoning</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · Temporal Python SDK · PostgreSQL · Docker Compose · pytest · GitHub Actions</p>
         </div>
@@ -199,11 +240,11 @@
 
     <section class="case-next shell">
       <div>
-        <p class="case-kicker">Next case study</p>
-        <h2>Distributed Systems Performance Lab</h2>
-        <p>Connection pooling, caching, dependency fallback, concurrency, throughput, and tail-latency behavior.</p>
+        <p class="case-kicker">Return to portfolio</p>
+        <h2>Reliability across the stack</h2>
+        <p>Linux operations, Kubernetes reliability, measured distributed-system behavior, and durable backend workflows.</p>
       </div>
-      <a class="case-action" href="distributed-systems-performance.html">View case study →</a>
+      <a class="case-action" href="../index.html#projects">View engineering work →</a>
     </section>
   </main>
 
