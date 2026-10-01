@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/executive.css">
   <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
+  <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
 <body class="case-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -32,7 +33,7 @@
         <p class="case-kicker">Case Study 02 · Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
         <p class="case-summary">
-          A hands-on Linux environment built to practice a disciplined operations loop:
+          A hands-on Linux environment built around a disciplined troubleshooting loop:
           <strong>observe the symptom, inspect the host, isolate the failing layer, apply the smallest fix, verify recovery, and automate repeatable checks.</strong>
         </p>
         <div class="case-actions">
@@ -54,9 +55,9 @@
 
     <section class="case-proof-rail shell" aria-label="Operations evidence">
       <div class="case-proof"><span class="case-proof-label">Incident drill</span><strong>Stopped service → inspect → restore → verify</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Evidence sources</span><strong>systemctl · journalctl · ps · ss · curl</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Failure domains</span><strong>Permissions · routing · DNS · CPU · memory · disk</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Automation</span><strong>Repeatable Bash system-health snapshot</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Evidence</span><strong>systemctl · journalctl · ps · ss · curl</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Failure domains</span><strong>Permissions · networking · resources · service state</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Automation</span><strong>Repeatable Bash health snapshot</strong></div>
     </section>
 
     <div class="case-main shell">
@@ -66,7 +67,7 @@
           <div>
             <h2>A failed request can originate below the application layer.</h2>
             <p>The service is intentionally small so troubleshooting stays focused on Linux behavior. When an endpoint becomes unavailable, the useful questions are broader than “is the code broken?”: Is the process running? Is systemd managing it? Is the expected socket listening? Are file permissions correct? Is routing or DNS involved? Is the host under resource pressure?</p>
-            <p>The lab was built to practice answering those questions with evidence instead of jumping directly to restarts or code changes.</p>
+            <p>The lab was built to answer those questions with evidence instead of jumping directly to restarts or code changes.</p>
           </div>
         </section>
 
@@ -74,47 +75,80 @@
           <span class="case-number">02 / Troubleshooting model</span>
           <div>
             <h2>Inspect before changing the system.</h2>
-            <p>The exercises follow the same workflow across service, permission, network, and resource problems: begin with the visible symptom, collect evidence by layer, isolate the failure domain, make the smallest corrective change, then verify from multiple angles.</p>
-            <ul>
-              <li><strong>Observe:</strong> failed HTTP request, stopped service, access denial, missing listener, or connectivity symptom.</li>
-              <li><strong>Inspect:</strong> service state, logs, processes, sockets, permissions, routes, DNS, and host resources.</li>
-              <li><strong>Isolate:</strong> distinguish application, service manager, process, filesystem, network, or resource failure.</li>
-              <li><strong>Recover:</strong> make the smallest targeted correction.</li>
-              <li><strong>Verify:</strong> confirm service state, listener state, and HTTP behavior.</li>
-            </ul>
+            <p>The same workflow is used across service, permission, networking, and resource problems: begin with the visible symptom, collect evidence by layer, isolate the failure domain, make the smallest corrective change, then verify from multiple angles.</p>
+
+            <div class="case-architecture" aria-label="Linux troubleshooting flow">
+              <div class="case-flow">
+                <div class="case-flow-node"><span class="case-flow-label">01</span><strong>Observe symptom</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">02</span><strong>Inspect host state</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">03</span><strong>Isolate failing layer</strong></div>
+              </div>
+              <div class="case-flow-secondary">
+                <div><span class="case-flow-label">Recover</span><strong>Apply the smallest targeted correction</strong></div>
+                <div><span class="case-flow-label">Verify</span><strong>Confirm process, socket, and HTTP behavior</strong></div>
+                <div><span class="case-flow-label">Automate</span><strong>Turn repeatable checks into Bash diagnostics</strong></div>
+              </div>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">03 / Service incident</span>
           <div>
-            <h2>A controlled outage turns the troubleshooting workflow into evidence.</h2>
+            <h2>Run a service, break it, inspect it, and recover it.</h2>
             <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab deliberately stops the service, then works outward from the symptom rather than assuming the root cause.</p>
-            <div class="case-results" aria-label="Service recovery workflow">
-              <div class="case-result"><span class="case-result-label">Service manager</span><strong><code>systemctl status</code> confirms ownership and current state</strong></div>
-              <div class="case-result"><span class="case-result-label">Logs</span><strong><code>journalctl</code> provides service history and failure evidence</strong></div>
-              <div class="case-result"><span class="case-result-label">Socket</span><strong><code>ss</code> confirms whether TCP :8000 is listening</strong></div>
-              <div class="case-result"><span class="case-result-label">Application</span><strong><code>curl</code> verifies the service can answer an HTTP request</strong></div>
+
+            <div class="case-timeline" aria-label="Service troubleshooting sequence">
+              <div class="case-timeline-step">
+                <span>01</span>
+                <strong>Symptom observed</strong>
+                <p>An HTTP request fails, establishing the user-visible problem before any changes are made.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>02</span>
+                <strong>Service inspected</strong>
+                <p><code>systemctl status</code> confirms whether systemd owns the service and shows its current state.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>03</span>
+                <strong>Logs reviewed</strong>
+                <p><code>journalctl -u linux-lab</code> provides service history and failure evidence.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>04</span>
+                <strong>Socket checked</strong>
+                <p><code>ss -lntp</code> confirms whether the expected TCP listener is present.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>05</span>
+                <strong>Recovery verified</strong>
+                <p>After the targeted fix, <code>systemctl</code>, <code>ss</code>, and <code>curl</code> are used together to confirm recovery.</p>
+              </div>
             </div>
-            <p>Restarting the service is only the corrective action. Recovery is considered complete only after systemd state, socket state, and application behavior agree that the service is healthy again.</p>
+
+            <div class="case-decision">
+              <span class="case-decision-label">Operating rule</span>
+              <strong>A restart is a corrective action, not proof of recovery.</strong>
+              <p>Recovery is only complete when service state, socket state, and application behavior all agree.</p>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">04 / Permissions</span>
           <div>
-            <h2>Access failures are diagnosed as filesystem and identity problems first.</h2>
+            <h2>Access failures become easier to debug when ownership is explicit.</h2>
             <p>Controlled permission exercises use users, groups, ownership, and mode bits to reproduce access failures intentionally. Ownership and permissions are inspected before changes are made so an access problem is not misdiagnosed as an application defect.</p>
-            <p>This reinforces a simple operating principle: identify the layer that denies access before modifying the software that happens to be affected by it.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">05 / Networking</span>
           <div>
-            <h2>“The network is down” is broken into testable questions.</h2>
+            <h2>Trace connectivity from interface state to application response.</h2>
             <p>The networking exercises separate interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity. Each check answers a different question, which makes it easier to distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
-            <p>This layered approach reduces guesswork and creates a clearer path from host state to application reachability.</p>
           </div>
         </section>
 
@@ -123,28 +157,34 @@
           <div>
             <h2>Service degradation can be a host problem.</h2>
             <p>The lab inspects CPU count, load, memory usage, disk usage, and running processes so troubleshooting includes the operating environment beneath the application.</p>
-            <p>Those checks help distinguish an isolated service failure from broader resource pressure that could affect multiple processes on the host.</p>
+
+            <div class="case-evidence-matrix" aria-label="Host health checks">
+              <div class="case-evidence-item"><span class="case-evidence-label">CPU</span><strong>CPU count · uptime · load</strong><small>Establishes basic host capacity and load context.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Memory</span><strong>Memory usage · top consumers</strong><small>Helps identify host-level pressure and heavy processes.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Storage</span><strong>Root filesystem usage</strong><small>Checks whether disk pressure could affect service behavior.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Service state</span><strong>linux-lab systemd status</strong><small>Keeps application state in the same operational snapshot.</small></div>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">07 / Automation</span>
           <div>
-            <h2>Repeated evidence collection became a lightweight operational tool.</h2>
+            <h2>Repeated inspection became a lightweight operational tool.</h2>
             <p>A Bash health script collects a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
-            <p>The script is intentionally small. It does not replace investigation or monitoring; it makes the initial evidence-gathering step faster and more repeatable.</p>
+            <p>The script does not replace investigation or monitoring; it makes the first evidence-gathering step faster and more repeatable.</p>
           </div>
         </section>
 
         <section class="case-block">
           <span class="case-number">08 / Verified outcomes</span>
           <div>
-            <h2>The project demonstrates operational behavior rather than benchmark claims.</h2>
-            <div class="case-results" aria-label="Verified outcomes">
-              <div class="case-result"><span class="case-result-label">Service recovery</span><strong>A controlled outage can be detected, investigated, restored, and verified</strong></div>
-              <div class="case-result"><span class="case-result-label">Permissions</span><strong>Access failures can be reproduced and resolved intentionally</strong></div>
-              <div class="case-result"><span class="case-result-label">Multi-layer checks</span><strong>Process, port, and HTTP state can confirm recovery independently</strong></div>
-              <div class="case-result"><span class="case-result-label">Repeatability</span><strong>Host-health evidence can be collected consistently with Bash</strong></div>
+            <h2>Operational evidence matters more than a tool list.</h2>
+            <div class="case-evidence-matrix" aria-label="Verified Linux operations outcomes">
+              <div class="case-evidence-item"><span class="case-evidence-label">Service recovery</span><strong>Controlled outage detected, investigated, restored, and verified</strong><small>Recovery was checked at multiple layers.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Permissions</span><strong>Access failures reproduced and resolved intentionally</strong><small>Ownership and mode bits were treated as first-class evidence.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Networking</span><strong>Interfaces, routes, listeners, DNS, and HTTP tested separately</strong><small>Failure domains were isolated instead of collapsed into “network issue.”</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Repeatability</span><strong>Host-health evidence collected consistently with Bash</strong><small>Common inspection steps became a reusable diagnostic snapshot.</small></div>
             </div>
           </div>
         </section>
@@ -162,7 +202,7 @@
           <span class="case-number">10 / Production boundary</span>
           <div>
             <h2>This is an operations lab, not a production Linux fleet.</h2>
-            <p>The original environment runs locally on Ubuntu under WSL2, and the checked-in systemd unit must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, alerting, or multi-host automation.</p>
+            <p>The environment runs locally on Ubuntu under WSL2, and the checked-in systemd unit must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, alerting, or multi-host automation.</p>
             <p>The next useful step would be repeating the same exercises on a small Linux VM or cloud instance and adding smoke tests for the example service and health script.</p>
           </div>
         </section>
@@ -173,14 +213,12 @@
           <p class="case-label">Engineering focus</p>
           <h2>What this project demonstrates</h2>
           <ul class="case-side-list">
-            <li>Linux users, groups, ownership, and permissions</li>
-            <li>Process and systemd service investigation</li>
+            <li>Linux permissions and ownership</li>
+            <li>systemd service investigation</li>
             <li>journalctl log analysis</li>
-            <li>TCP listener and HTTP verification</li>
-            <li>Interfaces, routes, DNS, and connectivity troubleshooting</li>
-            <li>CPU, memory, disk, load, and process inspection</li>
-            <li>Controlled service failure and recovery verification</li>
-            <li>Bash automation for repeatable diagnostics</li>
+            <li>TCP and HTTP verification</li>
+            <li>Routing and DNS troubleshooting</li>
+            <li>Bash diagnostic automation</li>
           </ul>
           <p class="case-stack-line">Ubuntu · WSL2 · Linux · Bash · systemd · journalctl · ps · ss · curl · ip</p>
         </div>
@@ -190,10 +228,10 @@
     <section class="case-next shell">
       <div>
         <p class="case-kicker">Next case study</p>
-        <h2>Order Fulfillment with Temporal</h2>
-        <p>Durable workflows, retry strategy, failure classification, Saga compensation, and worker crash recovery.</p>
+        <h2>Distributed Systems Performance Lab</h2>
+        <p>Measured experiments across connection pooling, caching, concurrency, throughput, tail latency, and dependency fallback.</p>
       </div>
-      <a class="case-action" href="order-fulfillment.html">View case study →</a>
+      <a class="case-action" href="distributed-systems-performance.html">View case study →</a>
     </section>
   </main>
 
