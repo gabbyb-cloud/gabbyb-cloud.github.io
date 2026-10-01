@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/executive.css">
   <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
+  <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
 <body class="case-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,10 +30,10 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 04 · Performance & Resilience</p>
+        <p class="case-kicker">Case Study 03 · Performance & Resilience</p>
         <h1 id="case-title">Distributed Systems Performance Lab</h1>
         <p class="case-summary">
-          A backend lab built to measure how concrete system changes affect real request behavior:
+          A backend lab built to compare how concrete system changes affect request behavior:
           <strong>connection reuse, caching, dependency failure, concurrency, throughput, and tail latency.</strong>
         </p>
         <div class="case-actions">
@@ -74,12 +75,21 @@
           <span class="case-number">02 / Architecture</span>
           <div>
             <h2>The cache is an optimization; PostgreSQL remains the source of truth.</h2>
-            <p>Requests enter FastAPI and check Redis first. A cache hit returns immediately. A cache miss or Redis read error falls through to a PostgreSQL connection pool. Successful database reads are returned to the client and then written back to Redis when possible.</p>
-            <div class="case-results" aria-label="Request flow">
-              <div class="case-result"><span class="case-result-label">Cache hit</span><strong>FastAPI → Redis → response</strong></div>
-              <div class="case-result"><span class="case-result-label">Cache miss/error</span><strong>FastAPI → PostgreSQL pool → response</strong></div>
-              <div class="case-result"><span class="case-result-label">Cache refill</span><strong>Database result → best-effort Redis write</strong></div>
-              <div class="case-result"><span class="case-result-label">Observability</span><strong>Application exposes Prometheus-format metrics</strong></div>
+            <p>Requests enter FastAPI and check Redis first. Cache hits return immediately. A miss or Redis read error falls through to PostgreSQL. Successful database reads are returned to the client and written back to Redis when possible.</p>
+
+            <div class="case-architecture" aria-label="Distributed request flow">
+              <div class="case-flow">
+                <div class="case-flow-node"><span class="case-flow-label">Request</span><strong>Client → FastAPI</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Fast path</span><strong>Redis lookup</strong></div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node"><span class="case-flow-label">Fallback</span><strong>PostgreSQL pool</strong></div>
+              </div>
+              <div class="case-flow-secondary">
+                <div><span class="case-flow-label">Cache hit</span><strong>Redis returns the response directly</strong></div>
+                <div><span class="case-flow-label">Miss/error</span><strong>PostgreSQL handles the authoritative read</strong></div>
+                <div><span class="case-flow-label">Refill</span><strong>Database result is written back to Redis best-effort</strong></div>
+              </div>
             </div>
           </div>
         </section>
@@ -90,18 +100,24 @@
             <h2>Change one major behavior at a time and keep the workload visible.</h2>
             <p>The recorded baseline, pooled PostgreSQL, and Redis cache-hit experiments each used five runs of 200 measured requests at concurrency 10. The Redis-unavailable experiment used six runs with the same measured request count and concurrency. All recorded runs reported zero measured request errors.</p>
             <p>A separate concurrency experiment tested levels 1, 10, 25, and 50. Benchmarks tracked throughput, average latency, p95, p99, and errors so slower requests were not hidden behind a single average.</p>
+
+            <div class="case-decision">
+              <span class="case-decision-label">Measurement rule</span>
+              <strong>Compare behavior, not just averages.</strong>
+              <p>Throughput and average latency are useful, but p95, p99, error count, and dependency behavior are kept visible so an optimization does not look successful while its slowest requests or failure path get worse.</p>
+            </div>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Key finding</span>
+          <span class="case-number">04 / Recorded results</span>
           <div>
-            <h2>Connection pooling produced the largest improvement for this workload.</h2>
-            <div class="case-results" aria-label="Benchmark results">
-              <div class="case-result"><span class="case-result-label">PostgreSQL baseline</span><strong>223.45 req/s · 44.67 ms avg · 77.22 ms p95 · 113.41 ms p99</strong></div>
-              <div class="case-result"><span class="case-result-label">PostgreSQL pooling</span><strong>640.24 req/s · 15.36 ms avg · 28.59 ms p95 · 38.73 ms p99</strong></div>
-              <div class="case-result"><span class="case-result-label">Redis cache hits</span><strong>652.08 req/s · 15.38 ms avg · 33.27 ms p95 · 48.29 ms p99</strong></div>
-              <div class="case-result"><span class="case-result-label">Redis unavailable</span><strong>395.10 req/s · 24.87 ms avg · 40.82 ms p95 · 50.54 ms p99</strong></div>
+            <h2>Pooling produced the largest improvement in this workload.</h2>
+            <div class="case-evidence-matrix" aria-label="Recorded benchmark comparison">
+              <div class="case-evidence-item"><span class="case-evidence-label">PostgreSQL baseline</span><strong>223.45 req/s</strong><small>44.67 ms avg · 77.22 ms p95 · 113.41 ms p99</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">PostgreSQL pooling</span><strong>640.24 req/s</strong><small>15.36 ms avg · 28.59 ms p95 · 38.73 ms p99</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Redis cache hits</span><strong>652.08 req/s</strong><small>15.38 ms avg · 33.27 ms p95 · 48.29 ms p99</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Redis unavailable</span><strong>395.10 req/s</strong><small>24.87 ms avg · 40.82 ms p95 · 50.54 ms p99 · 0 errors</small></div>
             </div>
             <p>For this local primary-key lookup workload, connection pooling increased throughput from roughly 223 to 640 requests per second while reducing both average and tail latency. Redis cache hits added only a small throughput improvement over the pooled PostgreSQL path.</p>
           </div>
@@ -110,10 +126,22 @@
         <section class="case-block">
           <span class="case-number">05 / Dependency failure</span>
           <div>
-            <h2>A cache outage degraded performance without automatically becoming an application outage.</h2>
+            <h2>A cache outage degraded performance without becoming an application outage.</h2>
             <p>Redis connection and socket timeouts are set to 0.1 seconds with retries disabled. That bounds how long the request path waits before falling back to PostgreSQL.</p>
-            <p>During the recorded Redis-unavailable experiment, requests continued through PostgreSQL fallback with zero measured request errors. Throughput dropped and latency rose, but the service remained functional because Redis was designed as optional rather than authoritative.</p>
-            <p>This is graceful degradation around one dependency, not full fault tolerance: if PostgreSQL fails, the authoritative read path is still unavailable.</p>
+
+            <div class="case-timeline" aria-label="Redis failure and fallback sequence">
+              <div class="case-timeline-step"><span>01</span><strong>Redis unavailable</strong><p>The optional cache dependency stops responding.</p></div>
+              <div class="case-timeline-step"><span>02</span><strong>Timeout bounded</strong><p>Short connection and socket timeouts prevent the request path from waiting indefinitely.</p></div>
+              <div class="case-timeline-step"><span>03</span><strong>Fallback activated</strong><p>Requests continue through the PostgreSQL pool instead of failing at the cache boundary.</p></div>
+              <div class="case-timeline-step"><span>04</span><strong>Performance degrades</strong><p>Throughput falls and latency rises compared with the healthy-cache path.</p></div>
+              <div class="case-timeline-step"><span>05</span><strong>Service remains functional</strong><p>The recorded experiment completed with zero measured request errors.</p></div>
+            </div>
+
+            <div class="case-decision">
+              <span class="case-decision-label">Reliability boundary</span>
+              <strong>Redis is optional; PostgreSQL is authoritative.</strong>
+              <p>The system can degrade around cache loss because Redis does not own the source-of-truth read path. That does not make the service fully fault tolerant: PostgreSQL failure still removes the authoritative read path.</p>
+            </div>
           </div>
         </section>
 
@@ -130,8 +158,14 @@
           <span class="case-number">07 / Verification</span>
           <div>
             <h2>Performance evidence is paired with deterministic failure-path tests.</h2>
-            <p>The automated suite contains eight tests covering cached responses, PostgreSQL fallback routing, missing items, Redis misses, Redis read errors, and Redis write errors. GitHub Actions runs the suite on pushes and pull requests.</p>
-            <p>The tests use controlled substitutes for Redis and database operations, so they verify routing and error behavior deterministically. They do not prove real PostgreSQL or Redis availability end to end.</p>
+            <div class="case-evidence-matrix" aria-label="Performance lab verification">
+              <div class="case-evidence-item"><span class="case-evidence-label">Cache behavior</span><strong>Cached responses and Redis misses tested</strong><small>Fast-path and miss-path routing are exercised deliberately.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Database fallback</span><strong>PostgreSQL fallback routing verified</strong><small>Requests continue through the source-of-truth path when Redis cannot serve them.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Redis read errors</span><strong>Failure path tested deterministically</strong><small>Read failures do not silently become successful cache responses.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Redis write errors</span><strong>Best-effort cache refill behavior tested</strong><small>Cache refill failure does not invalidate a successful database read.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">Missing items</span><strong>Not-found behavior covered</strong><small>Missing data is handled as an application result, not a dependency crash.</small></div>
+              <div class="case-evidence-item"><span class="case-evidence-label">CI</span><strong>Automated tests run on pushes and pull requests</strong><small>The suite validates routing and failure behavior continuously.</small></div>
+            </div>
           </div>
         </section>
 
@@ -141,10 +175,10 @@
             <h2>Every optimization adds another operating decision.</h2>
             <ul>
               <li><strong>Pooling:</strong> removes repeated connection setup cost, but pool size becomes part of capacity behavior.</li>
-              <li><strong>Caching:</strong> can reduce database work, but it adds freshness and dependency-management concerns.</li>
-              <li><strong>Fallback:</strong> preserves availability during a cache failure, but shifts load back to PostgreSQL.</li>
+              <li><strong>Caching:</strong> can reduce database work, but adds freshness and dependency-management concerns.</li>
+              <li><strong>Fallback:</strong> preserves availability during cache failure, but shifts load back to PostgreSQL.</li>
               <li><strong>Short timeouts:</strong> keep fallback responsive, but can be too aggressive in a slower environment.</li>
-              <li><strong>Concurrency:</strong> can increase throughput only until contention and queueing begin to dominate.</li>
+              <li><strong>Concurrency:</strong> increases throughput only until contention and queueing begin to dominate.</li>
             </ul>
           </div>
         </section>
@@ -163,7 +197,7 @@
           <div>
             <h2>Local benchmark results are comparison evidence, not capacity claims.</h2>
             <p>The recorded figures are short-duration, workload-specific local measurements. Hardware, system load, dataset shape, request mix, pool configuration, and cache behavior all affect the result.</p>
-            <p>The current code always uses pooling and checks Redis first, so reproducing the historical baseline configurations requires the recorded experiment setup in the repository. A production evaluation would also need real integration tests, longer concurrent load tests, full metrics collection, dashboards, alerting, and SLOs based on observed behavior.</p>
+            <p>A production evaluation would also need real integration tests, longer concurrent load tests, full metrics collection, dashboards, alerting, and SLOs based on observed behavior.</p>
           </div>
         </section>
       </article>
@@ -174,14 +208,11 @@
           <h2>What this project demonstrates</h2>
           <ul class="case-side-list">
             <li>PostgreSQL connection pooling</li>
-            <li>Redis caching and graceful fallback</li>
-            <li>Dependency timeout and retry configuration</li>
-            <li>Throughput, average, p95, and p99 analysis</li>
+            <li>Redis caching and fallback</li>
+            <li>Dependency timeout behavior</li>
+            <li>Throughput and tail-latency analysis</li>
             <li>Concurrency tradeoff testing</li>
-            <li>Failure-path reasoning under dependency loss</li>
-            <li>Prometheus-format application metrics</li>
-            <li>Automated tests and CI</li>
-            <li>Benchmark-scope and capacity-limit reasoning</li>
+            <li>Failure-path verification</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · PostgreSQL · Redis · Docker Compose · Prometheus client · pytest · GitHub Actions</p>
         </div>
@@ -190,11 +221,11 @@
 
     <section class="case-next shell">
       <div>
-        <p class="case-kicker">Return to portfolio</p>
-        <h2>Reliability across the stack</h2>
-        <p>Linux operations, Kubernetes reliability, durable workflows, and measured distributed-system behavior.</p>
+        <p class="case-kicker">Next case study</p>
+        <h2>Order Fulfillment with Temporal</h2>
+        <p>Durable workflow execution, bounded retries, compensation, persisted state, and crash recovery.</p>
       </div>
-      <a class="case-action" href="../index.html#projects">View engineering work →</a>
+      <a class="case-action" href="order-fulfillment.html">View case study →</a>
     </section>
   </main>
 
