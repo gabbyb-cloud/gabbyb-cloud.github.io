@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../assets/css/executive.css">
   <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
+  <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
 <body class="case-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -74,12 +75,31 @@
           <span class="case-number">02 / Architecture</span>
           <div>
             <h2>The architecture is deliberately small and operationally observable.</h2>
-            <p>Traffic reaches a FastAPI workload through a Kubernetes Service. Helm manages the application resources, Kubernetes probes report liveness and readiness, and Prometheus discovers application metrics through a ServiceMonitor. Grafana visualizes behavior, while a Prometheus alert rule detects sustained error-rate degradation.</p>
-            <div class="case-results" aria-label="Architecture flow">
-              <div class="case-result"><span class="case-result-label">Traffic</span><strong>Client → Kubernetes Service → FastAPI Pod</strong></div>
-              <div class="case-result"><span class="case-result-label">Telemetry</span><strong>Pod /metrics → ServiceMonitor → Prometheus</strong></div>
-              <div class="case-result"><span class="case-result-label">Visibility</span><strong>Prometheus → Grafana dashboards</strong></div>
-              <div class="case-result"><span class="case-result-label">Response</span><strong>Prometheus alert → investigate → recover → verify</strong></div>
+            <p>Traffic reaches the FastAPI workload through a Kubernetes Service. Application behavior is exposed separately from pod health, while Prometheus and Grafana provide the monitoring path used during the failure exercise.</p>
+
+            <div class="case-architecture" aria-label="System architecture">
+              <div class="case-flow">
+                <div class="case-flow-node">
+                  <span class="case-flow-label">Request</span>
+                  <strong>Client</strong>
+                </div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node">
+                  <span class="case-flow-label">Routing</span>
+                  <strong>Kubernetes Service</strong>
+                </div>
+                <div class="case-flow-arrow" aria-hidden="true">→</div>
+                <div class="case-flow-node">
+                  <span class="case-flow-label">Workload</span>
+                  <strong>FastAPI Pod</strong>
+                </div>
+              </div>
+
+              <div class="case-flow-secondary">
+                <div><span class="case-flow-label">Deployment</span><strong>Helm manages workload configuration and probes</strong></div>
+                <div><span class="case-flow-label">Telemetry</span><strong>/metrics → ServiceMonitor → Prometheus → Grafana</strong></div>
+                <div><span class="case-flow-label">Response</span><strong>Alert → investigate → recover → verify</strong></div>
+              </div>
             </div>
           </div>
         </section>
@@ -95,7 +115,11 @@
               <li><strong>Terraform:</strong> adopts and manages the existing <code>sre-lab</code> namespace as infrastructure state.</li>
               <li><strong>GitHub Actions:</strong> validates Python, Docker, Helm, and Terraform changes before they reach the protected branch.</li>
             </ul>
-            <p>A key design choice is keeping readiness healthy during injected application failure. That separates user-facing 5xx errors from pod availability and allows the monitoring system to observe a reachable but degraded service.</p>
+            <div class="case-decision">
+              <span class="case-decision-label">Key decision</span>
+              <strong>Keep readiness healthy during injected application failure.</strong>
+              <p>That separates user-facing 5xx errors from pod availability, so the monitoring system can observe a reachable but degraded service instead of Kubernetes immediately hiding the failure.</p>
+            </div>
           </div>
         </section>
 
@@ -112,8 +136,35 @@
           <span class="case-number">05 / Failure drill</span>
           <div>
             <h2>I deliberately degraded the workload without making the pod unavailable.</h2>
-            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> continues returning HTTP 200. This creates an application-level incident that Kubernetes does not hide by immediately removing the pod from traffic.</p>
-            <p>Sustained failing requests drive the alert through <strong>Inactive → Pending → Firing</strong>. Recovery begins by disabling failure mode, then verifying the deployment rollout and application behavior rather than assuming the configuration change succeeded.</p>
+            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> continues returning HTTP 200. The drill tests whether application degradation can be detected and recovered without conflating it with pod readiness.</p>
+
+            <div class="case-timeline" aria-label="Failure exercise sequence">
+              <div class="case-timeline-step">
+                <span>01</span>
+                <strong>Healthy baseline</strong>
+                <p>Readiness is healthy and normal <code>/work</code> requests succeed.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>02</span>
+                <strong>Failure injected</strong>
+                <p><code>FAIL_MODE=true</code> causes <code>/work</code> to return HTTP 500 while <code>/ready</code> remains HTTP 200.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>03</span>
+                <strong>Alert transitions</strong>
+                <p>Sustained errors move <code>HighErrorRate</code> through Inactive → Pending → Firing.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>04</span>
+                <strong>Recovery executed</strong>
+                <p>Failure mode is disabled and the deployment rollout is checked instead of assuming the change succeeded.</p>
+              </div>
+              <div class="case-timeline-step">
+                <span>05</span>
+                <strong>Recovery verified</strong>
+                <p>Application behavior, metrics, targets, and alert state are checked until the alert resolves.</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -121,13 +172,38 @@
           <span class="case-number">06 / Verification</span>
           <div>
             <h2>Recovery is not complete until multiple signals agree.</h2>
-            <div class="case-results" aria-label="Validation evidence">
-              <div class="case-result"><span class="case-result-label">Kubernetes</span><strong>Deployment rollout and pod readiness verified</strong></div>
-              <div class="case-result"><span class="case-result-label">Application</span><strong>/ready and /work behavior rechecked</strong></div>
-              <div class="case-result"><span class="case-result-label">Monitoring</span><strong>Prometheus target and error metrics verified</strong></div>
-              <div class="case-result"><span class="case-result-label">Alerting</span><strong>HighErrorRate returned to resolved/inactive</strong></div>
+            <div class="case-evidence-matrix" aria-label="Recovery verification evidence">
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Kubernetes</span>
+                <strong>Deployment rollout and pod readiness verified</strong>
+                <small>Workload state checked after recovery.</small>
+              </div>
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Application</span>
+                <strong><code>/ready</code> and <code>/work</code> behavior rechecked</strong>
+                <small>Health and user-facing behavior validated separately.</small>
+              </div>
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Monitoring</span>
+                <strong>Prometheus target and error metrics verified</strong>
+                <small>Telemetry confirmed the system had returned to normal behavior.</small>
+              </div>
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Alerting</span>
+                <strong>HighErrorRate returned to resolved/inactive</strong>
+                <small>The incident was not considered complete while the alert remained active.</small>
+              </div>
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Infrastructure</span>
+                <strong>Terraform state reconciled successfully</strong>
+                <small>Infrastructure matched the expected configuration.</small>
+              </div>
+              <div class="case-evidence-item">
+                <span class="case-evidence-label">Operations</span>
+                <strong>Runbook and blameless postmortem documented</strong>
+                <small>Recovery knowledge is kept with the system rather than only in memory.</small>
+              </div>
             </div>
-            <p>The Terraform-managed namespace was also reconciled successfully with <code>No changes. Your infrastructure matches the configuration.</code> The repository includes a runbook and a blameless postmortem so operational response is documented alongside the code and infrastructure.</p>
           </div>
         </section>
 
@@ -155,16 +231,12 @@
           <p class="case-label">Engineering focus</p>
           <h2>What this project demonstrates</h2>
           <ul class="case-side-list">
-            <li>Kubernetes workload operation and troubleshooting</li>
-            <li>Liveness and readiness probe design</li>
-            <li>Helm packaging and deployment configuration</li>
-            <li>Prometheus metrics, PromQL, and alert rules</li>
-            <li>Grafana observability</li>
-            <li>SLO-driven reliability thinking</li>
-            <li>Controlled failure and recovery verification</li>
-            <li>Runbook and incident-postmortem discipline</li>
-            <li>Terraform state adoption and validation</li>
-            <li>Infrastructure and application CI validation</li>
+            <li>Kubernetes workload operations</li>
+            <li>Liveness and readiness design</li>
+            <li>Prometheus metrics and alerting</li>
+            <li>SLO-driven monitoring</li>
+            <li>Controlled failure and recovery</li>
+            <li>Runbook and postmortem discipline</li>
           </ul>
           <p class="case-stack-line">Python · FastAPI · Docker · kind · Kubernetes · Helm · Terraform · Prometheus · Grafana · GitHub Actions</p>
         </div>
