@@ -29,7 +29,7 @@
       <div>
         <p class="case-kicker">Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
-        <p class="case-summary">I built a local order-processing workflow with Temporal to practice durable execution, failure handling, compensation, cancellation, and worker recovery.</p>
+        <p class="case-summary">I built a durable order-processing workflow with Temporal to test failure handling, compensation, cancellation, and recovery after worker failure.</p>
         <!-- TODO tests and failure scenarios covered -->
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -61,14 +61,14 @@
           <div>
             <h2>What I built</h2>
             <p>Order fulfillment spans operations that can succeed and fail independently. Payment may complete before inventory fails. Inventory may be reserved before shipping fails. A worker can restart midway through the process.</p>
-            <p>If workflow progress exists only in process memory, infrastructure failure can become lost business state. This project moves execution history into Temporal so the business process outlives the worker that happens to be executing it.</p>
+            <p>I move workflow history into Temporal so the business process can outlive the worker executing it.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
             <h2>How the system works</h2>
-            <p>FastAPI accepts authenticated order submissions and starts a Temporal workflow. Temporal persists workflow history independently of the worker process, while activities execute the individual business steps.</p>
+            <p>FastAPI accepts authenticated order submissions and starts a Temporal workflow. Temporal persists workflow history independently of the worker process while activities execute the individual business steps.</p>
 
             <div class="case-architecture" aria-label="Order fulfillment architecture">
               <div class="case-flow">
@@ -90,7 +90,7 @@
         <section class="case-block">
           <div>
             <h2>How I handle failures</h2>
-            <p>Retry policy begins by separating failures that may improve with time from failures that require a business decision or new input.</p>
+            <p>I separate failures that may improve with time from failures that require a business decision or new input before applying retry policy.</p>
 
             <div class="case-evidence-matrix" aria-label="Retryable and non-retryable failures">
               <div class="case-evidence-item"><span class="case-evidence-label">Retryable</span><strong>Transient infrastructure failure</strong><small>Bounded retries with exponential backoff can succeed after a temporary dependency problem clears.</small></div>
@@ -110,7 +110,7 @@
         <section class="case-block">
           <div>
             <h2>How I handle partial success</h2>
-            <p>The workflow uses Saga-style compensating actions rather than treating external side effects like an atomic database transaction. If a later step fails, completed actions are reversed in the opposite order where possible.</p>
+            <p>The workflow uses Saga-style compensating actions rather than treating external side effects like an atomic database transaction. When a later step fails, I reverse completed actions in the opposite order where possible.</p>
 
             <div class="case-timeline" aria-label="Compensation sequence after shipping failure">
               <div class="case-timeline-step"><span>01</span><strong>Payment succeeds</strong><p>The order now has an external side effect that may need compensation later.</p></div>
@@ -140,7 +140,7 @@
           <div>
             <h2>What I tested</h2>
             <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
-            <p>A controlled worker restart exercises the durability property directly. Temporal retains workflow history while the worker is unavailable. When the worker returns, execution continues from persisted workflow state instead of reconstructing the business process from memory.</p>
+            <p>I use a controlled worker restart to test durability directly. Temporal retains workflow history while the worker is unavailable. When the worker returns, execution continues from persisted workflow state instead of reconstructing the business process from memory.</p>
 
             <div class="case-architecture" aria-label="Worker crash recovery flow">
               <div class="case-flow">
