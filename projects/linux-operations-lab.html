@@ -30,11 +30,11 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 02 · Linux Operations & Troubleshooting</p>
+        <p class="case-kicker">Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
         <p class="case-summary">
           A hands-on Linux environment built around a disciplined troubleshooting loop:
-          <strong>observe the symptom, inspect the host, isolate the failing layer, apply the smallest fix, verify recovery, and automate repeatable checks.</strong>
+          
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -63,16 +63,14 @@
     <div class="case-main shell">
       <article class="case-story">
         <section class="case-block">
-          <span class="case-number">01 / Problem</span>
           <div>
-            <h2>A failed request can originate below the application layer.</h2>
+            <h2>What I built</h2>
             <p>The service is intentionally small so troubleshooting stays focused on Linux behavior. When an endpoint becomes unavailable, the useful questions are broader than “is the code broken?”: Is the process running? Is systemd managing it? Is the expected socket listening? Are file permissions correct? Is routing or DNS involved? Is the host under resource pressure?</p>
             <p>The lab was built to answer those questions with evidence instead of jumping directly to restarts or code changes.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">02 / Troubleshooting model</span>
           <div>
             <h2>Inspect before changing the system.</h2>
             <p>The same workflow is used across service, permission, networking, and resource problems: begin with the visible symptom, collect evidence by layer, isolate the failure domain, make the smallest corrective change, then verify from multiple angles.</p>
@@ -95,7 +93,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">03 / Service incident</span>
           <div>
             <h2>Run a service, break it, inspect it, and recover it.</h2>
             <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab deliberately stops the service, then works outward from the symptom rather than assuming the root cause.</p>
@@ -137,7 +134,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Permissions</span>
           <div>
             <h2>Access failures become easier to debug when ownership is explicit.</h2>
             <p>Controlled permission exercises use users, groups, ownership, and mode bits to reproduce access failures intentionally. Ownership and permissions are inspected before changes are made so an access problem is not misdiagnosed as an application defect.</p>
@@ -145,7 +141,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Networking</span>
           <div>
             <h2>Trace connectivity from interface state to application response.</h2>
             <p>The networking exercises separate interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity. Each check answers a different question, which makes it easier to distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
@@ -153,7 +148,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Host health</span>
           <div>
             <h2>Service degradation can be a host problem.</h2>
             <p>The lab inspects CPU count, load, memory usage, disk usage, and running processes so troubleshooting includes the operating environment beneath the application.</p>
@@ -168,7 +162,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Automation</span>
           <div>
             <h2>Repeated inspection became a lightweight operational tool.</h2>
             <p>A Bash health script collects a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
@@ -177,7 +170,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Verified outcomes</span>
           <div>
             <h2>Operational evidence matters more than a tool list.</h2>
             <div class="case-evidence-matrix" aria-label="Verified Linux operations outcomes">
@@ -190,16 +182,14 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">09 / Takeaway</span>
           <div>
             <h2>Linux fundamentals make platform failures easier to reason about.</h2>
             <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still exist underneath those platforms. Practicing these layers directly makes higher-level SRE and platform troubleshooting more concrete.</p>
-            <p><strong>Observe → Diagnose → Recover → Verify → Automate</strong> is the operating pattern this lab contributes to the rest of the portfolio.</p>
+            <p> is the operating pattern this lab contributes to the rest of the portfolio.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">10 / Production boundary</span>
           <div>
             <h2>This is an operations lab, not a production Linux fleet.</h2>
             <p>The environment runs locally on Ubuntu under WSL2, and the checked-in systemd unit must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, alerting, or multi-host automation.</p>
