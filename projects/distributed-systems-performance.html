@@ -30,7 +30,7 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 03 · Performance & Resilience</p>
+        <p class="case-kicker">Performance & Resilience</p>
         <h1 id="case-title">Distributed Systems Performance Lab</h1>
         <p class="case-summary">
           A backend lab built to compare how concrete system changes affect request behavior:
@@ -63,16 +63,14 @@
     <div class="case-main shell">
       <article class="case-story">
         <section class="case-block">
-          <span class="case-number">01 / Problem</span>
           <div>
-            <h2>Optimization choices should be measured, not assumed.</h2>
+            <h2>What I learned</h2>
             <p>The lab uses a small FastAPI item-lookup service to compare how PostgreSQL connection reuse, Redis caching, dependency failure, and concurrency change observable request behavior.</p>
             <p>The goal is not to chase the largest local benchmark number. It is to identify which change actually moves the system, what happens to tail latency, and whether the request path remains predictable when an optional dependency fails.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">02 / Architecture</span>
           <div>
             <h2>The cache is an optimization; PostgreSQL remains the source of truth.</h2>
             <p>Requests enter FastAPI and check Redis first. Cache hits return immediately. A miss or Redis read error falls through to PostgreSQL. Successful database reads are returned to the client and written back to Redis when possible.</p>
@@ -95,7 +93,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">03 / Experiment design</span>
           <div>
             <h2>Change one major behavior at a time and keep the workload visible.</h2>
             <p>The recorded baseline, pooled PostgreSQL, and Redis cache-hit experiments each used five runs of 200 measured requests at concurrency 10. The Redis-unavailable experiment used six runs with the same measured request count and concurrency. All recorded runs reported zero measured request errors.</p>
@@ -110,7 +107,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Recorded results</span>
           <div>
             <h2>Pooling produced the largest improvement in this workload.</h2>
             <div class="case-evidence-matrix" aria-label="Recorded benchmark comparison">
@@ -124,7 +120,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Dependency failure</span>
           <div>
             <h2>A cache outage degraded performance without becoming an application outage.</h2>
             <p>Redis connection and socket timeouts are set to 0.1 seconds with retries disabled. That bounds how long the request path waits before falling back to PostgreSQL.</p>
@@ -146,7 +141,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Concurrency</span>
           <div>
             <h2>More parallelism was not automatically better.</h2>
             <p>Among concurrency levels 1, 10, 25, and 50, throughput peaked at 10. Beyond that point, throughput declined while tail latency increased.</p>
@@ -155,7 +149,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Verification</span>
           <div>
             <h2>Performance evidence is paired with deterministic failure-path tests.</h2>
             <div class="case-evidence-matrix" aria-label="Performance lab verification">
@@ -170,7 +163,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Tradeoffs</span>
           <div>
             <h2>Every optimization adds another operating decision.</h2>
             <ul>
@@ -184,7 +176,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">09 / What this proved</span>
           <div>
             <h2>Performance engineering and reliability engineering overlap.</h2>
             <p>The useful result is not simply that one configuration was faster. The lab connects connection management, caching, dependency fallback, concurrency, and p95/p99 latency so system changes can be evaluated as operational behavior.</p>
@@ -193,7 +184,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">10 / Production boundary</span>
           <div>
             <h2>Local benchmark results are comparison evidence, not capacity claims.</h2>
             <p>The recorded figures are short-duration, workload-specific local measurements. Hardware, system load, dataset shape, request mix, pool configuration, and cache behavior all affect the result.</p>
