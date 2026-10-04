@@ -30,11 +30,10 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 01 · Site Reliability Engineering</p>
+        <p class="case-kicker">Site Reliability Engineering · Personal lab</p>
         <h1 id="case-title">SRE Reliability Lab</h1>
         <p class="case-summary">
-          A local reliability environment built to exercise the full operating loop:
-          <strong>deploy, observe, define an SLO, detect degradation, recover safely, verify recovery, and document the incident.</strong>
+          I built a local Kubernetes lab to practice monitoring a service, injecting a failure, recovering it, and checking the recovery with more than one signal.
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -54,28 +53,26 @@
     </section>
 
     <section class="case-proof-rail shell" aria-label="Reliability evidence">
+      <div class="case-proof"><span class="case-proof-label">Measured result</span><strong>TODO — record the real alert detection time and recovery time from a documented run.</strong></div>
       <div class="case-proof"><span class="case-proof-label">SLO</span><strong>99% successful /work requests</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Detection</span><strong>&gt;20% 5xx over 2m, sustained for 1m</strong></div>
       <div class="case-proof"><span class="case-proof-label">Failure drill</span><strong>Controlled HTTP 500 injection</strong></div>
-      <div class="case-proof"><span class="case-proof-label">Outcome</span><strong>Inactive → Pending → Firing → Resolved</strong></div>
+      <div class="case-proof"><span class="case-proof-label">Observed</span><strong>HighErrorRate moved through Inactive → Pending → Firing → Resolved</strong></div>
     </section>
 
     <div class="case-main shell">
       <article class="case-story">
         <section class="case-block">
-          <span class="case-number">01 / Problem</span>
           <div>
-            <h2>Deployment was only the starting point.</h2>
-            <p>The application is intentionally small because the project is about operating the service around it. The lab focuses on the questions that matter after deployment: Is the service ready? What does normal behavior look like? Which signal proves user-facing failure? When should an alert fire? How should recovery happen, and how do I prove the system actually returned to normal?</p>
-            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> endpoints so health, workload behavior, telemetry, and recovery can be tested independently.</p>
+            <h2>What I built</h2>
+            <p>I kept the application small so I could focus on the operating side of the system. I wanted to know whether the service was ready, what normal behavior looked like, how application failure showed up in metrics, and how I could verify recovery.</p>
+            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> so I could test health, workload behavior, telemetry, and recovery separately.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">02 / Architecture</span>
           <div>
-            <h2>The architecture is deliberately small and operationally observable.</h2>
-            <p>Traffic reaches the FastAPI workload through a Kubernetes Service. Application behavior is exposed separately from pod health, while Prometheus and Grafana provide the monitoring path used during the failure exercise.</p>
+            <h2>How the system works</h2>
+            <p>Traffic reaches the FastAPI workload through a Kubernetes Service. I kept application behavior separate from pod health so Prometheus and Grafana could detect a reachable service that was returning errors.</p>
 
             <div class="case-architecture" aria-label="System architecture">
               <div class="case-flow">
@@ -105,9 +102,8 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">03 / Design decisions</span>
           <div>
-            <h2>Each tool has a specific operating job.</h2>
+            <h2>Why I used these tools</h2>
             <ul>
               <li><strong>Docker:</strong> creates a repeatable application image.</li>
               <li><strong>Kubernetes + Helm:</strong> manage workload deployment, probes, configuration, and rollout behavior.</li>
@@ -124,19 +120,17 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Reliability target</span>
           <div>
-            <h2>The monitoring starts with a measurable objective.</h2>
-            <p>The lab defines a 99% availability SLO for successful <code>/work</code> requests. The SLI compares successful 2xx responses with total <code>/work</code> requests over the measurement window.</p>
-            <p>The <code>HighErrorRate</code> alert fires when more than 20% of <code>/work</code> requests are 5xx over a 2-minute window for at least 1 minute. The short window is intentional for a low-traffic local lab; it makes the full alert lifecycle practical to exercise while keeping the alert tied to application behavior rather than pod health alone.</p>
+            <h2>How I measured the failure</h2>
+            <p>I defined a 99% availability SLO for successful <code>/work</code> requests. The SLI compares successful 2xx responses with total <code>/work</code> requests over the measurement window.</p>
+            <p>The <code>HighErrorRate</code> alert fires when more than 20% of <code>/work</code> requests are 5xx over 2 minutes for at least 1 minute. I used that short window because this is a low-traffic local lab and I wanted the alert lifecycle to be practical to test.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Failure drill</span>
           <div>
-            <h2>I deliberately degraded the workload without making the pod unavailable.</h2>
-            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> continues returning HTTP 200. The drill tests whether application degradation can be detected and recovered without conflating it with pod readiness.</p>
+            <h2>What I tested</h2>
+            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> stays at HTTP 200. I used this to test application failure without making the pod unavailable.</p>
 
             <div class="case-timeline" aria-label="Failure exercise sequence">
               <div class="case-timeline-step">
@@ -169,9 +163,8 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Verification</span>
           <div>
-            <h2>Recovery is not complete until multiple signals agree.</h2>
+            <h2>How I verified recovery</h2>
             <div class="case-evidence-matrix" aria-label="Recovery verification evidence">
               <div class="case-evidence-item">
                 <span class="case-evidence-label">Kubernetes</span>
@@ -208,18 +201,16 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / What this proved</span>
           <div>
-            <h2>The useful evidence is the operating loop, not the tool list.</h2>
-            <p>The completed exercise demonstrates that I can connect deployment state, application behavior, telemetry, alerting, incident response, and verification into one repeatable reliability workflow: <strong>Observe → Diagnose → Recover → Verify → Document.</strong></p>
-            <p>The project intentionally makes no throughput or latency claims. Its evidence is functional: the service can be degraded in a controlled way, the failure can be detected through application-level telemetry, recovery can be executed, and the system can be verified afterward.</p>
+            <h2>What I learned</h2>
+            <p>The useful part of the project was having to connect deployment state, application behavior, telemetry, alerting, recovery, and verification. I learned that a service can look healthy at the pod level while still failing at the application level.</p>
+            <p>I did not use this lab to make throughput or latency claims. The evidence is functional: I can inject the failure, detect it with application-level telemetry, recover the service, and verify the recovery afterward.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Production boundary</span>
           <div>
-            <h2>Local reliability evidence is not production equivalence.</h2>
+            <h2>Limits of the lab</h2>
             <p>The lab demonstrates SRE concepts in a reproducible local environment. A production platform would still require managed secrets, external alert routing, high-availability design, production telemetry, stronger security controls, image registry workflows, capacity planning, cloud IAM, and environment-specific networking and infrastructure.</p>
             <p>The next useful extensions would be automated failure scenarios, distributed tracing across a dependency boundary, and a small cloud deployment that adds IAM and managed networking while preserving the same reliability workflow.</p>
           </div>
