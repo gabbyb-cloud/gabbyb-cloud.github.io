@@ -30,7 +30,7 @@
         <p class="case-kicker">Site Reliability Engineering · Personal lab</p>
         <h1 id="case-title">SRE Reliability Lab</h1>
         <p class="case-summary">
-          I built a local Kubernetes lab to practice monitoring a service, injecting a failure, recovering it, and checking the recovery with more than one signal.
+          I built a local Kubernetes environment to test service reliability with SLOs, controlled failure injection, Prometheus alerting, recovery, and post-incident verification.
         </p>
         <!-- TODO measured detection time and recovery time -->
         <div class="case-actions">
@@ -62,15 +62,15 @@
         <section class="case-block">
           <div>
             <h2>What I built</h2>
-            <p>I kept the application small so I could focus on the operating side of the system. I wanted to know whether the service was ready, what normal behavior looked like, how application failure showed up in metrics, and how I could verify recovery.</p>
-            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> so I could test health, workload behavior, telemetry, and recovery separately.</p>
+            <p>I kept the application small so I could isolate the operating behavior. I tested readiness, normal workload behavior, application-level failure, telemetry, and recovery as separate signals.</p>
+            <p>The service exposes <code>/health</code>, <code>/ready</code>, <code>/work</code>, and <code>/metrics</code> so I could test each part of that path independently.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
             <h2>How the system works</h2>
-            <p>Traffic reaches the FastAPI workload through a Kubernetes Service. I kept application behavior separate from pod health so Prometheus and Grafana could detect a reachable service that was returning errors.</p>
+            <p>Traffic reaches the FastAPI workload through a Kubernetes Service. I separated application behavior from pod health so Prometheus and Grafana could detect a reachable service that was returning errors.</p>
 
             <div class="case-architecture" aria-label="System architecture">
               <div class="case-flow">
@@ -112,7 +112,7 @@
             <div class="case-decision">
               <span class="case-decision-label">Key decision</span>
               <strong>Keep readiness healthy during injected application failure.</strong>
-              <p>That separates user-facing 5xx errors from pod availability, so the monitoring system can observe a reachable but degraded service instead of Kubernetes immediately hiding the failure.</p>
+              <p>This keeps user-facing 5xx errors separate from pod availability, so monitoring can observe a reachable but degraded service instead of Kubernetes immediately removing it from view.</p>
             </div>
           </div>
         </section>
@@ -121,7 +121,7 @@
           <div>
             <h2>How I measured the failure</h2>
             <p>I defined a 99% availability SLO for successful <code>/work</code> requests. The SLI compares successful 2xx responses with total <code>/work</code> requests over the measurement window.</p>
-            <p>The <code>HighErrorRate</code> alert fires when more than 20% of <code>/work</code> requests are 5xx over 2 minutes for at least 1 minute. I used that short window because this is a low-traffic local lab and I wanted the alert lifecycle to be practical to test.</p>
+            <p>The <code>HighErrorRate</code> alert fires when more than 20% of <code>/work</code> requests are 5xx over 2 minutes for at least 1 minute. I chose that window because the environment is local and low traffic, which makes the full alert lifecycle practical to test.</p>
           </div>
         </section>
 
@@ -129,7 +129,7 @@
           <div>
             <h2>What I tested</h2>
             <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
-            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> stays at HTTP 200. I used this to test application failure without making the pod unavailable.</p>
+            <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> stays at HTTP 200. That lets me test an application failure without making the pod unavailable.</p>
 
             <div class="case-timeline" aria-label="Failure exercise sequence">
               <div class="case-timeline-step">
@@ -145,17 +145,17 @@
               <div class="case-timeline-step">
                 <span>03</span>
                 <strong>Alert transitions</strong>
-                <p>Sustained errors move <code>HighErrorRate</code> through Inactive → Pending → Firing.</p>
+                <p>Sustained errors move <code>HighErrorRate</code> from Inactive to Pending to Firing.</p>
               </div>
               <div class="case-timeline-step">
                 <span>04</span>
                 <strong>Recovery executed</strong>
-                <p>Failure mode is disabled and the deployment rollout is checked instead of assuming the change succeeded.</p>
+                <p>I disable failure mode and check the deployment rollout rather than assuming the change succeeded.</p>
               </div>
               <div class="case-timeline-step">
                 <span>05</span>
                 <strong>Recovery verified</strong>
-                <p>Application behavior, metrics, targets, and alert state are checked until the alert resolves.</p>
+                <p>I recheck application behavior, metrics, targets, and alert state until the alert resolves.</p>
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@
           <div>
             <h2>What I learned</h2>
             <!-- TODO: one thing that went wrong or surprised me, and what I'd do differently -->
-            <p>The useful part of the project was having to connect deployment state, application behavior, telemetry, alerting, recovery, and verification. I learned that a service can look healthy at the pod level while still failing at the application level.</p>
+            <p>The important part was connecting deployment state, application behavior, telemetry, alerting, recovery, and verification. The service can look healthy at the pod level while still failing at the application level.</p>
             <p>I did not use this lab to make throughput or latency claims. The evidence is functional: I can inject the failure, detect it with application-level telemetry, recover the service, and verify the recovery afterward.</p>
           </div>
         </section>
