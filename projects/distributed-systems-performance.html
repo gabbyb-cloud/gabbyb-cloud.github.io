@@ -8,9 +8,6 @@
   <meta name="theme-color" content="#0b0e12">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="../assets/css/redesign.css">
-  <link rel="stylesheet" href="../assets/css/executive.css">
-  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
   <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
@@ -32,10 +29,7 @@
       <div>
         <p class="case-kicker">Performance & Resilience</p>
         <h1 id="case-title">Distributed Systems Performance Lab</h1>
-        <p class="case-summary">
-          A backend lab built to compare how concrete system changes affect request behavior:
-          <strong>connection reuse, caching, dependency failure, concurrency, throughput, and tail latency.</strong>
-        </p>
+        <p class="case-summary">I built a local backend lab to measure how connection pooling, caching, dependency failure, and concurrency affect request behavior.</p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/distributed-systems-performance-lab" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -64,7 +58,7 @@
       <article class="case-story">
         <section class="case-block">
           <div>
-            <h2>What I learned</h2>
+            <h2>What I built</h2>
             <p>The lab uses a small FastAPI item-lookup service to compare how PostgreSQL connection reuse, Redis caching, dependency failure, and concurrency change observable request behavior.</p>
             <p>The goal is not to chase the largest local benchmark number. It is to identify which change actually moves the system, what happens to tail latency, and whether the request path remains predictable when an optional dependency fails.</p>
           </div>
@@ -72,7 +66,7 @@
 
         <section class="case-block">
           <div>
-            <h2>The cache is an optimization; PostgreSQL remains the source of truth.</h2>
+            <h2>How the request path works</h2>
             <p>Requests enter FastAPI and check Redis first. Cache hits return immediately. A miss or Redis read error falls through to PostgreSQL. Successful database reads are returned to the client and written back to Redis when possible.</p>
 
             <div class="case-architecture" aria-label="Distributed request flow">
@@ -94,7 +88,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Change one major behavior at a time and keep the workload visible.</h2>
+            <h2>How I measured it</h2>
             <p>The recorded baseline, pooled PostgreSQL, and Redis cache-hit experiments each used five runs of 200 measured requests at concurrency 10. The Redis-unavailable experiment used six runs with the same measured request count and concurrency. All recorded runs reported zero measured request errors.</p>
             <p>A separate concurrency experiment tested levels 1, 10, 25, and 50. Benchmarks tracked throughput, average latency, p95, p99, and errors so slower requests were not hidden behind a single average.</p>
 
@@ -108,7 +102,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Pooling produced the largest improvement in this workload.</h2>
+            <h2>Results</h2>
             <div class="case-evidence-matrix" aria-label="Recorded benchmark comparison">
               <div class="case-evidence-item"><span class="case-evidence-label">PostgreSQL baseline</span><strong>223.45 req/s</strong><small>44.67 ms avg · 77.22 ms p95 · 113.41 ms p99</small></div>
               <div class="case-evidence-item"><span class="case-evidence-label">PostgreSQL pooling</span><strong>640.24 req/s</strong><small>15.36 ms avg · 28.59 ms p95 · 38.73 ms p99</small></div>
@@ -121,7 +115,7 @@
 
         <section class="case-block">
           <div>
-            <h2>A cache outage degraded performance without becoming an application outage.</h2>
+            <h2>What happened when Redis was unavailable</h2>
             <p>Redis connection and socket timeouts are set to 0.1 seconds with retries disabled. That bounds how long the request path waits before falling back to PostgreSQL.</p>
 
             <div class="case-timeline" aria-label="Redis failure and fallback sequence">
@@ -142,7 +136,7 @@
 
         <section class="case-block">
           <div>
-            <h2>More parallelism was not automatically better.</h2>
+            <h2>Concurrency</h2>
             <p>Among concurrency levels 1, 10, 25, and 50, throughput peaked at 10. Beyond that point, throughput declined while tail latency increased.</p>
             <p>The result makes concurrency a tuning variable rather than a target. More in-flight work can increase contention and queueing instead of producing useful capacity.</p>
           </div>
@@ -150,7 +144,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Performance evidence is paired with deterministic failure-path tests.</h2>
+            <h2>Failure-path testing</h2>
             <div class="case-evidence-matrix" aria-label="Performance lab verification">
               <div class="case-evidence-item"><span class="case-evidence-label">Cache behavior</span><strong>Cached responses and Redis misses tested</strong><small>Fast-path and miss-path routing are exercised deliberately.</small></div>
               <div class="case-evidence-item"><span class="case-evidence-label">Database fallback</span><strong>PostgreSQL fallback routing verified</strong><small>Requests continue through the source-of-truth path when Redis cannot serve them.</small></div>
@@ -164,7 +158,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Every optimization adds another operating decision.</h2>
+            <h2>Tradeoffs I found</h2>
             <ul>
               <li><strong>Pooling:</strong> removes repeated connection setup cost, but pool size becomes part of capacity behavior.</li>
               <li><strong>Caching:</strong> can reduce database work, but adds freshness and dependency-management concerns.</li>
@@ -177,15 +171,15 @@
 
         <section class="case-block">
           <div>
-            <h2>Performance engineering and reliability engineering overlap.</h2>
-            <p>The useful result is not simply that one configuration was faster. The lab connects connection management, caching, dependency fallback, concurrency, and p95/p99 latency so system changes can be evaluated as operational behavior.</p>
-            <p>The recurring workflow is: <strong>measure first, change deliberately, observe the tails, test failure behavior, and keep the limits of the measurement visible.</strong></p>
+            <h2>What I learned</h2>
+            <p>I learned that a faster path is not automatically a better system. The cache, fallback path, connection pool, and concurrency level all change how the service behaves when conditions change.</p>
+            <p>I kept the measurements visible because averages alone can hide slower requests and failure behavior.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>Local benchmark results are comparison evidence, not capacity claims.</h2>
+            <h2>Limits of the lab</h2>
             <p>The recorded figures are short-duration, workload-specific local measurements. Hardware, system load, dataset shape, request mix, pool configuration, and cache behavior all affect the result.</p>
             <p>A production evaluation would also need real integration tests, longer concurrent load tests, full metrics collection, dashboards, alerting, and SLOs based on observed behavior.</p>
           </div>
