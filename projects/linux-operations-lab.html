@@ -8,9 +8,6 @@
   <meta name="theme-color" content="#0b0e12">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="../assets/css/redesign.css">
-  <link rel="stylesheet" href="../assets/css/executive.css">
-  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
   <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
@@ -32,10 +29,7 @@
       <div>
         <p class="case-kicker">Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
-        <p class="case-summary">
-          A hands-on Linux environment built around a disciplined troubleshooting loop:
-          
-        </p>
+        <p class="case-summary">I built a small Linux lab to practice troubleshooting services, permissions, networking, and host health. I used evidence from the system before making changes.</p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -72,20 +66,20 @@
 
         <section class="case-block">
           <div>
-            <h2>Inspect before changing the system.</h2>
-            <p>The same workflow is used across service, permission, networking, and resource problems: begin with the visible symptom, collect evidence by layer, isolate the failure domain, make the smallest corrective change, then verify from multiple angles.</p>
+            <h2>How I troubleshoot</h2>
+            <p>I start with the visible symptom, then check the service, logs, socket, network, permissions, or host resources that could explain it. After making a targeted change, I check the service and application again.</p>
 
             <div class="case-architecture" aria-label="Linux troubleshooting flow">
               <div class="case-flow">
-                <div class="case-flow-node"><span class="case-flow-label">01</span><strong>Observe symptom</strong></div>
+                <div class="case-flow-node"><span class="case-flow-label">Symptom</span><strong>Start with the failed request</strong></div>
                 <div class="case-flow-arrow" aria-hidden="true">→</div>
-                <div class="case-flow-node"><span class="case-flow-label">02</span><strong>Inspect host state</strong></div>
+                <div class="case-flow-node"><span class="case-flow-label">Inspect</span><strong>Check the relevant system state</strong></div>
                 <div class="case-flow-arrow" aria-hidden="true">→</div>
-                <div class="case-flow-node"><span class="case-flow-label">03</span><strong>Isolate failing layer</strong></div>
+                <div class="case-flow-node"><span class="case-flow-label">Isolate</span><strong>Find the failing layer</strong></div>
               </div>
               <div class="case-flow-secondary">
-                <div><span class="case-flow-label">Recover</span><strong>Apply the smallest targeted correction</strong></div>
-                <div><span class="case-flow-label">Verify</span><strong>Confirm process, socket, and HTTP behavior</strong></div>
+                <div><span class="case-flow-label">Fix</span><strong>Apply a targeted correction</strong></div>
+                <div><span class="case-flow-label">Check</span><strong>Confirm process, socket, and HTTP behavior</strong></div>
                 <div><span class="case-flow-label">Automate</span><strong>Turn repeatable checks into Bash diagnostics</strong></div>
               </div>
             </div>
@@ -94,7 +88,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Run a service, break it, inspect it, and recover it.</h2>
+            <h2>What I tested</h2>
             <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab deliberately stops the service, then works outward from the symptom rather than assuming the root cause.</p>
 
             <div class="case-timeline" aria-label="Service troubleshooting sequence">
@@ -135,21 +129,21 @@
 
         <section class="case-block">
           <div>
-            <h2>Access failures become easier to debug when ownership is explicit.</h2>
+            <h2>Permissions</h2>
             <p>Controlled permission exercises use users, groups, ownership, and mode bits to reproduce access failures intentionally. Ownership and permissions are inspected before changes are made so an access problem is not misdiagnosed as an application defect.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>Trace connectivity from interface state to application response.</h2>
+            <h2>Networking</h2>
             <p>The networking exercises separate interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity. Each check answers a different question, which makes it easier to distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>Service degradation can be a host problem.</h2>
+            <h2>Host health</h2>
             <p>The lab inspects CPU count, load, memory usage, disk usage, and running processes so troubleshooting includes the operating environment beneath the application.</p>
 
             <div class="case-evidence-matrix" aria-label="Host health checks">
@@ -163,7 +157,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Repeated inspection became a lightweight operational tool.</h2>
+            <h2>What I automated</h2>
             <p>A Bash health script collects a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
             <p>The script does not replace investigation or monitoring; it makes the first evidence-gathering step faster and more repeatable.</p>
           </div>
@@ -171,7 +165,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Operational evidence matters more than a tool list.</h2>
+            <h2>What I verified</h2>
             <div class="case-evidence-matrix" aria-label="Verified Linux operations outcomes">
               <div class="case-evidence-item"><span class="case-evidence-label">Service recovery</span><strong>Controlled outage detected, investigated, restored, and verified</strong><small>Recovery was checked at multiple layers.</small></div>
               <div class="case-evidence-item"><span class="case-evidence-label">Permissions</span><strong>Access failures reproduced and resolved intentionally</strong><small>Ownership and mode bits were treated as first-class evidence.</small></div>
@@ -183,15 +177,15 @@
 
         <section class="case-block">
           <div>
-            <h2>Linux fundamentals make platform failures easier to reason about.</h2>
+            <h2>What I learned</h2>
             <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still exist underneath those platforms. Practicing these layers directly makes higher-level SRE and platform troubleshooting more concrete.</p>
-            <p> is the operating pattern this lab contributes to the rest of the portfolio.</p>
+            <p>These checks give me a clearer way to reason about failures before moving to higher-level platform systems.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>This is an operations lab, not a production Linux fleet.</h2>
+            <h2>Limits of the lab</h2>
             <p>The environment runs locally on Ubuntu under WSL2, and the checked-in systemd unit must be adapted for another host. The project intentionally does not claim centralized logging, production hardening, configuration management, fleet orchestration, alerting, or multi-host automation.</p>
             <p>The next useful step would be repeating the same exercises on a small Linux VM or cloud instance and adding smoke tests for the example service and health script.</p>
           </div>
