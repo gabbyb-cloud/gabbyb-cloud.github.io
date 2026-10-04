@@ -192,13 +192,6 @@
 
         <section class="case-block">
           <div>
-            <h2>What I learned</h2>
-            <p>I learned that workflow durability does not make external side effects safe by itself. Retries still need idempotency, and compensation has to be designed as part of the business logic.</p>
-          </div>
-        </section>
-
-        <section class="case-block">
-          <div>
             <h2>Limits of the lab</h2>
             <p>Payment, inventory, shipping, and notification integrations are simulated intentionally so the project can isolate workflow durability and failure handling without third-party credentials or sandboxes.</p>
             <p>A production implementation would still need real external integrations, end-to-end idempotency controls, managed identity and secrets, distributed tracing, production alerting, larger concurrent load and recovery tests, and SLOs derived from measured dependency behavior.</p>
