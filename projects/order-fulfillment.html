@@ -30,7 +30,7 @@
   <main id="main">
     <section class="case-hero-exec shell" aria-labelledby="case-title">
       <div>
-        <p class="case-kicker">Case Study 04 · Backend Reliability</p>
+        <p class="case-kicker">Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
         <p class="case-summary">
           A durable order-processing workflow built to make failure behavior explicit:
@@ -63,7 +63,6 @@
     <div class="case-main shell">
       <article class="case-story">
         <section class="case-block">
-          <span class="case-number">01 / Problem</span>
           <div>
             <h2>Multi-step work should not depend on one worker process staying alive.</h2>
             <p>Order fulfillment spans operations that can succeed and fail independently. Payment may complete before inventory fails. Inventory may be reserved before shipping fails. A worker can restart midway through the process.</p>
@@ -72,7 +71,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">02 / Architecture</span>
           <div>
             <h2>Request handling is separated from durable execution.</h2>
             <p>FastAPI accepts authenticated order submissions and starts a Temporal workflow. Temporal persists workflow history independently of the worker process, while activities execute the individual business steps.</p>
@@ -95,7 +93,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">03 / Failure classification</span>
           <div>
             <h2>Not every failure should be retried.</h2>
             <p>Retry policy begins by separating failures that may improve with time from failures that require a business decision or new input.</p>
@@ -116,7 +113,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">04 / Compensation</span>
           <div>
             <h2>Partial success needs an explicit recovery path.</h2>
             <p>The workflow uses Saga-style compensating actions rather than treating external side effects like an atomic database transaction. If a later step fails, completed actions are reversed in the opposite order where possible.</p>
@@ -138,7 +134,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">05 / Cancellation</span>
           <div>
             <h2>Cancellation is handled at controlled checkpoints.</h2>
             <p>The workflow checks for cancellation at defined points so completed work can be compensated when necessary and later activities can be prevented from starting.</p>
@@ -147,9 +142,8 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">06 / Crash recovery</span>
           <div>
-            <h2>Worker failure does not erase workflow progress.</h2>
+            <h2>What I tested</h2>
             <p>A controlled worker restart exercises the durability property directly. Temporal retains workflow history while the worker is unavailable. When the worker returns, execution continues from persisted workflow state instead of reconstructing the business process from memory.</p>
 
             <div class="case-architecture" aria-label="Worker crash recovery flow">
@@ -170,9 +164,8 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">07 / Verification</span>
           <div>
-            <h2>Failure paths are treated as testable system behavior.</h2>
+            <h2>How I tested it</h2>
             <div class="case-evidence-matrix" aria-label="Temporal workflow verification">
               <div class="case-evidence-item"><span class="case-evidence-label">Success path</span><strong>Normal workflow execution covered</strong><small>The full order flow completes when all activities succeed.</small></div>
               <div class="case-evidence-item"><span class="case-evidence-label">Retries</span><strong>Transient failure behavior asserted</strong><small>Retryable conditions use the configured bounded retry policy.</small></div>
@@ -185,7 +178,6 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">08 / Measured result</span>
           <div>
             <h2>The benchmark measures API submission, not complete workflow duration.</h2>
             <p>One local Docker Compose run completed 25 of 25 authenticated order submissions successfully, with an average submission latency of 38.74 ms and p95 submission latency of 75.51 ms.</p>
@@ -194,27 +186,24 @@
         </section>
 
         <section class="case-block">
-          <span class="case-number">09 / Reliability tradeoffs</span>
           <div>
-            <h2>Durable orchestration solves some failure problems, not all of them.</h2>
+            <h2>What I learned</h2>
             <p>Temporal provides durable workflow history and repeatable orchestration, but real external side effects would still require strong idempotency guarantees. A retry against a payment or shipping provider must not duplicate the side effect simply because the workflow itself is durable.</p>
             <p>The project emits structured operational events, but it does not yet include distributed tracing, production alerting, or dependency-specific SLOs.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">10 / What this proved</span>
           <div>
-            <h2>Reliable background work needs explicit state, failure semantics, and recovery.</h2>
+            <h2>What I learned</h2>
             <p>The project demonstrates a backend design where retry policy, business failures, compensation order, cancellation checkpoints, and worker crash recovery are visible parts of system behavior rather than hidden assumptions.</p>
             <p>The central lesson is not simply how to use Temporal. It is how to design multi-step work so failure paths remain understandable, recoverable, and testable.</p>
           </div>
         </section>
 
         <section class="case-block">
-          <span class="case-number">11 / Production boundary</span>
           <div>
-            <h2>This proves workflow behavior, not a production commerce platform.</h2>
+            <h2>Limits of the lab</h2>
             <p>Payment, inventory, shipping, and notification integrations are simulated intentionally so the project can isolate workflow durability and failure handling without third-party credentials or sandboxes.</p>
             <p>A production implementation would still need real external integrations, end-to-end idempotency controls, managed identity and secrets, distributed tracing, production alerting, larger concurrent load and recovery tests, and SLOs derived from measured dependency behavior.</p>
           </div>
