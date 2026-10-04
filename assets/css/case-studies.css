@@ -180,9 +180,9 @@
 
 .case-main {
   display: grid;
-  grid-template-columns: minmax(65ch, 75ch) minmax(240px, 280px);
+  grid-template-columns: minmax(0, 760px) minmax(240px, 280px);
   justify-content: space-between;
-  gap: clamp(2.5rem, 5vw, 5rem);
+  gap: clamp(3rem, 5vw, 5rem);
   padding-block: 4.2rem 5.2rem;
 }
 
@@ -194,25 +194,33 @@
 .case-block {
   display: block;
   min-width: 0;
-  padding: 1.8rem 0;
+  padding: 2.15rem 0;
   border-top: 1px solid var(--case-line);
 }
 
 .case-block > div {
-  min-width: 0;
-  width: 100%;
+  max-width: 760px;
 }
+
+
 
 .case-block p,
 .case-block li {
-  max-width: 75ch;
+  max-width: 70ch;
 }
 
 .case-block pre {
+  width: 100%;
   max-width: 100%;
+  margin: 1.2rem 0;
+  padding: 1rem 1.1rem;
   overflow-x: auto;
   white-space: pre;
   font-family: var(--case-mono);
+  font-size: .78rem;
+  line-height: 1.6;
+  border: 1px solid var(--case-line);
+  background: #0d0d0d;
 }
 
 .case-table-wrap {
@@ -222,7 +230,8 @@
 }
 
 .case-table-wrap table {
-  min-width: 100%;
+  width: 100%;
+  min-width: 640px;
 }
 
 .case-block:first-child {
@@ -325,7 +334,7 @@
 }
 
 .case-side-card {
-  padding: 1.35rem 0;
+  padding: 1.5rem 0;
   border-top: 1px solid var(--case-line-strong);
   border-bottom: 1px solid var(--case-line-strong);
 }
@@ -397,11 +406,6 @@
 }
 
 @media (max-width: 1100px) {
-  .case-main {
-    grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 2rem;
-  }
-
   .case-hero-exec {
     grid-template-columns: 1fr;
     align-items: start;
@@ -470,8 +474,6 @@
   }
 
   .case-block {
-    grid-template-columns: 1fr;
-    gap: .6rem;
     padding: 1.65rem 0;
   }
 
