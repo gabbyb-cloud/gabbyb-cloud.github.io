@@ -48,6 +48,13 @@
       </aside>
     </section>
 
+    <section class="case-summary-grid shell" aria-label="Case study summary">
+      <div><span>Problem</span><strong>Performance changes can improve throughput while introducing tail-latency or dependency-failure tradeoffs.</strong></div>
+      <div><span>Built</span><strong>FastAPI with PostgreSQL connection pooling, Redis caching, PostgreSQL fallback, and concurrency tests.</strong></div>
+      <div><span>Result</span><strong>Pooling increased throughput from 223.45 to 640.24 req/s while p95 fell from 77.22 to 28.59 ms.</strong></div>
+      <div><span>Learned</span><strong>Connection pooling produced the largest improvement; Redis added only a small gain for this workload, while fallback preserved requests when Redis was unavailable.</strong></div>
+    </section>
+
     <section class="case-proof-rail shell" aria-label="Performance evidence">
       <div class="case-proof"><span class="case-proof-label">Baseline</span><strong>223.45 req/s · 77.22 ms p95</strong></div>
       <div class="case-proof"><span class="case-proof-label">Pooling</span><strong>640.24 req/s · 28.59 ms p95</strong></div>
