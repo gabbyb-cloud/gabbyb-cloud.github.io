@@ -48,6 +48,13 @@
       </aside>
     </section>
 
+    <section class="case-summary-grid shell" aria-label="Case study summary">
+      <div><span>Problem</span><strong>Multi-step orders can partially succeed, then fail or outlive the worker executing them.</strong></div>
+      <div><span>Built</span><strong>Temporal workflow with retries, failure classification, compensation, cancellation, and worker recovery.</strong></div>
+      <div><span>Result</span><strong>25/25 authenticated submissions successful; 11 automated tests passing.</strong></div>
+      <div><span>Learned</span><strong>Durable workflow history does not make external side effects idempotent; compensation remains business logic.</strong></div>
+    </section>
+
     <section class="case-proof-rail shell" aria-label="Workflow evidence">
       <div class="case-proof"><span class="case-proof-label">Durability</span><strong>Workflow progress survives worker restart</strong></div>
       <div class="case-proof"><span class="case-proof-label">Retry policy</span><strong>Transient failures retry; business failures do not</strong></div>
