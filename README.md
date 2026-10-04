@@ -6,9 +6,7 @@ A focused portfolio of hands-on work across backend systems, cloud infrastructur
 
 ## Why this portfolio exists
 
-The portfolio focuses on technical work that is difficult to capture in a resume alone: troubleshooting systems, testing failure behavior, measuring performance, working with infrastructure, and documenting how recovery actually works.
-
-The portfolio focuses on a small set of public projects with enough technical detail to make the engineering decisions, tradeoffs, and results easy to review.
+The portfolio focuses on technical work that is difficult to capture in a resume alone: troubleshooting systems, testing failure behavior, measuring performance, working with infrastructure, and documenting how recovery actually works. A small set of public projects provides enough technical detail to review the engineering decisions, tradeoffs, and results.
 
 ## What it highlights
 
