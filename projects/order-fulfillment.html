@@ -8,9 +8,6 @@
   <meta name="theme-color" content="#0b0e12">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="../assets/css/redesign.css">
-  <link rel="stylesheet" href="../assets/css/executive.css">
-  <link rel="stylesheet" href="../assets/css/executive-refinement.css">
   <link rel="stylesheet" href="../assets/css/case-studies.css">
   <link rel="stylesheet" href="../assets/css/case-evidence.css">
 </head>
@@ -32,10 +29,7 @@
       <div>
         <p class="case-kicker">Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
-        <p class="case-summary">
-          A durable order-processing workflow built to make failure behavior explicit:
-          <strong>persist execution state, classify failures, retry only when useful, compensate partial success, survive worker restarts, and verify recovery paths.</strong>
-        </p>
+        <p class="case-summary">I built a local order-processing workflow with Temporal to practice durable execution, failure handling, compensation, cancellation, and worker recovery.</p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -64,7 +58,7 @@
       <article class="case-story">
         <section class="case-block">
           <div>
-            <h2>Multi-step work should not depend on one worker process staying alive.</h2>
+            <h2>What I built</h2>
             <p>Order fulfillment spans operations that can succeed and fail independently. Payment may complete before inventory fails. Inventory may be reserved before shipping fails. A worker can restart midway through the process.</p>
             <p>If workflow progress exists only in process memory, infrastructure failure can become lost business state. This project moves execution history into Temporal so the business process outlives the worker that happens to be executing it.</p>
           </div>
@@ -72,7 +66,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Request handling is separated from durable execution.</h2>
+            <h2>How the system works</h2>
             <p>FastAPI accepts authenticated order submissions and starts a Temporal workflow. Temporal persists workflow history independently of the worker process, while activities execute the individual business steps.</p>
 
             <div class="case-architecture" aria-label="Order fulfillment architecture">
@@ -94,7 +88,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Not every failure should be retried.</h2>
+            <h2>How I handle failures</h2>
             <p>Retry policy begins by separating failures that may improve with time from failures that require a business decision or new input.</p>
 
             <div class="case-evidence-matrix" aria-label="Retryable and non-retryable failures">
@@ -114,7 +108,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Partial success needs an explicit recovery path.</h2>
+            <h2>How I handle partial success</h2>
             <p>The workflow uses Saga-style compensating actions rather than treating external side effects like an atomic database transaction. If a later step fails, completed actions are reversed in the opposite order where possible.</p>
 
             <div class="case-timeline" aria-label="Compensation sequence after shipping failure">
@@ -135,7 +129,7 @@
 
         <section class="case-block">
           <div>
-            <h2>Cancellation is handled at controlled checkpoints.</h2>
+            <h2>Cancellation</h2>
             <p>The workflow checks for cancellation at defined points so completed work can be compensated when necessary and later activities can be prevented from starting.</p>
             <p>The test suite verifies cancellation after payment and after inventory reservation, including the expected compensation path for each state.</p>
           </div>
@@ -179,7 +173,7 @@
 
         <section class="case-block">
           <div>
-            <h2>The benchmark measures API submission, not complete workflow duration.</h2>
+            <h2>Measured result</h2>
             <p>One local Docker Compose run completed 25 of 25 authenticated order submissions successfully, with an average submission latency of 38.74 ms and p95 submission latency of 75.51 ms.</p>
             <div class="case-note">These measurements cover sequential order submission in the local environment. They are not production-capacity claims and do not measure the full duration of payment, inventory, shipping, and notification work.</div>
           </div>
@@ -196,8 +190,7 @@
         <section class="case-block">
           <div>
             <h2>What I learned</h2>
-            <p>The project demonstrates a backend design where retry policy, business failures, compensation order, cancellation checkpoints, and worker crash recovery are visible parts of system behavior rather than hidden assumptions.</p>
-            <p>The central lesson is not simply how to use Temporal. It is how to design multi-step work so failure paths remain understandable, recoverable, and testable.</p>
+            <p>I learned that workflow durability does not make external side effects safe by itself. Retries still need idempotency, and compensation has to be designed as part of the business logic.</p>
           </div>
         </section>
 
