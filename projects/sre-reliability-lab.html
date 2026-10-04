@@ -32,6 +32,7 @@
         <p class="case-summary">
           I built a local Kubernetes lab to practice monitoring a service, injecting a failure, recovering it, and checking the recovery with more than one signal.
         </p>
+        <!-- TODO measured detection time and recovery time -->
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -127,6 +128,7 @@
         <section class="case-block">
           <div>
             <h2>What I tested</h2>
+            <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
             <p>With <code>FAIL_MODE=true</code>, <code>/work</code> returns HTTP 500 while <code>/ready</code> stays at HTTP 200. I used this to test application failure without making the pod unavailable.</p>
 
             <div class="case-timeline" aria-label="Failure exercise sequence">
@@ -200,6 +202,7 @@
         <section class="case-block">
           <div>
             <h2>What I learned</h2>
+            <!-- TODO: one thing that went wrong or surprised me, and what I'd do differently -->
             <p>The useful part of the project was having to connect deployment state, application behavior, telemetry, alerting, recovery, and verification. I learned that a service can look healthy at the pod level while still failing at the application level.</p>
             <p>I did not use this lab to make throughput or latency claims. The evidence is functional: I can inject the failure, detect it with application-level telemetry, recover the service, and verify the recovery afterward.</p>
           </div>
@@ -218,6 +221,7 @@
         <div class="case-side-card">
           <p class="case-label">Engineering focus</p>
           <h2>What this project demonstrates</h2>
+          <!-- TODO: replace with a list of things I actually did -->
           <ul class="case-side-list">
             <li>Kubernetes workload operations</li>
             <li>Liveness and readiness design</li>
