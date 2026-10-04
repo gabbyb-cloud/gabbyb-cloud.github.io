@@ -29,8 +29,8 @@
         <span></span><span></span>
       </button>
       <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
-        <a href="#projects">Work</a>
-        <a href="#systems">Systems</a>
+        <a href="#projects">Projects</a>
+        <a href="#systems">Stack</a>
         <a href="#credentials">Credentials</a>
         <a href="#about">About</a>
         <a href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub</a>
@@ -41,12 +41,10 @@
   <main id="main">
     <section class="exec-hero shell" id="top" aria-labelledby="hero-title">
       <div>
-        <p class="exec-kicker">Software Engineer · Backend · Cloud · SRE</p>
+        <p class="exec-kicker">Software Engineer · Backend Systems · Cloud Infrastructure · Reliability</p>
         <h1 class="exec-name" id="hero-title">Gabby B.</h1>
-        <p class="exec-title">I'm an early-career backend engineer. I built these labs to learn how systems fail and recover.</p>
-        <p class="exec-statement">
-          These are personal lab projects. Each one breaks something on purpose, then I measure what happened and how I fixed it.
-        </p>
+        <p class="exec-title">I’m an early-career software engineer and Harvard student focused on backend systems, cloud infrastructure, and reliability.</p>
+        <p class="exec-statement">I build systems to study how they behave under failure, measure the tradeoffs, and design recovery paths I can verify.</p>
         <div class="exec-actions">
           <a class="exec-button primary" href="#projects">View my work</a>
           <a class="exec-button" href="https://github.com/gabbyb-cloud" target="_blank" rel="noreferrer">GitHub ↗</a>
@@ -59,7 +57,7 @@
       <div class="exec-section-head">
         <div>
           <h2 id="projects-title">Projects</h2>
-          <p>Four projects I built to practice running and debugging services.</p>
+          <p>Engineering work spanning reliability, distributed systems, Linux operations, and durable backend workflows.</p>
         </div>
       </div>
 
@@ -68,9 +66,8 @@
           <p class="project-meta">Featured system · Site reliability engineering</p>
           <h3>SRE Reliability Lab</h3>
           <p>
-            A local reliability environment for deploying, observing, deliberately degrading,
-            and recovering a containerized service with Kubernetes, Helm, Terraform,
-            Prometheus, and Grafana.
+            A local Kubernetes environment I built to study service reliability through SLOs,
+            application-level failure injection, Prometheus alerting, recovery, and post-incident verification.
           </p>
           <div class="project-links">
             <a href="projects/sre-reliability-lab.html">View case study →</a>
@@ -91,7 +88,7 @@
           <span class="project-index">02</span>
           <div>
             <h3>Linux Operations Lab</h3>
-            <p>Service-failure exercises using systemd, journal logs, permissions, networking, host-health checks, recovery verification, and Bash automation.</p>
+            <p>A Linux troubleshooting environment covering systemd services, permissions, networking, host health, service recovery, and repeatable Bash diagnostics.</p>
           </div>
           <span class="project-tech">Linux · Bash · systemd · journalctl · TCP/IP</span>
           <a href="projects/linux-operations-lab.html">Case study →</a>
@@ -101,7 +98,7 @@
           <span class="project-index">03</span>
           <div>
             <h3>Distributed Systems Performance Lab</h3>
-            <p>Controlled experiments across connection pooling, caching, dependency fallback, concurrency, throughput, and tail latency to expose system tradeoffs.</p>
+            <p>Controlled experiments measuring how connection pooling, caching, dependency failure, and concurrency affect throughput and tail latency.</p>
           </div>
           <span class="project-tech">Python · PostgreSQL · Redis · Observability</span>
           <a href="projects/distributed-systems-performance.html">Case study →</a>
@@ -111,7 +108,7 @@
           <span class="project-index">04</span>
           <div>
             <h3>Order Fulfillment with Temporal</h3>
-            <p>Durable order processing with retry policies, failure classification, Saga compensation, cancellation handling, worker recovery, automated tests, and CI.</p>
+            <p>A durable backend workflow designed around retries, failure classification, compensation, cancellation, worker recovery, automated tests, and CI.</p>
           </div>
           <span class="project-tech">Python · FastAPI · Temporal · PostgreSQL · Docker</span>
           <a href="projects/order-fulfillment.html">Case study →</a>
@@ -149,12 +146,11 @@
     <section class="exec-section shell" id="private" aria-labelledby="private-title">
       <div class="private-build">
         <div>
-          <h3 id="private-title">Product engineering in practice.</h3>
+          <h3 id="private-title">Private product</h3>
           <p>
-            Alongside my public portfolio work, I’m building a private multi-tenant B2B software product involving
-            backend architecture, tenant isolation, authentication and authorization, workflow automation,
-            testing, security, and operational reliability. The project gives me hands-on experience taking
-            software from architecture through implementation and validation. Product-specific details remain private.
+            I’m also building a private B2B software product, applying the same systems-oriented approach to backend architecture,
+            multi-tenancy, authentication and authorization, workflow automation, testing, security, and operational reliability.
+            Product-specific details remain private.
           </p>
         </div>
       </div>
@@ -163,20 +159,18 @@
     <section class="exec-section shell" id="credentials">
       <div class="exec-lower">
         <div class="exec-subsection" aria-labelledby="credentials-title">
-          <h2 id="credentials-title">Credentials & hands-on learning.</h2>
-          <p>Verified technical credentials and practical security work are available for deeper review.</p>
+          <h2 id="credentials-title">Credentials</h2>
+          <p>Selected technical credentials and security work.</p>
           <div class="quiet-links">
             <a href="https://www.credly.com/users/gabriell-bedoy/badges" target="_blank" rel="noreferrer">Credly ↗</a>
-            <a href="https://tryhackme.com/p/gabbybcloud" target="_blank" rel="noreferrer">TryHackMe ↗</a>
           </div>
         </div>
 
         <div class="exec-subsection" id="about" aria-labelledby="about-title">
           <h2 id="about-title">About</h2>
           <p>
-            I’m Gabby B., a software engineer focused on backend systems, cloud infrastructure, platform engineering, and reliability.
-            I build systems with observable behavior, automated operations, clear failure modes,
-            and practical recovery paths.
+            I’m Gabby B., a Harvard student and early-career software engineer focused on backend systems, cloud infrastructure, and reliability.
+            I’m interested in how failures propagate through a system, how they can be measured, and what makes recovery predictable.
           </p>
         </div>
       </div>
@@ -185,8 +179,8 @@
     <section class="exec-contact shell" id="contact" aria-labelledby="contact-title">
       <div>
         <p class="exec-kicker">Contact</p>
-        <h2 id="contact-title">Open to software engineering opportunities across backend systems, cloud infrastructure, platform engineering, and reliability.</h2>
-        <p>Backend Engineering · SRE · Platform Engineering · Cloud Infrastructure</p>
+        <h2 id="contact-title">I’m interested in software engineering roles focused on backend systems, infrastructure, reliability, and distributed systems.</h2>
+        <p>Backend Engineering · Distributed Systems · SRE · Cloud Infrastructure</p>
       </div>
       <a class="exec-email" href="mailto:gabbybcloud@proton.me">gabbybcloud@proton.me ↗</a>
     </section>
