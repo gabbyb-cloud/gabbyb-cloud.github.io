@@ -1,15 +1,15 @@
 /* Executive case-study layer */
 
 .case-page {
-  --case-accent: var(--exec-accent, #c8b27f);
-  --case-bg: var(--exec-bg, #0b0e12);
-  --case-surface: var(--exec-surface, #12171d);
-  --case-text: var(--exec-text, #f3f0ea);
-  --case-muted: var(--exec-muted, #aab3bc);
-  --case-faint: var(--exec-faint, #87919c);
-  --case-line: var(--exec-line, #2c3540);
-  --case-line-strong: var(--exec-line-strong, #404b57);
-  --case-mono: var(--exec-mono, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace);
+  --case-accent: var(--maroon-bright, #9d334b);
+  --case-bg: var(--bg, #0a0a0a);
+  --case-surface: var(--surface, #111111);
+  --case-text: var(--ink, #f4f4f2);
+  --case-muted: var(--muted, #a0a0a0);
+  --case-faint: var(--muted-2, #777777);
+  --case-line: var(--line, #2a2a2a);
+  --case-line-strong: var(--line-strong, #3b3b3b);
+  --case-mono: var(--mono, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace);
 }
 
 .case-page .site-header {
@@ -32,7 +32,6 @@
 
 .case-kicker,
 .case-label,
-.case-number,
 .case-proof-label,
 .case-snapshot dt,
 .case-result-label {
@@ -64,11 +63,6 @@
   color: var(--case-muted);
   font-size: .98rem;
   line-height: 1.65;
-}
-
-.case-summary strong {
-  color: var(--case-text);
-  font-weight: 620;
 }
 
 .case-actions {
@@ -206,13 +200,6 @@
 .case-block:first-child {
   padding-top: 0;
   border-top: 0;
-}
-
-.case-number {
-  padding-top: .3rem;
-  color: var(--case-accent);
-  font-size: .6rem;
-  font-weight: 700;
 }
 
 .case-block h2 {
