@@ -29,7 +29,7 @@
       <div>
         <p class="case-kicker">Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
-        <p class="case-summary">I built a Linux troubleshooting environment to isolate service, permission, networking, and host-level failures with repeatable diagnostics and recovery checks.</p>
+        <p class="case-summary">A Linux troubleshooting environment for isolating service, permission, networking, and host-level failures with repeatable diagnostics and recovery checks.</p>
         <!-- TODO one specific result -->
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
@@ -59,16 +59,16 @@
       <article class="case-story">
         <section class="case-block">
           <div>
-            <h2>What I built</h2>
-            <p>The service is intentionally small so I can isolate Linux behavior. When an endpoint becomes unavailable, I check process state, systemd, the expected socket, file permissions, routing or DNS, and host resource pressure before changing anything.</p>
-            <p>I use that evidence to identify the failing layer instead of jumping directly to a restart or code change.</p>
+            <h2>System scope</h2>
+            <p>The service is intentionally small so Linux behavior stays isolated. When an endpoint becomes unavailable, the investigation checks process state, systemd, the expected socket, file permissions, routing or DNS, and host resource pressure before changing anything.</p>
+            <p>That evidence identifies the failing layer instead of jumping directly to a restart or code change.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>How I troubleshoot</h2>
-            <p>I start with the visible symptom, then narrow the failure by checking service state, logs, sockets, networking, permissions, and host resources. After a targeted change, I check the service and application again.</p>
+            <h2>Troubleshooting method</h2>
+            <p>The visible symptom is the starting point, followed by checks of service state, logs, sockets, networking, permissions, and host resources. After a targeted change, both the service and application are checked again.</p>
 
             <div class="case-architecture" aria-label="Linux troubleshooting flow">
               <div class="case-flow">
@@ -89,42 +89,42 @@
 
         <section class="case-block">
           <div>
-            <h2>What I tested</h2>
+            <h2>Failure scenarios</h2>
             <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
-            <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. I deliberately stop the service, then work outward from the failed request rather than assuming the root cause.</p>
+            <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. A deliberate service stop provides a controlled failure, with investigation working outward from the failed request rather than assuming the root cause.</p>
 
             <div class="case-timeline" aria-label="Service troubleshooting sequence">
               <div class="case-timeline-step">
                 <span>01</span>
                 <strong>Symptom observed</strong>
-                <p>I establish the user-visible failure before making any changes.</p>
+                <p>The user-visible failure is established before any changes are made.</p>
               </div>
               <div class="case-timeline-step">
                 <span>02</span>
                 <strong>Service inspected</strong>
-                <p>I use <code>systemctl status</code> to confirm service ownership and current state.</p>
+                <p><code>systemctl status</code> confirms service ownership and current state.</p>
               </div>
               <div class="case-timeline-step">
                 <span>03</span>
                 <strong>Logs reviewed</strong>
-                <p>I use <code>journalctl -u linux-lab</code> to inspect service history and failure evidence.</p>
+                <p><code>journalctl -u linux-lab</code> exposes service history and failure evidence.</p>
               </div>
               <div class="case-timeline-step">
                 <span>04</span>
                 <strong>Socket checked</strong>
-                <p>I use <code>ss -lntp</code> to confirm whether the expected TCP listener is present.</p>
+                <p><code>ss -lntp</code> confirms whether the expected TCP listener is present.</p>
               </div>
               <div class="case-timeline-step">
                 <span>05</span>
                 <strong>Recovery verified</strong>
-                <p>After the targeted fix, I use <code>systemctl</code>, <code>ss</code>, and <code>curl</code> together to confirm recovery.</p>
+                <p>After the targeted fix, <code>systemctl</code>, <code>ss</code>, and <code>curl</code> are used together to confirm recovery.</p>
               </div>
             </div>
 
             <div class="case-decision">
               <span class="case-decision-label">Operating rule</span>
               <strong>A restart is a corrective action, not proof of recovery.</strong>
-              <p>I consider recovery complete only when service state, socket state, and application behavior agree.</p>
+              <p>Recovery is complete only when service state, socket state, and application behavior agree.</p>
             </div>
           </div>
         </section>
@@ -132,21 +132,21 @@
         <section class="case-block">
           <div>
             <h2>Permissions</h2>
-            <p>I use users, groups, ownership, and mode bits to reproduce access failures intentionally. I inspect ownership and permissions before making changes so an access problem is not mistaken for an application defect.</p>
+            <p>Users, groups, ownership, and mode bits are used to reproduce access failures intentionally. Ownership and permissions are inspected before changes so an access problem is not mistaken for an application defect.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
             <h2>Networking</h2>
-            <p>I separate interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity. Each check answers a different question, which helps me distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
+            <p>Interface state, routing, listening sockets, DNS resolution, and direct HTTP connectivity are checked separately. Each answers a different question, helping distinguish a service that is not listening from a host that cannot route traffic or resolve names.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
             <h2>Host health</h2>
-            <p>I inspect CPU count, load, memory usage, disk usage, and running processes so the troubleshooting path includes the operating environment beneath the application.</p>
+            <p>CPU count, load, memory usage, disk usage, and running processes are included so the troubleshooting path covers the operating environment beneath the application.</p>
 
             <div class="case-evidence-matrix" aria-label="Host health checks">
               <div class="case-evidence-item"><span class="case-evidence-label">CPU</span><strong>CPU count · uptime · load</strong><small>Establishes basic host capacity and load context.</small></div>
@@ -159,15 +159,15 @@
 
         <section class="case-block">
           <div>
-            <h2>What I automated</h2>
-            <p>I use a Bash health script to collect a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
+            <h2>Automation</h2>
+            <p>A Bash health script collects a consistent first-pass snapshot: hostname, CPU count, uptime and load, memory usage, root filesystem usage, high-memory processes, and the <code>linux-lab</code> service state.</p>
             <p>It does not replace investigation or monitoring; it makes the first evidence-gathering step faster and more repeatable.</p>
           </div>
         </section>
 
         <section class="case-block">
           <div>
-            <h2>What I verified</h2>
+            <h2>Recovery verification</h2>
             <!-- TODO: timestamps for injected failure, detection, and recovery -->
             <div class="case-evidence-matrix" aria-label="Verified Linux operations outcomes">
               <div class="case-evidence-item"><span class="case-evidence-label">Service recovery</span><strong>Controlled outage detected, investigated, restored, and verified</strong><small>Recovery was checked at multiple layers.</small></div>
@@ -180,10 +180,10 @@
 
         <section class="case-block">
           <div>
-            <h2>What I learned</h2>
+            <h2>Lessons from the lab</h2>
             <!-- TODO: one thing that went wrong or surprised me, and what I'd do differently -->
             <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still exist underneath them. Working through those layers directly gives me a clearer way to isolate failures before moving to higher-level platform systems.</p>
-            <p>The same checks make higher-level SRE and platform troubleshooting easier to reason about because I can trace the failure back to the layer where it begins.</p>
+            <p>The same checks make higher-level SRE and platform troubleshooting easier to reason about because failures can be traced back to the layer where they begin.</p>
           </div>
         </section>
 
