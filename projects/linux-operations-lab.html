@@ -30,6 +30,7 @@
         <p class="case-kicker">Linux Operations & Troubleshooting</p>
         <h1 id="case-title">Linux Operations Lab</h1>
         <p class="case-summary">I built a small Linux lab to practice troubleshooting services, permissions, networking, and host health. I used evidence from the system before making changes.</p>
+        <!-- TODO one specific result -->
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/linux-operations-lab" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -89,6 +90,7 @@
         <section class="case-block">
           <div>
             <h2>What I tested</h2>
+            <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
             <p>A small Python HTTP service is managed through a checked-in <code>systemd</code> unit. The lab deliberately stops the service, then works outward from the symptom rather than assuming the root cause.</p>
 
             <div class="case-timeline" aria-label="Service troubleshooting sequence">
@@ -166,6 +168,7 @@
         <section class="case-block">
           <div>
             <h2>What I verified</h2>
+            <!-- TODO: timestamps for injected failure, detection, and recovery -->
             <div class="case-evidence-matrix" aria-label="Verified Linux operations outcomes">
               <div class="case-evidence-item"><span class="case-evidence-label">Service recovery</span><strong>Controlled outage detected, investigated, restored, and verified</strong><small>Recovery was checked at multiple layers.</small></div>
               <div class="case-evidence-item"><span class="case-evidence-label">Permissions</span><strong>Access failures reproduced and resolved intentionally</strong><small>Ownership and mode bits were treated as first-class evidence.</small></div>
@@ -178,6 +181,7 @@
         <section class="case-block">
           <div>
             <h2>What I learned</h2>
+            <!-- TODO: one thing that went wrong or surprised me, and what I'd do differently -->
             <p>Containers and Kubernetes add abstraction, but processes, sockets, permissions, logs, networking, and resource usage still exist underneath those platforms. Practicing these layers directly makes higher-level SRE and platform troubleshooting more concrete.</p>
             <p>These checks give me a clearer way to reason about failures before moving to higher-level platform systems.</p>
           </div>
@@ -196,6 +200,7 @@
         <div class="case-side-card">
           <p class="case-label">Engineering focus</p>
           <h2>What this project demonstrates</h2>
+          <!-- TODO: replace with a list of things I actually did -->
           <ul class="case-side-list">
             <li>Linux permissions and ownership</li>
             <li>systemd service investigation</li>
