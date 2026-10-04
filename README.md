@@ -1,12 +1,12 @@
-# Gabby B. — Engineering Portfolio
+# Engineering Portfolio
 
-A lightweight portfolio showcasing hands-on work across software engineering, cloud infrastructure, backend systems, automation, and reliability.
+A focused portfolio of hands-on work across backend systems, cloud infrastructure, automation, and reliability.
 
 **Live site:** https://gabbyb-cloud.github.io/
 
 ## Why this portfolio exists
 
-I wanted one place to show the kind of technical work that is hard to capture in a resume alone: troubleshooting systems, testing failure behavior, measuring performance, working with infrastructure, and documenting how recovery actually works.
+The portfolio focuses on technical work that is difficult to capture in a resume alone: troubleshooting systems, testing failure behavior, measuring performance, working with infrastructure, and documenting how recovery actually works.
 
 The portfolio focuses on a small set of public projects with enough technical detail to make the engineering decisions, tradeoffs, and results easy to review.
 
