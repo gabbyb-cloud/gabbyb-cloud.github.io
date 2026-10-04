@@ -48,6 +48,13 @@
       </aside>
     </section>
 
+    <section class="case-summary-grid shell" aria-label="Case study summary">
+      <div><span>Problem</span><strong>A failed request can originate in service state, permissions, networking, or host resources.</strong></div>
+      <div><span>Built</span><strong>Ubuntu on WSL2 with systemd, journalctl, ss, curl, ip, and Bash diagnostics.</strong></div>
+      <div><span>Result</span><strong>Repeatable recovery checks across four failure domains.</strong></div>
+      <div><span>Learned</span><strong>Recovery is proven when process state, socket state, and HTTP behavior agree.</strong></div>
+    </section>
+
     <section class="case-proof-rail shell" aria-label="Operations evidence">
       <div class="case-proof"><span class="case-proof-label">Incident drill</span><strong>Stopped service → inspect → restore → verify</strong></div>
       <div class="case-proof"><span class="case-proof-label">Evidence</span><strong>systemctl · journalctl · ps · ss · curl</strong></div>
