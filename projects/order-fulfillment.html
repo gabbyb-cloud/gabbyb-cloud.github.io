@@ -30,6 +30,7 @@
         <p class="case-kicker">Backend Reliability</p>
         <h1 id="case-title">Order Fulfillment with Temporal</h1>
         <p class="case-summary">I built a local order-processing workflow with Temporal to practice durable execution, failure handling, compensation, cancellation, and worker recovery.</p>
+        <!-- TODO tests and failure scenarios covered -->
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/order-fulfillment-temporal" target="_blank" rel="noreferrer">View repository ↗</a>
           <a class="case-action" href="../index.html#projects">Back to engineering work</a>
@@ -138,6 +139,7 @@
         <section class="case-block">
           <div>
             <h2>What I tested</h2>
+            <!-- TODO: real command output in a code block (journalctl, systemctl status, failing and fixed request) -->
             <p>A controlled worker restart exercises the durability property directly. Temporal retains workflow history while the worker is unavailable. When the worker returns, execution continues from persisted workflow state instead of reconstructing the business process from memory.</p>
 
             <div class="case-architecture" aria-label="Worker crash recovery flow">
@@ -182,6 +184,7 @@
         <section class="case-block">
           <div>
             <h2>What I learned</h2>
+            <!-- TODO: one thing that went wrong or surprised me, and what I'd do differently -->
             <p>Temporal provides durable workflow history and repeatable orchestration, but real external side effects would still require strong idempotency guarantees. A retry against a payment or shipping provider must not duplicate the side effect simply because the workflow itself is durable.</p>
             <p>The project emits structured operational events, but it does not yet include distributed tracing, production alerting, or dependency-specific SLOs.</p>
           </div>
@@ -207,6 +210,7 @@
         <div class="case-side-card">
           <p class="case-label">Engineering focus</p>
           <h2>What this project demonstrates</h2>
+            <!-- TODO: replace with a list of things I actually did -->
           <ul class="case-side-list">
             <li>Durable workflow orchestration</li>
             <li>Retryable vs non-retryable failures</li>
