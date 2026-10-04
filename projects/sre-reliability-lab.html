@@ -34,7 +34,7 @@
         </p>
         <div class="case-actions">
           <a class="case-action primary" href="https://github.com/gabbyb-cloud/sre-reliability-lab" target="_blank" rel="noreferrer">View repository ↗</a>
-          <a class="case-action" href="../index.html#projects">Back to engineering work</a>
+          <a class="case-action" href="../index.html#projects">Back to projects</a>
         </div>
       </div>
 
@@ -47,6 +47,13 @@
           <div class="case-snapshot-row"><dt>Cost</dt><dd>Local-first · reproducible · $0 infrastructure</dd></div>
         </dl>
       </aside>
+    </section>
+
+    <section class="case-summary-grid shell" aria-label="Case study summary">
+      <div><span>Problem</span><strong>User-facing 5xx errors can persist while a pod still appears healthy.</strong></div>
+      <div><span>Built</span><strong>FastAPI on kind with Helm, Prometheus, Grafana, and Terraform.</strong></div>
+      <div><span>Result</span><strong>99% SLO target; HighErrorRate observed through Inactive → Pending → Firing → Resolved.</strong></div>
+      <div><span>Learned</span><strong>Application failure, pod health, alerting, and recovery need separate verification signals.</strong></div>
     </section>
 
     <section class="case-proof-rail shell" aria-label="Reliability evidence">
